@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>Rx.Tracker.Core.Tests</RootNamespace>
+        <AssemblyName>Rx.Tracker.Core.Tests</AssemblyName>
+    </PropertyGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+<Project>
+    <ItemGroup>
+      <PackageReference Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" />
+    </ItemGroup>
+      <Import Project="$([MSBuild]::GetPathOfFileAbove('directory.build.targets', '$(MSBuildThisFileDirectory)../'))" />
+  </Project>

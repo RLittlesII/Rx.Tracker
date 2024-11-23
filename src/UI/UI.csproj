@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+        <OutputType>Exe</OutputType>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+
+        <!-- Display name -->
+        <ApplicationTitle>Rx.Tracker</ApplicationTitle>
+
+        <!-- App Identifier -->
+        <ApplicationId>com.companyname.rx.tracker</ApplicationId>
+        <ApplicationIdGuid>358c1bed-1a26-4e53-aff7-c89cc98654b0</ApplicationIdGuid>
+
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
+
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+        <RootNamespace>Rx.Tracker.UI</RootNamespace>
+        <AssemblyName>Rx.Tracker.UI</AssemblyName>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <MtouchLink>SdkOnly</MtouchLink>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- App Icon -->
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
+
+        <!-- Splash Screen -->
+        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128"/>
+
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*"/>
+        <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208"/>
+
+        <!-- Custom Fonts -->
+        <MauiFont Include="Resources\Fonts\*"/>
+
+        <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Maui.Controls" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" />
+        <PackageReference Include="Microsoft.Maui.Essentials" />
+        <PackageReference Include="Microsoft.Extensions.Logging" />
+        <PackageReference Include="Prism.Maui" />
+        <PackageReference Include="Prism.Maui.Rx" />
+        <PackageReference Include="Prism.DryIoc.Maui" />
+        <PackageReference Include="ReactiveMarbles.Mvvm" />
+        <PackageReference Include="ReactiveUI.Maui" />
+        <PackageReference Include="Rocket.Surgery.Airframe.Core" />
+        <PackageReference Include="Shiny" />
+        <PackageReference Include="Shiny.Locations" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Rx.Tracker\Rx.Tracker.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiXaml Update="Features\Main\MainPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Features\Main\MainPage.xaml.cs">
+        <DependentUpon>MainPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+</Project>

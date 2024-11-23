@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Rx.Tracker.Core</AssemblyName>
+        <RootNamespace>Rx.Tracker.Core</RootNamespace>
+    </PropertyGroup>
+
+</Project>
