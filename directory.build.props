@@ -3,5 +3,6 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <LangVersion>latestmajor</LangVersion>
     </PropertyGroup>
 </Project>
