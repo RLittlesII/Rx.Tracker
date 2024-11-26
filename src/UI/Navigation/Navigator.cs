@@ -24,7 +24,7 @@ public class Navigator : INavigator
         return this._navigationService.NavigateAsync(invoke).ContinueWith(this.HandleFailedNavigationResult);
     }
 
-    public Task<NavigationState> Back(int backwards = 1) => this._navigationService.GoBackAsync().ContinueWith(this.HandleFailedNavigationResult);
+    public Task<NavigationState> Back(uint backwards) => this._navigationService.GoBackAsync().ContinueWith(this.HandleFailedNavigationResult);
 
     public Task<NavigationState> Back<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new() => throw new NotImplementedException();

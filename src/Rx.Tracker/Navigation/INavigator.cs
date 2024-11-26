@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace Rx.Tracker.Navigation;
 
 /// <summary>
@@ -19,7 +22,7 @@ public interface INavigator
     /// </summary>
     /// <param name="backwards">The number of backward navigations.</param>
     /// <returns>a navigation result.</returns>
-    Task<NavigationState> Back(int backwards);
+    Task<NavigationState> Back(uint backwards);
 
     /// <summary>
     /// Goes back to a specific uri from the specified route.

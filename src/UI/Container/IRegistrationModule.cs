@@ -1,7 +1,3 @@
-// <copyright file="IRegistrationModule.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace Rx.Tracker.UI.Container;
 
 /// <summary>
