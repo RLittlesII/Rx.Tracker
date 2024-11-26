@@ -28,10 +28,10 @@ dotnet_separate_import_directive_groups=false
 dotnet_sort_system_directives_first=false
 
 # this. and Me. preferences
-dotnet_style_qualification_for_event=false:warning
-dotnet_style_qualification_for_field=false:warning
-dotnet_style_qualification_for_method=false:warning
-dotnet_style_qualification_for_property=false:warning
+dotnet_style_qualification_for_event=false:suggestion
+dotnet_style_qualification_for_field=false:suggestion
+dotnet_style_qualification_for_method=false:suggestion
+dotnet_style_qualification_for_property=false:suggestion
 
 # Language keywords vs BCL types preferences
 dotnet_style_predefined_type_for_locals_parameters_members=true:suggestion
@@ -172,7 +172,7 @@ dotnet_naming_rule.type_parameter_should_be_begins_with_t.severity=warning
 dotnet_naming_rule.type_parameter_should_be_begins_with_t.symbols=type_parameter
 dotnet_naming_rule.type_parameter_should_be_begins_with_t.style=begins_with_t
 
-dotnet_naming_rule.locals_should_be_camel_case.severity=error
+dotnet_naming_rule.locals_should_be_camel_case.severity=none
 dotnet_naming_rule.locals_should_be_camel_case.symbols=local
 dotnet_naming_rule.locals_should_be_camel_case.style=camel_case
 
@@ -974,6 +974,7 @@ resharper_place_simple_embedded_statement_on_same_line=False
 resharper_place_type_constraints_on_same_line=false
 resharper_prefer_explicit_discard_declaration=true
 resharper_remove_blank_lines_near_braces=true
+resharper_remove_this_qualifier=true
 resharper_sort_attributes=true
 resharper_sort_class_selectors=true
 resharper_space_around_arrow_op=true
@@ -1001,4 +1002,4 @@ resharper_xmldoc_pi_attribute_style=on_single_line
 resharper_xmldoc_space_before_self_closing=true
 
 # ReSharper inspection severities
-resharper_arrange_local_function_body_highlighting=suggestion
+resharper_arrange_local_function_body_highlighting=none
