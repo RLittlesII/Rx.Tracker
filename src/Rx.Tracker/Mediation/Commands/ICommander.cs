@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Rx.Tracker.Core.Mediation.Commands;
+namespace Rx.Tracker.Mediation.Commands;
 
 /// <summary>
 /// Represents an abstraction that executes a command.

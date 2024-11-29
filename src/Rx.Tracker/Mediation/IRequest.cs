@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 
-namespace Rx.Tracker.Core.Mediation;
+namespace Rx.Tracker.Mediation;
 
 /// <summary>
 /// Represents a request made to the mediator.

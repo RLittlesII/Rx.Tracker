@@ -4,4 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Rx.Tracker\Rx.Tracker.csproj" />
+    </ItemGroup>
+
 </Project>

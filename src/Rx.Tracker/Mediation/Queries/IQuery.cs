@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Rx.Tracker.Core.Mediation.Queries;
+namespace Rx.Tracker.Mediation.Queries;
 
 /// <summary>
 /// Represents a query made to the mediator.

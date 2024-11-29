@@ -7,7 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="LanguageExt.Core" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="Nanoid" />
       <PackageReference Include="System.Reactive" />
     </ItemGroup>
 

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Rx.Tracker.Core.Mediation.Notifications;
+namespace Rx.Tracker.Mediation.Notifications;
 
 /// <summary>
 /// Represents an abstraction that publishes an event to multiple handlers.

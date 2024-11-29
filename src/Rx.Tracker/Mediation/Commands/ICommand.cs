@@ -1,4 +1,4 @@
-namespace Rx.Tracker.Core.Mediation.Commands;
+namespace Rx.Tracker.Mediation.Commands;
 
 /// <summary>
 /// Represents a command made to the mediator.

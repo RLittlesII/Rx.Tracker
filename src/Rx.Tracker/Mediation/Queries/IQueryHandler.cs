@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Rx.Tracker.Core.Mediation.Queries;
+namespace Rx.Tracker.Mediation.Queries;
 
 /// <summary>
 /// Handles a <see cref="IRequest{TResult}"/>.

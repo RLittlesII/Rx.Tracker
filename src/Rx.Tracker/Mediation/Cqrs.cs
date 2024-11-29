@@ -1,15 +1,15 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Rx.Tracker.Core.Mediation.Commands;
-using Rx.Tracker.Core.Mediation.Notifications;
-using Rx.Tracker.Core.Mediation.Queries;
+using Rx.Tracker.Mediation.Commands;
+using Rx.Tracker.Mediation.Notifications;
+using Rx.Tracker.Mediation.Queries;
 
-namespace Rx.Tracker.Core.Mediation;
+namespace Rx.Tracker.Mediation;
 
 /// <summary>
 /// Represents the <see cref="ICqrs"/>.
 /// </summary>
-public class Cqrs : ICqrs
+public sealed class Cqrs : ICqrs
 {
     /// <inheritdoc cref="ICommander"/>
     public Task Execute<TCommand>(TCommand command)
@@ -20,8 +20,7 @@ public class Cqrs : ICqrs
         where TNotification : INotification => throw new System.NotImplementedException();
 
     /// <inheritdoc cref="ISender"/>
-    public Task<TResult> Query<TQuery, TResult>(TQuery query)
-        where TQuery : IQuery<TResult> => throw new System.NotImplementedException();
+    public Task<TResult> Query<TResult>(IQuery<TResult> query) => throw new System.NotImplementedException();
 }
 
 /// <summary>
