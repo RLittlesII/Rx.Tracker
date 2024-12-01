@@ -1,4 +1,4 @@
-namespace Rx.Tracker.Features.Medicine.Domain.Commands;
+namespace Rx.Tracker.Features.Medicine.Domain.Entities;
 
 /// <summary>
 /// The recurrence of taking a medication.

@@ -1,4 +1,4 @@
-namespace Rx.Tracker.Features.Medicine.Data;
+namespace Rx.Tracker.Features.Medicine.Data.Dto;
 
 /// <summary>
 /// Represents a medicine data transport object.
@@ -8,5 +8,5 @@ public record MedicineDto
     /// <summary>
     /// Gets the identifier.
     /// </summary>
-    public string Id { get; init; }
+    public required string Id { get; init; }
 }

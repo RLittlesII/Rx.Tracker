@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.PropertyChanged;
-using Rx.Tracker.Core;
+using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Medicine.Domain.Commands;
 using Rx.Tracker.Features.Medicine.Domain.Entities;
 using Rx.Tracker.Features.Medicine.Domain.Queries;
@@ -31,8 +31,6 @@ public class AddMedicineViewModel : ViewModelBase
     public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory)
         : base(navigator, cqrs, loggerFactory)
     {
-        var selectedChanged = this.WhenChanged(static viewModel => viewModel.Selected).Publish().RefCount();
-
         var whenChanged =
             this.WhenChanged(
                     static viewModel => viewModel.SelectedName,
@@ -49,7 +47,7 @@ public class AddMedicineViewModel : ViewModelBase
 
         whenChanged
            .Where(ArePropertiesValid)
-           .Select(static _ => new ScheduledMedication(Frequency.Daily, MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
+           .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .InvokeCommand(this, static viewModel => viewModel.AddCommand);
@@ -81,15 +79,6 @@ public class AddMedicineViewModel : ViewModelBase
     {
         get => _medicine;
         set => RaiseAndSetIfChanged(ref _medicine, value);
-    }
-
-    /// <summary>
-    /// Gets or sets the selected.
-    /// </summary>
-    public Medication? Selected
-    {
-        get => _selected;
-        set => RaiseAndSetIfChanged(ref _selected, value);
     }
 
     /// <summary>
@@ -150,7 +139,6 @@ public class AddMedicineViewModel : ViewModelBase
                .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight))));
     }
 
-    private Medication? _selected;
     private string? _selectedName;
     private Dosage? _selectedDosage;
     private Recurrence? _selectedRecurrence;

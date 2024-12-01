@@ -1,3 +1,4 @@
+using DynamicData;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Medicine.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
@@ -20,8 +21,28 @@ public static class AddMedicineToSchedule
     /// </summary>
     public class CommandHandler : ICommandHandler<Command>
     {
+        private readonly IMedicineCache _cache;
+        private readonly IReminders _reminders;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandHandler"/> class.
+        /// </summary>
+        /// <param name="cache">The medicine cache.</param>
+        /// <param name="reminders">The reminders.</param>
+        public CommandHandler(IMedicineCache cache, IReminders reminders)
+        {
+            _cache = cache;
+            _reminders = reminders;
+        }
+
         /// <inheritdoc />
-        public Task Handle(Command command) => Task.CompletedTask;
+        public async Task Handle(Command command)
+        {
+            // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
+            // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
+            _cache.AddOrUpdate(command.ScheduledMedication.Medication);
+            await _reminders.Create(new MedicationReminder());
+        }
     }
 
     /// <summary>

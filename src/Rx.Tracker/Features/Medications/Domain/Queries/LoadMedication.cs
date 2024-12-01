@@ -1,10 +1,10 @@
+using Rx.Tracker.Features.Medications.Domain.Entities;
+using Rx.Tracker.Mediation.Queries;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Rx.Tracker.Features.Medicine.Domain.Entities;
-using Rx.Tracker.Mediation.Queries;
 
-namespace Rx.Tracker.Features.Medicine.Domain.Queries;
+namespace Rx.Tracker.Features.Medications.Domain.Queries;
 
 /// <summary>
 /// The load medicine query definition.

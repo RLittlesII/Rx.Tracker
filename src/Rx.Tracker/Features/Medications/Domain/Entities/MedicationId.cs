@@ -1,5 +1,3 @@
-using Rx.Tracker.Core;
-
 namespace Rx.Tracker.Features.Medicine.Domain.Entities;
 
 /// <inheritdoc />

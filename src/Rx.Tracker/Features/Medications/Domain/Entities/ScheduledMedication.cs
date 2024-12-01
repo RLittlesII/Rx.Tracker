@@ -1,6 +1,4 @@
 using System;
-using Rx.Tracker.Core;
-using Rx.Tracker.Features.Medicine.Domain.Commands;
 
 namespace Rx.Tracker.Features.Medicine.Domain.Entities;
 
@@ -12,18 +10,16 @@ public class ScheduledMedication
     /// <summary>
     /// Initializes a new instance of the <see cref="ScheduledMedication"/> class.
     /// </summary>
-    /// <param name="frequency">The frequency.</param>
     /// <param name="mealRequirement">The meal requirements.</param>
     /// <param name="medication">The medication.</param>
     /// <param name="recurrence">The recurrence.</param>
     /// <param name="scheduledTime">The scheduled time.</param>
     public ScheduledMedication(
-        Frequency frequency,
         MealRequirements mealRequirement,
         Medication medication,
         Recurrence recurrence,
         DateTimeOffset scheduledTime)
-        : this(new Id(), frequency, mealRequirement, medication, recurrence, scheduledTime)
+        : this(new Id(), mealRequirement, medication, recurrence, scheduledTime)
     {
     }
 
@@ -31,15 +27,13 @@ public class ScheduledMedication
     /// Initializes a new instance of the <see cref="ScheduledMedication"/> class.
     /// </summary>
     /// <param name="id">The id.</param>
-    /// <param name="frequency">The frequency.</param>
     /// <param name="mealRequirement">The meal requirements.</param>
     /// <param name="medication">The medication.</param>
     /// <param name="recurrence">The recurrence.</param>
     /// <param name="scheduledTime">The scheduled time.</param>
-    public ScheduledMedication(Id id, Frequency frequency, MealRequirements mealRequirement, Medication medication, Recurrence recurrence, DateTimeOffset scheduledTime)
+    public ScheduledMedication(Id id, MealRequirements mealRequirement, Medication medication, Recurrence recurrence, DateTimeOffset scheduledTime)
     {
         Id = id;
-        Frequency = frequency;
         MealRequirement = mealRequirement;
         Medication = medication;
         Recurrence = recurrence;
@@ -50,11 +44,6 @@ public class ScheduledMedication
     /// Gets the id.
     /// </summary>
     public Id Id { get; }
-
-    /// <summary>
-    /// Gets the frequency.
-    /// </summary>
-    public Frequency Frequency { get; }
 
     /// <summary>
     /// Gets the meal requirement.
