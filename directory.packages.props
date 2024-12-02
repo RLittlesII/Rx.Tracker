@@ -82,7 +82,7 @@
     <PackageVersion Include="Rocket.Surgery.Airframe.Microsoft.Extensions.DependencyInjection" Version="$(AirframeVersion)" />
     <PackageVersion Include="Rocket.Surgery.Airframe.Shiny" Version="$(AirframeVersion)" />
     <PackageVersion Include="Rocket.Surgery.Reactive.Extensions" Version="11.4.2" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" Version="9.0.2-beta.1" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" Version="9.0.2-beta.2" />
     <PackageVersion Include="Rocket.Surgery.Task.Extensions" Version="11.4.2" />
     <PackageVersion Include="Rg.Plugins.Popup" Version="2.0.0.11" />
     <PackageVersion Include="Serilog.Exceptions" Version="5.7.0" />
