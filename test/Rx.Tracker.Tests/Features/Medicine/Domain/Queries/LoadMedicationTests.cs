@@ -1,4 +1,3 @@
-using Rocket.Surgery.Extensions.Testing.AutoFixtures;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using System.Threading.Tasks;
 
@@ -18,6 +17,3 @@ public class LoadMedicationTests
         // Then
     }
 }
-
-[AutoFixture(typeof(LoadMedication.QueryHandler))]
-internal partial class LoadMedicationQueryHandlerFixture;
