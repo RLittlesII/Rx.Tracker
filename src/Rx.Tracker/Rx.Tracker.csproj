@@ -10,5 +10,6 @@
         <PackageReference Include="ReactiveMarbles.Command" />
         <PackageReference Include="ReactiveMarbles.Mvvm" />
         <PackageReference Include="Refit" />
+        <PackageReference Include="Stateless" />
     </ItemGroup>
 </Project>

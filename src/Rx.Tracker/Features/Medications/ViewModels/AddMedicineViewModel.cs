@@ -33,13 +33,14 @@ public class AddMedicineViewModel : ViewModelBase
     public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory)
         : base(navigator, cqrs, loggerFactory)
     {
+        _stateMachine = new AddMedicineStateMachine().DisposeWith(Garbage);
         var whenChanged =
             this.WhenChanged(
                     static viewModel => viewModel.SelectedName,
                     static viewModel => viewModel.SelectedDosage,
                     static viewModel => viewModel.SelectedRecurrence,
                     static viewModel => viewModel.SelectedTime,
-                    (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
+                    static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
                .Publish()
                .RefCount();
 
@@ -60,7 +61,7 @@ public class AddMedicineViewModel : ViewModelBase
             await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
         }
 
-        static bool ArePropertiesValid((string? Name, Domain.Entities.Dosage? Dosage, Domain.Entities.Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
+        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,
@@ -147,4 +148,5 @@ public class AddMedicineViewModel : ViewModelBase
     private DateTimeOffset? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
     private ObservableCollection<Medication> _medicine = [];
+    private AddMedicineStateMachine _stateMachine;
 }
