@@ -9,13 +9,15 @@ using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.PropertyChanged;
 using Rx.Tracker.Extensions;
-using Rx.Tracker.Features.Medicine.Domain.Commands;
-using Rx.Tracker.Features.Medicine.Domain.Entities;
-using Rx.Tracker.Features.Medicine.Domain.Queries;
+using Rx.Tracker.Features.Medications.Domain.Commands;
+using Rx.Tracker.Features.Medications.Domain.Entities;
+using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
+using Medication = Rx.Tracker.Features.Medications.Domain.Entities.Medication;
+using ScheduledMedication = Rx.Tracker.Features.Medications.Domain.Entities.ScheduledMedication;
 
-namespace Rx.Tracker.Features.Medicine.ViewModels;
+namespace Rx.Tracker.Features.Medications.ViewModels;
 
 /// <summary>
 /// The view model for adding medicine to the chart.
@@ -55,10 +57,10 @@ public class AddMedicineViewModel : ViewModelBase
         async Task ExecuteAdd(ScheduledMedication? scheduledMedication)
         {
             ArgumentNullException.ThrowIfNull(scheduledMedication);
-            await cqrs.Execute(AddMedicineToSchedule.Create(scheduledMedication));
+            await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
         }
 
-        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
+        static bool ArePropertiesValid((string? Name, Domain.Entities.Dosage? Dosage, Domain.Entities.Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,
@@ -129,7 +131,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
-        var result = await cqrs.Query(LoadMedicine.Create());
+        var result = await cqrs.Query(LoadMedication.Create());
 
         Medicine = new ObservableCollection<Medication>(result.Medicines);
         Dosages = new ObservableCollection<Dosage>(

@@ -82,7 +82,7 @@
     <PackageVersion Include="Rocket.Surgery.Airframe.Microsoft.Extensions.DependencyInjection" Version="$(AirframeVersion)" />
     <PackageVersion Include="Rocket.Surgery.Airframe.Shiny" Version="$(AirframeVersion)" />
     <PackageVersion Include="Rocket.Surgery.Reactive.Extensions" Version="11.4.2" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" Version="8.0.18" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" Version="9.0.2-beta.1" />
     <PackageVersion Include="Rocket.Surgery.Task.Extensions" Version="11.4.2" />
     <PackageVersion Include="Rg.Plugins.Popup" Version="2.0.0.11" />
     <PackageVersion Include="Serilog.Exceptions" Version="5.7.0" />
@@ -115,9 +115,9 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
     <PackageVersion Include="NSubstitute" Version="5.1.0" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="8.0.3" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="9.0.2-beta.4" />
     <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="8.0.3" />
-    <PackageVersion Include="xunit" Version="2.6.5" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6" />
     <PackageVersion Include="XunitXml.TestLogger" Version="3.1.20" />
   </ItemGroup>

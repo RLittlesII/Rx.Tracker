@@ -1,7 +1,7 @@
 using LanguageExt;
 using NanoidDotNet;
 
-namespace Rx.Tracker.Core;
+namespace Rx.Tracker;
 
 /// <inheritdoc />
 public record Id : Identity<string>
@@ -23,5 +23,5 @@ public record Id : Identity<string>
     {
     }
 
-    private static string Generate() => Nanoid.Generate(size: 8);
+    private static string Generate(int size = 8) => Nanoid.Generate(size: size);
 }

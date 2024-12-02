@@ -8,4 +8,10 @@
       <ProjectReference Include="..\..\src\Rx.Tracker\Rx.Tracker.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Features\Medicine\Domain\Commands\AddMedicationToScheduleCommandHandlerFixture.cs">
+        <DependentUpon>AddMedicineToScheduleTests.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

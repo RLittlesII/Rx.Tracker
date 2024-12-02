@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Rx.Tracker.Mediation.Commands;
 using Rx.Tracker.Mediation.Notifications;
@@ -22,9 +21,3 @@ public sealed class Cqrs : ICqrs
     /// <inheritdoc cref="ISender"/>
     public Task<TResult> Query<TResult>(IQuery<TResult> query) => throw new System.NotImplementedException();
 }
-
-/// <summary>
-/// Interface representing a mediator implementation.
-/// </summary>
-[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Marker Interface")]
-public interface ICqrs : ICommander, ISender, IPublisher;

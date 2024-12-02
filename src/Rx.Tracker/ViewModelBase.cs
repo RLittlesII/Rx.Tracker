@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
-using Rx.Tracker.Core;
+using Rx.Tracker.Extensions;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 

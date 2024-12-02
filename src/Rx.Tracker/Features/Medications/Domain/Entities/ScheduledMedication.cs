@@ -1,6 +1,6 @@
 using System;
 
-namespace Rx.Tracker.Features.Medicine.Domain.Entities;
+namespace Rx.Tracker.Features.Medications.Domain.Entities;
 
 /// <summary>
 /// Represents a <see cref="Medication"/> schedule to be taken at a certain time.

@@ -1,4 +1,4 @@
-namespace Rx.Tracker.Features.Medicine.Domain.Entities;
+namespace Rx.Tracker.Features.Medications.Domain.Entities;
 
 public enum DosageWeight
 {

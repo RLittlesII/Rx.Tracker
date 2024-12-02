@@ -1,28 +1,28 @@
-using Rx.Tracker.Features.Medications.Domain.Entities;
-using Rx.Tracker.Mediation.Queries;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Rx.Tracker.Features.Medications.Domain.Entities;
+using Rx.Tracker.Mediation.Queries;
 
 namespace Rx.Tracker.Features.Medications.Domain.Queries;
 
 /// <summary>
-/// The load medicine query definition.
+/// The load medication query definition.
 /// </summary>
-public static class LoadMedicine
+public static class LoadMedication
 {
     /// <summary>
-    /// Load medicine query.
+    /// Load medication query.
     /// </summary>
     public record Query : IQuery<Result>;
 
     /// <summary>
-    /// Load medicine query.
+    /// Load medication query.
     /// </summary>
     public record Result(IReadOnlyCollection<Medication> Medicines);
 
     /// <summary>
-    /// The add medicine query handler.
+    /// The add medication query handler.
     /// </summary>
     public class QueryHandler : IQueryHandler<Query, Result>
     {

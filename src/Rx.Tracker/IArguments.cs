@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Rx.Tracker.Core;
+namespace Rx.Tracker;
 
 /// <summary>
 /// Represents basic non-typed arguments.

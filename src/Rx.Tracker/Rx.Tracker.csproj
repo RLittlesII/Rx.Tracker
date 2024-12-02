@@ -6,11 +6,9 @@
     <ItemGroup>
         <PackageReference Include="LanguageExt.Core" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Nanoid" />
         <PackageReference Include="ReactiveMarbles.Command" />
         <PackageReference Include="ReactiveMarbles.Mvvm" />
         <PackageReference Include="Refit" />
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 </Project>

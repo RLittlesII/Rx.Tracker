@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Rx.Tracker.Features.Medicine.Domain.Entities;
+using Rx.Tracker.Features.Medications.Domain.Entities;
 
-namespace Rx.Tracker.Features.Medicine.Domain;
+namespace Rx.Tracker.Features.Medications.Domain;
 
 /// <summary>
 /// Interface representing a client for <see cref="Medication"/>.

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rx.Tracker.Features.Medicine.Domain.Entities;
+namespace Rx.Tracker.Features.Medications.Domain.Entities;
 
 /// <summary>
 /// A medicine.
@@ -12,7 +12,7 @@ public class Medication
     /// Initializes a new instance of the <see cref="Medication"/> class.
     /// </summary>
     public Medication()
-        : this(new MedicineId(), [])
+        : this(new MedicationId(), [])
     {
     }
 
@@ -21,7 +21,7 @@ public class Medication
     /// </summary>
     /// <param name="id">The identifier.</param>
     /// <param name="dosages">The dosages.</param>
-    public Medication(MedicineId id, IEnumerable<Dosage> dosages)
+    public Medication(MedicationId id, IEnumerable<Dosage> dosages)
     {
         Id = id;
         Dosages = dosages.ToArray();
@@ -30,7 +30,7 @@ public class Medication
     /// <summary>
     /// Gets the medicine identifier.
     /// </summary>
-    public MedicineId Id { get; }
+    public MedicationId Id { get; }
 
     /// <summary>
     /// Gets the dosages available for the medication.

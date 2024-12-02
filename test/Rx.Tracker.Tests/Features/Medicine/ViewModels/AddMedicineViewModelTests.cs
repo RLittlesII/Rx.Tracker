@@ -1,9 +1,9 @@
 using FluentAssertions;
 using NSubstitute;
-using Rx.Tracker.Features.Medicine.Domain.Commands;
-using Rx.Tracker.Features.Medicine.Domain.Entities;
-using Rx.Tracker.Features.Medicine.Domain.Queries;
-using Rx.Tracker.Features.Medicine.ViewModels;
+using Rx.Tracker.Features.Medications.Domain.Commands;
+using Rx.Tracker.Features.Medications.Domain.Entities;
+using Rx.Tracker.Features.Medications.Domain.Queries;
+using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
@@ -36,7 +36,7 @@ public class AddMedicineViewModelTests
         using var _ = sut.InitializeCommand.Execute(Unit.Default).Subscribe();
 
         // Then
-        mediator.Received(1).Query(LoadMedicine.Create());
+        mediator.Received(1).Query(LoadMedication.Create());
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class AddMedicineViewModelTests
     {
         // Given
         var mediator = Substitute.For<ICqrs>();
-        mediator.Query(Arg.Any<LoadMedicine.Query>()).Returns(Task.FromResult(LoadMedicine.Create([new MedicationFixture()])));
+        mediator.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
@@ -59,7 +59,7 @@ public class AddMedicineViewModelTests
     {
         // Given
         var mediator = Substitute.For<ICqrs>();
-        mediator.Query(Arg.Any<LoadMedicine.Query>()).Returns(Task.FromResult(LoadMedicine.Create([new MedicationFixture()])));
+        mediator.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
@@ -84,7 +84,7 @@ public class AddMedicineViewModelTests
         sut.SelectedTime = DateTimeOffset.UtcNow;
 
         // Then
-        mediator.Received(1).Execute(Arg.Any<AddMedicineToSchedule.Command>());
+        mediator.Received(1).Execute(Arg.Any<AddMedicationToSchedule.Command>());
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class AddMedicineViewModelTests
     {
         var result = false;
         var mediator = Substitute.For<ICqrs>();
-        mediator.Execute(Arg.Any<AddMedicineToSchedule.Command>()).Returns(Task.CompletedTask);
+        mediator.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
@@ -114,7 +114,7 @@ public class AddMedicineViewModelTests
         // Given
         var result = false;
         var mediator = Substitute.For<ICqrs>();
-        mediator.Execute(Arg.Any<AddMedicineToSchedule.Command>()).Returns(Task.CompletedTask);
+        mediator.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When

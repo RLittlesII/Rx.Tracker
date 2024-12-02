@@ -4,7 +4,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Microsoft.Extensions.Logging;
 
-namespace Rx.Tracker.Core;
+namespace Rx.Tracker.Extensions;
 
 /// <summary>
 /// Logging extensions for observable notifications.
@@ -205,17 +205,24 @@ public static class ReactiveLoggingExtensions
     /// You can append this function liberally to your Rx pipelines while you are developing them to see what's happening:
     /// This observable will only light up if the debugger is attached. It will not add anything to Test or Production logs.
     /// </summary>
+    /// <param name="source">Source sequence.</param>
+    /// <param name="logger">The target <see cref="ILogger" />.</param>
+    /// <typeparam name="TSource">The type of the elements in the source sequence.</typeparam>
     /// <remarks>https://stackoverflow.com/a/20220756/124069.</remarks>
     /// <returns>The source sequence.</returns>
-    public static IObservable<T> Spy<T>(this IObservable<T> source, ILogger loggerContext) => Spy(source, loggerContext, "N/A");
+    public static IObservable<TSource> Spy<TSource>(this IObservable<TSource> source, ILogger logger) => Spy(source, logger, "N/A");
 
     /// <summary>
     /// You can append this function liberally to your Rx pipelines while you are developing them to see what's happening:
     /// This observable will only light up if the debugger is attached. It will not add anything to Test or Production logs.
     /// </summary>
+    /// <param name="source">Source sequence.</param>
+    /// <param name="logger">The target <see cref="ILogger" />.</param>
+    /// <param name="message">The message.</param>
+    /// <typeparam name="TSource">The type of the elements in the source sequence.</typeparam>
     /// <remarks>https://stackoverflow.com/a/20220756/124069.</remarks>
     /// <returns>The source sequence.</returns>
-    public static IObservable<T> Spy<T>(this IObservable<T> source, ILogger loggerContext, string message)
+    public static IObservable<TSource> Spy<TSource>(this IObservable<TSource> source, ILogger logger, string message)
     {
         if (!Debugger.IsAttached)
         {
@@ -224,7 +231,7 @@ public static class ReactiveLoggingExtensions
 
         var correlationId = Guid.NewGuid();
 
-        loggerContext.LogTrace(
+        logger.LogTrace(
             "[SPY:Init] {@SpyDetails}",
             new
             {
@@ -233,12 +240,12 @@ public static class ReactiveLoggingExtensions
                 CorrelationId = correlationId,
             });
 
-        return Observable.Create<T>(
+        return Observable.Create<TSource>(
             obs =>
             {
                 var onNextInvocationCount = 0;
 
-                loggerContext.LogTrace(
+                logger.LogTrace(
                     "[SPY:Subscribe] {@SpyDetails}",
                     new
                     {
@@ -251,7 +258,7 @@ public static class ReactiveLoggingExtensions
                 {
                     var subscription = source
                        .Do(
-                            _ => loggerContext.LogTrace(
+                            _ => logger.LogTrace(
                                 "[SPY:OnNext] {@SpyDetails}",
                                 new
                                 {
@@ -260,7 +267,7 @@ public static class ReactiveLoggingExtensions
                                     Message = message,
                                     CorrelationId = correlationId,
                                 }),
-                            ex => loggerContext.LogTrace(
+                            ex => logger.LogTrace(
                                 ex,
                                 "[SPY:OnError] {@SpyDetails}",
                                 new
@@ -269,7 +276,7 @@ public static class ReactiveLoggingExtensions
                                     Message = message,
                                     CorrelationId = correlationId,
                                 }),
-                            () => loggerContext.LogTrace(
+                            () => logger.LogTrace(
                                 "[SPY:OnCompleted] {@SpyDetails}",
                                 new
                                 {
@@ -282,7 +289,7 @@ public static class ReactiveLoggingExtensions
                     return new CompositeDisposable(
                         subscription,
                         Disposable.Create(
-                            () => loggerContext.LogTrace(
+                            () => logger.LogTrace(
                                 "[SPY:Disposed] {@SpyDetails}",
                                 new
                                 {
@@ -293,7 +300,7 @@ public static class ReactiveLoggingExtensions
                 }
                 catch (Exception ex)
                 {
-                    loggerContext.LogError(
+                    logger.LogError(
                         ex,
                         "[SPY:Failed] {@SpyDetails}",
                         new

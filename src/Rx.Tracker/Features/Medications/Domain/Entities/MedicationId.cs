@@ -1,23 +1,23 @@
-namespace Rx.Tracker.Features.Medicine.Domain.Entities;
+namespace Rx.Tracker.Features.Medications.Domain.Entities;
 
 /// <inheritdoc />
-public record MedicineId : Id
+public record MedicationId : Id
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MedicineId"/> class.
+    /// Initializes a new instance of the <see cref="MedicationId"/> class.
     /// </summary>
-    public MedicineId()
+    public MedicationId()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MedicineId"/> class.
+    /// Initializes a new instance of the <see cref="MedicationId"/> class.
     /// </summary>
     /// <param name="value">The value.</param>
-    public MedicineId(string value)
+    public MedicationId(string value)
         : base(value)
     {
     }
 
-    public static implicit operator MedicineId(string value) => new(value);
+    public static implicit operator MedicationId(string value) => new(value);
 }

@@ -1,4 +1,4 @@
-namespace Rx.Tracker.Features.Medicine.Data.Dto;
+namespace Rx.Tracker.Features.Medications.Data.Dto;
 
 /// <summary>
 /// Represents a medicine data transport object.

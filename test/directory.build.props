@@ -15,7 +15,7 @@
         <PackageReference Include="NSubstitute" />
         <PackageReference Include="ReactiveMarbles.Mvvm"/>
         <PackageReference Include="ReactiveUI.Testing"/>
-<!--        <PackageReference Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" />-->
+        <PackageReference Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" />
         <PackageReference Include="Rocket.Surgery.Extensions.Testing.Fixtures" />
         <PackageReference Include="Rocket.Surgery.Extensions.Testing.NSubstitute"/>
         <PackageReference Include="xunit"/>
