@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
+using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
@@ -14,8 +16,6 @@ using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
-using Medication = Rx.Tracker.Features.Medications.Domain.Entities.Medication;
-using ScheduledMedication = Rx.Tracker.Features.Medications.Domain.Entities.ScheduledMedication;
 
 namespace Rx.Tracker.Features.Medications.ViewModels;
 
@@ -34,6 +34,7 @@ public class AddMedicineViewModel : ViewModelBase
         : base(navigator, cqrs, loggerFactory)
     {
         _stateMachine = new AddMedicineStateMachine().DisposeWith(Garbage);
+
         var whenChanged =
             this.WhenChanged(
                     static viewModel => viewModel.SelectedName,
@@ -44,16 +45,17 @@ public class AddMedicineViewModel : ViewModelBase
                .Publish()
                .RefCount();
 
-        AddCommand = RxCommand.Create<ScheduledMedication?>(
-            ExecuteAdd,
-            whenChanged.Select(ArePropertiesValid));
-
         whenChanged
            .Where(ArePropertiesValid)
            .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
+           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Validated).ContinueWith(_ => medication))
            .InvokeCommand(this, static viewModel => viewModel.AddCommand);
+
+        AddCommand = RxCommand.Create<ScheduledMedication?>(
+            ExecuteAdd,
+            whenChanged.Select(ArePropertiesValid));
 
         async Task ExecuteAdd(ScheduledMedication? scheduledMedication)
         {
@@ -61,6 +63,7 @@ public class AddMedicineViewModel : ViewModelBase
             await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
         }
 
+        // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
         static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
         {
             Name: not null,
@@ -68,6 +71,14 @@ public class AddMedicineViewModel : ViewModelBase
             Recurrence: not null,
             Time: not null
         };
+
+        _currentState =
+            _stateMachine
+               .StateChanged
+               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineStateMachine.AddMedicineState.Initial)
+               .DisposeWith(Garbage);
+
+        ConfigureMachine();
     }
 
     /// <summary>
@@ -129,9 +140,16 @@ public class AddMedicineViewModel : ViewModelBase
         set => RaiseAndSetIfChanged(ref _dosages, value);
     }
 
+    /// <summary>
+    /// Gets the current state of the machine.
+    /// </summary>
+    public AddMedicineStateMachine.AddMedicineState CurrentState => _currentState.Value;
+
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
+        await _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Load);
+
         var result = await cqrs.Query(LoadMedication.Create());
 
         Medicine = new ObservableCollection<Medication>(result.Medicines);
@@ -140,7 +158,31 @@ public class AddMedicineViewModel : ViewModelBase
                .SelectMany(medication => medication.Dosages)
                .GroupBy(dosage => dosage.Weight, dosage => dosage)
                .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight))));
+        await _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Load);
     }
+
+    private void ConfigureMachine()
+    {
+        _stateMachine
+           .Configure(AddMedicineStateMachine.AddMedicineState.Initial)
+           .Permit(AddMedicineStateMachine.AddMedicineTrigger.Load, AddMedicineStateMachine.AddMedicineState.Busy)
+           .OnEntryAsync(transition => Initialize(Mediator));
+
+        _stateMachine
+           .Configure(AddMedicineStateMachine.AddMedicineState.Busy)
+           .Permit(AddMedicineStateMachine.AddMedicineTrigger.Load, AddMedicineStateMachine.AddMedicineState.Loaded)
+           .OnEntryAsync(transition => Task.CompletedTask);
+
+        _stateMachine
+           .Configure(AddMedicineStateMachine.AddMedicineState.Loaded)
+           .OnEntryAsync(transition => Task.CompletedTask);
+    }
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
+    private readonly AddMedicineStateMachine _stateMachine;
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
+    private readonly ValueBinder<AddMedicineStateMachine.AddMedicineState> _currentState;
 
     private string? _selectedName;
     private Dosage? _selectedDosage;
@@ -148,5 +190,4 @@ public class AddMedicineViewModel : ViewModelBase
     private DateTimeOffset? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
     private ObservableCollection<Medication> _medicine = [];
-    private AddMedicineStateMachine _stateMachine;
 }

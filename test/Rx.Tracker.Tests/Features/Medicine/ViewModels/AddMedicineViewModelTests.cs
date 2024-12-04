@@ -8,6 +8,7 @@ using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
@@ -15,32 +16,20 @@ namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 public class AddMedicineViewModelTests
 {
     [Fact]
-    public void Given_When_Then()
+    public void Given_WhenConstructed_ThenShouldBeInInitial()
     {
         // Given
         AddMedicineViewModel sut = new AddMedicineViewModelFixture();
 
-        // When
-
-        // Then
+        // When, Then
+        sut
+           .CurrentState
+           .Should()
+           .Be(AddMedicineStateMachine.AddMedicineState.Initial);
     }
 
     [Fact]
-    public void Given_WhenInitialize_ThenShouldLoadMedicine()
-    {
-        // Given
-        var mediator = Substitute.For<ICqrs>();
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
-
-        // When
-        using var _ = sut.InitializeCommand.Execute(Unit.Default).Subscribe();
-
-        // Then
-        mediator.Received(1).Query(LoadMedication.Create());
-    }
-
-    [Fact]
-    public void Given_WhenInitialize_ThenShouldHaveMedicine()
+    public async Task Given_WhenInitialize_ThenShouldHaveMedicine()
     {
         // Given
         var mediator = Substitute.For<ICqrs>();
@@ -48,14 +37,14 @@ public class AddMedicineViewModelTests
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
-        using var _ = sut.InitializeCommand.Execute(Unit.Default).Subscribe();
+        await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
         sut.Medicine.Should().NotBeEmpty();
     }
 
     [Fact]
-    public void Given_WhenInitialize_ThenShouldHaveDosages()
+    public async Task Given_WhenInitialize_ThenShouldHaveDosages()
     {
         // Given
         var mediator = Substitute.For<ICqrs>();
@@ -63,28 +52,26 @@ public class AddMedicineViewModelTests
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
-        using var _ = sut.InitializeCommand.Execute(Unit.Default).Subscribe();
+        await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
         sut.Dosages.Should().NotBeEmpty();
     }
 
     [Fact]
-    public void Given_WhenAddMedicine_ThenShouldAddMedicineToSchedule()
+    public async Task Given_WhenInitialize_ThenShouldBeInLoaded()
     {
         // Given
-        var selected = new Medication();
-        var mediator = Substitute.For<ICqrs>();
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture();
 
         // When
-        sut.SelectedDosage = new Dosage();
-        sut.SelectedName = "Ibuprofen";
-        sut.SelectedRecurrence = Recurrence.TwiceDaily;
-        sut.SelectedTime = DateTimeOffset.UtcNow;
+        await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        mediator.Received(1).Execute(Arg.Any<AddMedicationToSchedule.Command>());
+        sut
+           .CurrentState
+           .Should()
+           .Be(AddMedicineStateMachine.AddMedicineState.Loaded);
     }
 
     [Fact]
@@ -106,6 +93,23 @@ public class AddMedicineViewModelTests
 
         // Then
         result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void GivenSelected_WhenAddMedicine_ThenCurrentStateValid()
+    {
+        var mediator = Substitute.For<ICqrs>();
+        mediator.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+
+        // When
+        sut.SelectedDosage = new Dosage();
+        sut.SelectedName = "Ibuprofen";
+        sut.SelectedRecurrence = Recurrence.TwiceDaily;
+        sut.SelectedTime = DateTimeOffset.UtcNow;
+
+        // Then
+        sut.CurrentState.Should().Be(AddMedicineStateMachine.AddMedicineState.Valid);
     }
 
     [Fact]

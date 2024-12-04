@@ -13,12 +13,15 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineStateMa
     {
         Initial,
         Busy,
+        Loaded,
+        Failed,
         Valid
     }
 
     public enum AddMedicineTrigger
     {
         Load,
-        Save
+        Save,
+        Validated
     }
 }
