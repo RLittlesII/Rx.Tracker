@@ -1,11 +1,16 @@
+using Microsoft.Extensions.Logging;
 using Rx.Tracker.State;
 
 namespace Rx.Tracker.Features.Medications.ViewModels;
 
 public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineStateMachine.AddMedicineState, AddMedicineStateMachine.AddMedicineTrigger>
 {
-    public AddMedicineStateMachine()
-        : base(AddMedicineState.Initial)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddMedicineStateMachine"/> class.
+    /// </summary>
+    /// <param name="loggerFactory">The logger factory.</param>
+    public AddMedicineStateMachine(ILoggerFactory loggerFactory)
+        : base(loggerFactory, AddMedicineState.Initial)
     {
     }
 

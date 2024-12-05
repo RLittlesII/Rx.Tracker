@@ -16,6 +16,7 @@ using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
+using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Features.Medications.ViewModels;
 
@@ -30,11 +31,12 @@ public class AddMedicineViewModel : ViewModelBase
     /// <param name="navigator">The navigator.</param>
     /// <param name="cqrs">The cqrs mediator.</param>
     /// <param name="loggerFactory">The logger factory.</param>
-    public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory)
+    /// <param name="stateMachineFactory">The state machine factory.</param>
+    public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<AddMedicineStateMachine> stateMachineFactory)
         : base(navigator, cqrs, loggerFactory)
     {
-        _stateMachine = new AddMedicineStateMachine { RetainSynchronizationContext = true }.DisposeWith(Garbage);
-
+        // _stateMachine = new AddMedicineStateMachine { RetainSynchronizationContext = true }.DisposeWith(Garbage);
+        _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
         var whenChanged =
             this.WhenChanged(
                     static viewModel => viewModel.SelectedName,
@@ -50,7 +52,7 @@ public class AddMedicineViewModel : ViewModelBase
            .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
-           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Validated).ContinueWith(_ => medication))
+           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
            .Subscribe();
 
         AddCommand = RxCommand.Create<ScheduledMedication?>(
@@ -74,8 +76,8 @@ public class AddMedicineViewModel : ViewModelBase
 
         _currentState =
             _stateMachine
-               .StateChanged
-               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineStateMachine.AddMedicineState.Initial)
+               .Current
+               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
                .DisposeWith(Garbage);
 
         ConfigureMachine();
@@ -143,12 +145,12 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets the current state of the machine.
     /// </summary>
-    public AddMedicineStateMachine.AddMedicineState CurrentState => _currentState.Value;
+    public AddMedicineState CurrentState => _currentState.Value;
 
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
-        await _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Load);
+        await _stateMachine.FireAsync(AddMedicineTrigger.Load);
 
         var result = await cqrs.Query(LoadMedication.Create());
 
@@ -159,28 +161,28 @@ public class AddMedicineViewModel : ViewModelBase
                .SelectMany(medication => medication.Dosages)
                .GroupBy(dosage => dosage.Weight, dosage => dosage)
                .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight))));
-        await _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Load);
+        await _stateMachine.FireAsync(AddMedicineTrigger.Load);
     }
 
     private void ConfigureMachine()
     {
         _stateMachine
-           .Configure(AddMedicineStateMachine.AddMedicineState.Initial)
-           .Permit(AddMedicineStateMachine.AddMedicineTrigger.Load, AddMedicineStateMachine.AddMedicineState.Busy)
+           .Configure(AddMedicineState.Initial)
+           .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
            .OnEntryAsync(transition => Initialize(Mediator));
 
         _stateMachine
-           .Configure(AddMedicineStateMachine.AddMedicineState.Busy)
-           .Permit(AddMedicineStateMachine.AddMedicineTrigger.Load, AddMedicineStateMachine.AddMedicineState.Loaded)
+           .Configure(AddMedicineState.Busy)
+           .Permit(AddMedicineTrigger.Load, AddMedicineState.Loaded)
            .OnEntryAsync(transition => Task.CompletedTask);
 
         _stateMachine
-           .Configure(AddMedicineStateMachine.AddMedicineState.Loaded)
-           .Permit(AddMedicineStateMachine.AddMedicineTrigger.Validated, AddMedicineStateMachine.AddMedicineState.Valid)
+           .Configure(AddMedicineState.Loaded)
+           .Permit(AddMedicineTrigger.Validated, AddMedicineState.Valid)
            .OnEntryAsync(transition => Task.CompletedTask);
 
         _stateMachine
-           .Configure(AddMedicineStateMachine.AddMedicineState.Valid)
+           .Configure(AddMedicineState.Valid)
            .OnEntryAsync(transition => Task.CompletedTask);
     }
 
@@ -188,7 +190,7 @@ public class AddMedicineViewModel : ViewModelBase
     private readonly AddMedicineStateMachine _stateMachine;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
-    private readonly ValueBinder<AddMedicineStateMachine.AddMedicineState> _currentState;
+    private readonly ValueBinder<AddMedicineState> _currentState;
 
     private string? _selectedName;
     private Dosage? _selectedDosage;

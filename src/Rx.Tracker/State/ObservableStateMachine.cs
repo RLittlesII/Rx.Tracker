@@ -3,7 +3,9 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Extensions;
+using Rx.Tracker.Extensions;
 using Stateless;
 
 namespace Rx.Tracker.State;
@@ -13,10 +15,12 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableStateMachine{TState, TTrigger}"/> class.
     /// </summary>
+    /// <param name="loggerFactory">The logger factory.</param>
     /// <param name="initialState">The initial state of the machine.</param>
-    protected ObservableStateMachine(TState initialState)
+    protected ObservableStateMachine(ILoggerFactory loggerFactory, TState initialState)
         : base(initialState)
     {
+        Logger = loggerFactory.CreateLogger(GetType());
         var stateChange = new Subject<TState>().DisposeWith(Garbage);
         var unhandledExceptions = new Subject<string>().DisposeWith(Garbage);
 
@@ -31,23 +35,29 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
                 return Task.CompletedTask;
             });
 
-        StateChanged =
+        Current =
             stateChange
                .AsObservable()
+               .LogTrace(Logger, x => x, "Current State: {State}")
                .Publish()
-               .RefCount()
-               .Do(_ => { });
+               .RefCount();
 
         UnhandledTriggers =
             unhandledExceptions
                .AsObservable()
+               .LogTrace(Logger, x => x, "Unhandled Trigger: {Trigger}")
                .Publish()
-               .RefCount()
-               .Do(_ => { });
+               .RefCount();
     }
 
-    public IObservable<TState> StateChanged { get; }
+    /// <summary>
+    /// Gets a value indicating the change in state.
+    /// </summary>
+    public IObservable<TState> Current { get; }
 
+    /// <summary>
+    /// Gets a message from unhandled triggers.
+    /// </summary>
     public IObservable<string> UnhandledTriggers { get; }
 
     /// <inheritdoc/>
@@ -56,6 +66,11 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
+    protected ILogger Logger { get; }
 
     /// <summary>
     /// Gets the garbage.
@@ -78,5 +93,5 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
 
     protected void CommonExit(Transition transition) => TraceTransition(transition);
 
-    protected void TraceTransition(Transition transition) => Console.WriteLine($"{transition}");
+    protected void TraceTransition(Transition transition) => Logger.LogTrace("{Transition}", transition);
 }
