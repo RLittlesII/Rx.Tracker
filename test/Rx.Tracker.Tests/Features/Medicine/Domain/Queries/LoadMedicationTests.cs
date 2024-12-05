@@ -10,7 +10,7 @@ namespace Rx.Tracker.Tests.Features.Medicine.Domain.Queries;
 public class LoadMedicationTests
 {
     [Fact]
-    public async Task Given_WhenHandle_Then()
+    public async Task GivenQuery_WhenHandle_ThenResultCorrectType()
     {
         // Given
         LoadMedication.QueryHandler sut = new LoadMedicationQueryHandlerFixture();

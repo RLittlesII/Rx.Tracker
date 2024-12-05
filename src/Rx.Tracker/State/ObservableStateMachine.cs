@@ -57,8 +57,15 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Gets the garbage.
+    /// </summary>
     protected CompositeDisposable Garbage { get; } = new CompositeDisposable();
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    /// <param name="disposing">A value indicating whether the object is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
