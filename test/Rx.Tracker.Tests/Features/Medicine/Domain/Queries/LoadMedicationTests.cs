@@ -1,6 +1,7 @@
 using FluentAssertions;
 using NSubstitute;
 using Rx.Tracker.Features.Medications.Domain;
+using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System.Threading.Tasks;
@@ -25,31 +26,25 @@ public class LoadMedicationTests
     }
 
     [Fact]
-    public async Task Given_WhenHandle_ThenShouldCallGet()
-    {
-        // Given
-        var client = Substitute.For<IMedicineApiClient>();
-        LoadMedication.QueryHandler sut = new LoadMedicationQueryHandlerFixture().WithClient(client);
-
-        // When
-        await sut.Handle(LoadMedication.Create());
-
-        // Then
-        await client.Received(1).Get();
-    }
-
-    [Fact]
     public async Task Given_WhenHandle_ThenResultsNotEmpty()
     {
         // Given
         var client = Substitute.For<IMedicineApiClient>();
-        client.Get().Returns([new MedicationFixture()]);
+        Medication medication = new MedicationFixture();
+        client.Get().Returns([medication]);
         LoadMedication.QueryHandler sut = new LoadMedicationQueryHandlerFixture().WithClient(client);
 
         // When
         var result = await sut.Handle(LoadMedication.Create());
 
         // Then
-        result.Medicines.Should().NotBeNullOrEmpty();
+        result // NOTE: [rlittlesii: December 04, 2024] Dramatization.
+           .Medicines
+           .Should()
+           .NotBeNullOrEmpty()
+           .And
+           .Subject
+           .Should()
+           .Contain(medication);
     }
 }

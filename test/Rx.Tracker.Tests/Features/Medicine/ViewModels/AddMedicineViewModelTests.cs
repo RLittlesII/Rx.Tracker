@@ -77,7 +77,7 @@ public class AddMedicineViewModelTests
     }
 
     [Fact]
-    public void GivenSelected_WhenAddMedicine_ThenShouldAddMedicineCanExecute()
+    public void GivenValid_WhenCanCommandExecute_ThenCanExecute()
     {
         var result = false;
         var mediator = Substitute.For<ICqrs>();
@@ -98,7 +98,7 @@ public class AddMedicineViewModelTests
     }
 
     [Fact]
-    public void GivenSelectedNull_WhenAddMedicine_ThenShouldAddMedicineCanNotExecute()
+    public void GivenNotValid_WhenCanCommandExecute_ThenCanNotExecute()
     {
         // Given
         var result = false;
@@ -107,9 +107,10 @@ public class AddMedicineViewModelTests
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
-        using var _ = sut.AddCommand.CanCommandExecute.Subscribe(canExecute => result = canExecute);
-
-        // Then
-        result.Should().BeFalse();
+        using (sut.AddCommand.CanCommandExecute.Subscribe(canExecute => result = canExecute))
+        {
+            // Then
+            result.Should().BeFalse();
+        }
     }
 }
