@@ -33,7 +33,7 @@ public class AddMedicineViewModel : ViewModelBase
     public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory)
         : base(navigator, cqrs, loggerFactory)
     {
-        _stateMachine = new AddMedicineStateMachine().DisposeWith(Garbage);
+        _stateMachine = new AddMedicineStateMachine { RetainSynchronizationContext = true }.DisposeWith(Garbage);
 
         var whenChanged =
             this.WhenChanged(
@@ -51,7 +51,7 @@ public class AddMedicineViewModel : ViewModelBase
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineStateMachine.AddMedicineTrigger.Validated).ContinueWith(_ => medication))
-           .InvokeCommand(this, static viewModel => viewModel.AddCommand);
+           .Subscribe();
 
         AddCommand = RxCommand.Create<ScheduledMedication?>(
             ExecuteAdd,
@@ -153,6 +153,7 @@ public class AddMedicineViewModel : ViewModelBase
         var result = await cqrs.Query(LoadMedication.Create());
 
         Medicine = new ObservableCollection<Medication>(result.Medicines);
+
         Dosages = new ObservableCollection<Dosage>(
             result.Medicines
                .SelectMany(medication => medication.Dosages)
@@ -175,6 +176,11 @@ public class AddMedicineViewModel : ViewModelBase
 
         _stateMachine
            .Configure(AddMedicineStateMachine.AddMedicineState.Loaded)
+           .Permit(AddMedicineStateMachine.AddMedicineTrigger.Validated, AddMedicineStateMachine.AddMedicineState.Valid)
+           .OnEntryAsync(transition => Task.CompletedTask);
+
+        _stateMachine
+           .Configure(AddMedicineStateMachine.AddMedicineState.Valid)
            .OnEntryAsync(transition => Task.CompletedTask);
     }
 

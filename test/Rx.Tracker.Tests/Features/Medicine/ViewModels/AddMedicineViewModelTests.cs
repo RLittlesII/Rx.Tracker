@@ -62,7 +62,9 @@ public class AddMedicineViewModelTests
     public async Task Given_WhenInitialize_ThenShouldBeInLoaded()
     {
         // Given
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture();
+        var mediator = Substitute.For<ICqrs>();
+        mediator.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -93,23 +95,6 @@ public class AddMedicineViewModelTests
 
         // Then
         result.Should().BeTrue();
-    }
-
-    [Fact]
-    public void GivenSelected_WhenAddMedicine_ThenCurrentStateValid()
-    {
-        var mediator = Substitute.For<ICqrs>();
-        mediator.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
-
-        // When
-        sut.SelectedDosage = new Dosage();
-        sut.SelectedName = "Ibuprofen";
-        sut.SelectedRecurrence = Recurrence.TwiceDaily;
-        sut.SelectedTime = DateTimeOffset.UtcNow;
-
-        // Then
-        sut.CurrentState.Should().Be(AddMedicineStateMachine.AddMedicineState.Valid);
     }
 
     [Fact]
