@@ -190,7 +190,7 @@ public class AddMedicineViewModel : ViewModelBase
     private readonly AddMedicineStateMachine _stateMachine;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
-    private readonly ValueBinder<AddMedicineState> _currentState;
+    private readonly IValueBinder<AddMedicineState> _currentState;
 
     private string? _selectedName;
     private Dosage? _selectedDosage;

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
@@ -31,7 +32,7 @@ public static class AddMedicationToSchedule
 
             // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
-            await _reminders.Create(new MedicationReminder());
+            await _reminders.Create(new MedicationReminder(new Id(), new Medication(), DateTimeOffset.UnixEpoch, null, MealRequirements.None));
 
         private readonly IReminders _reminders;
     }

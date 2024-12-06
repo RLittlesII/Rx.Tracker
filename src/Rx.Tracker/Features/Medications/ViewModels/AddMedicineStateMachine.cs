@@ -18,6 +18,9 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
     {
     }
 
+    /// <summary>
+    /// The available state.
+    /// </summary>
     public enum AddMedicineState
     {
         /// <summary>
@@ -46,6 +49,9 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         Valid
     }
 
+    /// <summary>
+    /// The available triggers.
+    /// </summary>
     public enum AddMedicineTrigger
     {
         /// <summary>
