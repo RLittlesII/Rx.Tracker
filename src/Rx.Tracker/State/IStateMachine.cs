@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Rx.Tracker.State;
@@ -5,8 +6,9 @@ namespace Rx.Tracker.State;
 /// <summary>
 /// Represents a state machine.
 /// </summary>
-/// <typeparam name="TState"></typeparam>
-/// <typeparam name="TTrigger"></typeparam>
+/// <typeparam name="TState">The state type.</typeparam>
+/// <typeparam name="TTrigger">The trigger type.</typeparam>
+// NOTE: [rlittlesii: December 05, 2024] This is the abstraction that I don't need.  I have knowingly taken a dependency on Stateless.
 public interface IStateMachine<TState, TTrigger>
 {
     /// <summary>
@@ -40,10 +42,10 @@ public interface IStateMachine<TState, TTrigger>
     /// </summary>
     /// <param name="trigger">The trigger.</param>
     /// <returns>An observable pipeline of whether the state machine can fire.</returns>
-    // IObservable<bool> CanFire(TTrigger trigger);
+    IObservable<bool> CanFire(TTrigger trigger);
 
     /// <summary>
     /// Gets an observable of the <see cref="TState"/> changes.
     /// </summary>
-    // IObservable<TState> StateChanged { get; }
+    IObservable<TState> StateChanged { get; }
 }

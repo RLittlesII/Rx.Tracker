@@ -20,17 +20,47 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
 
     public enum AddMedicineState
     {
+        /// <summary>
+        /// The initial state.
+        /// </summary>
         Initial,
+
+        /// <summary>
+        /// The busy state.
+        /// </summary>
         Busy,
+
+        /// <summary>
+        /// The data loaded state.
+        /// </summary>
         Loaded,
+
+        /// <summary>
+        /// The application failed state.
+        /// </summary>
         Failed,
+
+        /// <summary>
+        /// The input is valid state.
+        /// </summary>
         Valid
     }
 
     public enum AddMedicineTrigger
     {
+        /// <summary>
+        /// Load trigger.
+        /// </summary>
         Load,
+
+        /// <summary>
+        /// Save trigger.
+        /// </summary>
         Save,
+
+        /// <summary>
+        /// Validated trigger.
+        /// </summary>
         Validated
     }
 }

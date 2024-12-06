@@ -10,6 +10,11 @@ using Stateless;
 
 namespace Rx.Tracker.State;
 
+/// <summary>
+/// Represents a <see cref="StateMachine{TState,TTrigger}"/> with additional <see cref="IObservable{T}"/> properties.
+/// </summary>
+/// <typeparam name="TState">The state.</typeparam>
+/// <typeparam name="TTrigger">The trigger.</typeparam>
 public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TState, TTrigger>, IDisposable
 {
     /// <summary>
@@ -88,10 +93,4 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
             Garbage.Dispose();
         }
     }
-
-    protected void CommonEntry(Transition transition) => TraceTransition(transition);
-
-    protected void CommonExit(Transition transition) => TraceTransition(transition);
-
-    protected void TraceTransition(Transition transition) => Logger.LogTrace("{Transition}", transition);
 }

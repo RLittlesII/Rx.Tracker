@@ -10,12 +10,28 @@ using System.Linq.Expressions;
     OnPullRequestBranches = ["main"],
     InvokedTargets = [nameof(GitHubPullRequest)]
 )]
+[GitHubActions(
+    "integration",
+    GitHubActionsImage.UbuntuLatest,
+    AutoGenerate = true,
+    OnPushBranches = ["main"],
+    InvokedTargets = [nameof(GitHubIntegration)]
+)]
 partial class Tracker
 {
     /// <summary>
     /// Gets github action Pipelines target.
     /// </summary>
     Target GitHubPullRequest => _ => _
+       .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
+       .DependsOn(Clean)
+       .DependsOn(Restore)
+       .DependsOn(Build);
+
+    /// <summary>
+    /// Gets github action Pipelines target.
+    /// </summary>
+    Target GitHubIntegration => _ => _
        .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
        .DependsOn(Clean)
        .DependsOn(Restore)
