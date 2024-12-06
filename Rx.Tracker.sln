@@ -26,9 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution", ".solution", "{
 		.gitignore = .gitignore
 		analyzers.ruleset = analyzers.ruleset
 		GitVersion.yml = GitVersion.yml
-		renovate.json = renovate.json
 		stylecop.json = stylecop.json
 		README.md = README.md
+		.github\renovate.json = .github\renovate.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{DDE65CEE-D2BD-45C4-B85F-3438E29D56AF}"
