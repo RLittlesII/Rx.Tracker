@@ -1,7 +1,6 @@
 using Nuke.Common;
 using Nuke.Common.Tools.DotNet;
 
-
 partial class Tracker : NukeBuild
 {
     /// Support plugins are available for:
@@ -24,31 +23,22 @@ partial class Tracker : NukeBuild
 
     Target Restore => definition => definition
        .DependsOn(Clean)
-       .Executes(() =>
-        {
-            DotNetTasks.DotNetRestore(configurator => configurator.EnableForce().EnableNoCache());
-        });
+       .Executes(() => DotNetTasks.DotNetRestore(configurator => configurator.EnableForce().EnableNoCache()));
 
     Target Compile => definition => definition
        .DependsOn(Restore)
-       .Executes(() =>
-        {
-            DotNetTasks.DotNetBuild();
-        });
+       .Executes(() => DotNetTasks.DotNetBuild());
 
     Target Test => definition => definition
        .DependsOn(Compile)
-       .Executes(() =>
-        {
-            DotNetTasks.DotNetTest();
-        });
+       .Executes(() => DotNetTasks.DotNetTest());
 
     Target Build => definition => definition
        .DependsOn(Test)
-       .Executes(() => { });
+       .Executes();
 
     Target Release => definition => definition
        .OnlyWhenStatic(() => Configuration == Configuration.Release)
        .DependsOn(Build)
-       .Executes(() => { });
+       .Executes();
 }

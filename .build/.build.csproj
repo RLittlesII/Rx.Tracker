@@ -12,11 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nuke.Common" Version="8.1.4" />
+    <PackageReference Include="Nuke.Common" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Update="iPhone.cs">
+      <DependentUpon>Build.cs</DependentUpon>
+    </Compile>
+    <Compile Update="GitHubActions.cs">
       <DependentUpon>Build.cs</DependentUpon>
     </Compile>
   </ItemGroup>
