@@ -35,7 +35,6 @@ public class AddMedicineViewModel : ViewModelBase
     public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<AddMedicineStateMachine> stateMachineFactory)
         : base(navigator, cqrs, loggerFactory)
     {
-        // _stateMachine = new AddMedicineStateMachine { RetainSynchronizationContext = true }.DisposeWith(Garbage);
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
         var whenChanged =
             this.WhenChanged(
@@ -47,6 +46,7 @@ public class AddMedicineViewModel : ViewModelBase
                .Publish()
                .RefCount();
 
+        // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
         whenChanged
            .Where(ArePropertiesValid)
            .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
@@ -59,11 +59,13 @@ public class AddMedicineViewModel : ViewModelBase
             ExecuteAdd,
             whenChanged.Select(ArePropertiesValid));
 
-        async Task ExecuteAdd(ScheduledMedication? scheduledMedication)
-        {
-            ArgumentNullException.ThrowIfNull(scheduledMedication);
-            await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
-        }
+        _currentState =
+            _stateMachine
+               .Current
+               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
+               .DisposeWith(Garbage);
+
+        ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
         static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
@@ -74,13 +76,11 @@ public class AddMedicineViewModel : ViewModelBase
             Time: not null
         };
 
-        _currentState =
-            _stateMachine
-               .Current
-               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
-               .DisposeWith(Garbage);
-
-        ConfigureMachine();
+        async Task ExecuteAdd(ScheduledMedication? scheduledMedication)
+        {
+            ArgumentNullException.ThrowIfNull(scheduledMedication);
+            await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
+        }
     }
 
     /// <summary>

@@ -9,6 +9,7 @@ using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 
 namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
@@ -16,7 +17,7 @@ namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 public class AddMedicineViewModelTests
 {
     [Fact]
-    public void Given_WhenConstructed_ThenShouldBeInInitial()
+    public void WhenConstructed_ThenShouldBeInitialState()
     {
         // Given
         AddMedicineViewModel sut = new AddMedicineViewModelFixture();
@@ -29,12 +30,12 @@ public class AddMedicineViewModelTests
     }
 
     [Fact]
-    public async Task Given_WhenInitialize_ThenShouldHaveMedicine()
+    public async Task GivenCqrs_WhenInitialize_ThenShouldHaveMedicine()
     {
         // Given
-        var mediator = Substitute.For<ICqrs>();
-        mediator.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -44,12 +45,12 @@ public class AddMedicineViewModelTests
     }
 
     [Fact]
-    public async Task Given_WhenInitialize_ThenShouldHaveDosages()
+    public async Task GivenCqrs_WhenInitialize_ThenShouldHaveDosages()
     {
         // Given
-        var mediator = Substitute.For<ICqrs>();
-        mediator.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -59,12 +60,12 @@ public class AddMedicineViewModelTests
     }
 
     [Fact]
-    public async Task Given_WhenInitialize_ThenShouldBeInLoaded()
+    public async Task GivenCqrs_WhenInitialize_ThenShouldBeInLoaded()
     {
         // Given
-        var mediator = Substitute.For<ICqrs>();
-        mediator.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -80,9 +81,9 @@ public class AddMedicineViewModelTests
     public void GivenValid_WhenCanCommandExecute_ThenCanExecute()
     {
         var result = false;
-        var mediator = Substitute.For<ICqrs>();
-        mediator.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
 
         // When
         using (sut.AddCommand.CanCommandExecute.Subscribe(canExecute => result = canExecute))
@@ -102,9 +103,9 @@ public class AddMedicineViewModelTests
     {
         // Given
         var result = false;
-        var mediator = Substitute.For<ICqrs>();
-        mediator.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(mediator);
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
 
         // When
         using (sut.AddCommand.CanCommandExecute.Subscribe(canExecute => result = canExecute))
@@ -112,5 +113,39 @@ public class AddMedicineViewModelTests
             // Then
             result.Should().BeFalse();
         }
+    }
+
+    [Fact]
+    public async Task GivenNull_WhenAdd_ThenThrows()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        var result = await Record.ExceptionAsync(async () => await sut.AddCommand.Execute(null));
+
+        // Then
+        result
+           .Should()
+           .BeOfType<ArgumentNullException>();
+    }
+
+    [Fact]
+    public async Task GivenScheduledMedication_WhenAdd_ThenCompletes()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        var result = await sut.AddCommand.Execute(new ScheduledMedicationFixture());
+
+        // Then
+        result
+           .Should()
+           .BeOfType<Unit>();
     }
 }

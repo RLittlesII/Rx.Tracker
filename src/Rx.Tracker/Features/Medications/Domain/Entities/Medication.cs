@@ -36,4 +36,13 @@ public class Medication
     /// Gets the dosages available for the medication.
     /// </summary>
     public IReadOnlyCollection<Dosage> Dosages { get; }
+
+    /// <summary>
+    /// Gets the distinct available dosages for the medication.
+    /// </summary>
+    /// <returns>The distinct dosages.</returns>
+    public IReadOnlyCollection<Dosage> AvailableDosage() => Dosages
+       .GroupBy(dosage => dosage.Weight, dosage => dosage)
+       .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight)))
+       .ToArray();
 }
