@@ -15,7 +15,7 @@ public class Navigator : INavigator
     }
 
     public Task<NavigationState> Navigate(Func<Routes, Uri> routes)
-        => _navigationService.NavigateAsync(routes.Invoke(Routes)).ContinueWith(HandleFailedNavigationResult);
+        => _navigationService.NavigateAsync(routes.Invoke(Routes.Instance)).ContinueWith(HandleFailedNavigationResult);
 
     public Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new()
@@ -28,8 +28,6 @@ public class Navigator : INavigator
 
     public Task<NavigationState> Back<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new() => throw new NotImplementedException();
-
-    private static readonly Routes Routes = new Routes();
 
     private NavigationState HandleFailedNavigationResult(Task<INavigationResult> navigationResult)
     {

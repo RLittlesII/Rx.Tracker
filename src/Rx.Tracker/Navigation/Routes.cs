@@ -23,6 +23,11 @@ public class Routes
     public Route Splash { get; } = new(nameof(Splash), new Uri($"/{NavigationPage}/{nameof(Splash)}"));
 
     /// <summary>
+    /// Gets the splash route.
+    /// </summary>
+    public Route AddMedicine { get; } = new(nameof(AddMedicine), new Uri($"/{nameof(AddMedicine)}"));
+
+    /// <summary>
     /// Gets the back route.
     /// </summary>
     public const string Back = "../";

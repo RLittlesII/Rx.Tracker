@@ -11,6 +11,7 @@ using Rocket.Surgery.Airframe.Exceptions;
 using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Container;
 using Rx.Tracker.UI.Exceptions.Handlers;
+using Rx.Tracker.UI.Features;
 
 [assembly: SuppressMessage(
     "StyleCop.CSharp.DocumentationRules",
@@ -37,24 +38,27 @@ public static class MauiProgram
         => builder.AddGlobalExceptionHandler<GlobalExceptionHandler>(registrar => registrar.AddHandler<LoggingExceptionHandler>());
 
     private static Action<PrismAppBuilder> ConfigurePrism() => configuration => configuration
-       .RegisterTypes(RegisterTypes)
-       .OnInitialized(_ => { })
-       .CreateWindow(CreateWindow);
-
-    private static void RegisterTypes(IContainerRegistry registrar) => registrar.RegisterModule<MarblesModule>()
-       .RegisterModule<UiModule>()
-       .RegisterModule<ShinyModule>();
+       .CreateWindow(CreateWindow)
+       .OnInitialized(Initialize)
+       .RegisterTypes(RegisterTypes);
 
     private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>()
        .Navigate<Routes>(routes => routes.MainNavigation);
 
-    private static void FontDelegate(
-        IFontCollection fonts) => fonts.AddFont(
+    private static void FontDelegate(IFontCollection fonts) => fonts.AddFont(
             "OpenSans-Regular.ttf",
             "OpenSansRegular")
        .AddFont(
             "OpenSans-Semibold.ttf",
             "OpenSansSemibold");
+
+    private static void Initialize(IContainerProvider containerProvider) => containerProvider.GetContainer();
+
+    private static void RegisterTypes(IContainerRegistry registrar) => registrar.ContainerRegistryModule<MarblesModule>()
+       .ContainerRegistryModule<UiModule>()
+       .ContainerRegistryModule<ShinyModule>()
+       .GetContainer()
+       .ContainerModule<FeaturesModule>();
 
     private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension();
 }

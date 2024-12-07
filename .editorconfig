@@ -192,7 +192,7 @@ dotnet_naming_rule.field_should_be_camel_case.severity=error
 dotnet_naming_rule.field_should_be_camel_case.symbols=field
 dotnet_naming_rule.field_should_be_camel_case.style=camel_case
 
-dotnet_naming_rule.types_should_be_pascal_case.severity=suggestion
+dotnet_naming_rule.types_should_be_pascal_case.severity=none
 dotnet_naming_rule.types_should_be_pascal_case.symbols=types
 dotnet_naming_rule.types_should_be_pascal_case.style=pascal_case
 

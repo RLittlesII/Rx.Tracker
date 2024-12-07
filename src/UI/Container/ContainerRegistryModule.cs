@@ -2,7 +2,7 @@ using Prism.Ioc;
 
 namespace Rx.Tracker.UI.Container;
 
-public abstract class ContainerRegistryModule : IContainerRegistryModule
+public abstract class ContainerRegistryModule : IRegistrationModule<IContainerRegistry>
 {
     /// <inheritdoc />
     IContainerRegistry IRegistrationModule<IContainerRegistry>.Register(IContainerRegistry registrar) => RegisterTypes(registrar);
