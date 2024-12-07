@@ -10,5 +10,5 @@ public class UiModule : ContainerRegistryModule
 {
     protected override IContainerRegistry RegisterTypes(IContainerRegistry containerRegistry) => containerRegistry
        .RegisterScoped<INavigator, Navigator>()
-       .RegisterModule<MainModule>();
+       .ContainerRegistryModule<MainModule>();
 }
