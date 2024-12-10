@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LanguageExt;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 
 namespace Rx.Tracker.Features.Medications.Domain;
@@ -14,7 +16,17 @@ public interface IReminders
     /// </summary>
     /// <param name="reminder">The reminder.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    Task Create(MedicationReminder reminder);
+    Task<Unit> Create(MedicationReminder reminder);
+
+    /// <summary>
+    /// Creates the medication reminder.
+    /// </summary>
+    /// <param name="id">The id.</param>
+    /// <param name="medication">The medication.</param>
+    /// <param name="reminderTime">The reminder time.</param>
+    /// <param name="mealRequirement">The mealRequirement.</param>
+    /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+    Task<Unit> Create(Id id, Medication medication, DateTimeOffset reminderTime, MealRequirements mealRequirement);
 
     /// <summary>
     /// Reads the medication reminder with the provided <see cref="Id"/>.
@@ -34,19 +46,19 @@ public interface IReminders
     /// </summary>
     /// <param name="reminder">The reminder.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    Task Update(MedicationReminder reminder);
+    Task<Unit> Update(MedicationReminder reminder);
 
     /// <summary>
     /// Deletes the medication reminder with the provided <see cref="Id"/>.
     /// </summary>
     /// <param name="id">The id.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    Task Delete(Id id);
+    Task<Unit> Delete(Id id);
 
     /// <summary>
     /// Deletes the medication reminder with the provided <see cref="Id"/>.
     /// </summary>
     /// <param name="reminder">The reminder.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    Task Delete(MedicationReminder reminder);
+    Task<Unit> Delete(MedicationReminder reminder);
 }

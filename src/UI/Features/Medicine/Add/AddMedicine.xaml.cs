@@ -1,8 +1,8 @@
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Prism.Navigation;
 using Rx.Tracker.Features.Medications.ViewModels;
+using Unit = System.Reactive.Unit;
 
 namespace Rx.Tracker.UI.Features.Medicine.Add;
 
