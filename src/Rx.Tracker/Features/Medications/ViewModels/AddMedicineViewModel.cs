@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -64,6 +63,7 @@ public class AddMedicineViewModel : ViewModelBase
         _currentState =
             _stateMachine
                .Current
+               .LogTrace(Logger, "State: {State}")
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
                .DisposeWith(Garbage);
 
@@ -89,15 +89,6 @@ public class AddMedicineViewModel : ViewModelBase
     /// Gets the add command.
     /// </summary>
     public RxCommand<ScheduledMedication?, Unit> AddCommand { get; }
-
-    /// <summary>
-    /// Gets or sets the list of medicine.
-    /// </summary>
-    public ObservableCollection<Medication> Medicine
-    {
-        get => _medicine;
-        set => RaiseAndSetIfChanged(ref _medicine, value);
-    }
 
     /// <summary>
     /// Gets or sets the selected name.
@@ -208,5 +199,4 @@ public class AddMedicineViewModel : ViewModelBase
     private Recurrence? _selectedRecurrence;
     private DateTimeOffset? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
-    private ObservableCollection<Medication> _medicine = [];
 }

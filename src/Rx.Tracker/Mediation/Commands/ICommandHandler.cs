@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Threading.Tasks;
+using LanguageExt;
 
 namespace Rx.Tracker.Mediation.Commands;
 
@@ -18,5 +19,5 @@ public interface ICommandHandler<TCommand>
     /// </summary>
     /// <param name="command">The command.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    Task Handle(TCommand command);
+    Task<Unit> Handle(TCommand command);
 }
