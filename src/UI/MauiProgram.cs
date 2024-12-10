@@ -45,7 +45,7 @@ public static class MauiProgram
        .RegisterTypes(RegisterTypes);
 
     private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>()
-       .Navigate<Routes>(routes => routes.MainNavigation);
+       .Navigate<Routes>(routes => routes.AddMedicine);
 
     private static void FontDelegate(IFontCollection fonts) => fonts.AddFont(
             "OpenSans-Regular.ttf",

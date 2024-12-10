@@ -11,7 +11,7 @@ namespace Rx.Tracker.Tests.Features.Medicine.Domain.Queries;
 public class LoadMedicationTests
 {
     [Fact]
-    public async Task GivenQuery_WhenHandle_ThenResultCorrectType()
+    public async Task GivenQueryHandler_WhenHandle_ThenResultCorrectType()
     {
         // Given
         LoadMedication.QueryHandler sut = new LoadMedicationQueryHandlerFixture();
@@ -26,12 +26,11 @@ public class LoadMedicationTests
     }
 
     [Fact]
-    public async Task Given_WhenHandle_ThenResultsNotEmpty()
+    public async Task GivenQueryHandler_WhenHandle_ThenResultHasDosages()
     {
         // Given
         var client = Substitute.For<IMedicineApiClient>();
-        Medication medication = new MedicationFixture();
-        client.Get().Returns([medication]);
+        client.Get().Returns([new MedicationFixture()]);
         LoadMedication.QueryHandler sut = new LoadMedicationQueryHandlerFixture().WithClient(client);
 
         // When
@@ -39,12 +38,12 @@ public class LoadMedicationTests
 
         // Then
         result // NOTE: [rlittlesii: December 04, 2024] Dramatization.
-           .Medicines
+           .Dosages
            .Should()
            .NotBeNullOrEmpty()
            .And
            .Subject
            .Should()
-           .Contain(medication);
+           .ContainSingle();
     }
 }

@@ -9,8 +9,8 @@ using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 
@@ -26,22 +26,7 @@ public class AddMedicineViewModelTests
         sut
            .CurrentState
            .Should()
-           .Be(AddMedicineStateMachine.AddMedicineState.Initial);
-    }
-
-    [Fact]
-    public async Task GivenCqrs_WhenInitialize_ThenShouldHaveMedicine()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        await sut.InitializeCommand.Execute(Unit.Default);
-
-        // Then
-        sut.Medicine.Should().NotBeEmpty();
+           .Be(AddMedicineState.Initial);
     }
 
     [Fact]
@@ -74,7 +59,26 @@ public class AddMedicineViewModelTests
         sut
            .CurrentState
            .Should()
-           .Be(AddMedicineStateMachine.AddMedicineState.Loaded);
+           .Be(AddMedicineState.Loaded);
+    }
+
+
+    [Fact]
+    public async Task GivenCqrs_WhenInitialize_ThenShouldBeInFailed()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult<LoadMedication.Result>(null));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        await sut.InitializeCommand.Execute(Unit.Default);
+
+        // Then
+        sut
+           .CurrentState
+           .Should()
+           .Be(AddMedicineState.Failed);
     }
 
     [Fact]
@@ -88,7 +92,7 @@ public class AddMedicineViewModelTests
         // When
         using (sut.AddCommand.CanCommandExecute.Subscribe(canExecute => result = canExecute))
         {
-            sut.SelectedDosage = new Dosage();
+            sut.SelectedDosage = new DosageFixture();
             sut.SelectedName = "Ibuprofen";
             sut.SelectedRecurrence = Recurrence.TwiceDaily;
             sut.SelectedTime = DateTimeOffset.UtcNow;

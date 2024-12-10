@@ -19,7 +19,23 @@ public static class LoadMedication
     /// <summary>
     /// Load medication query.
     /// </summary>
-    public record Result(IReadOnlyCollection<Medication> Medicines);
+    public record Result
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Result"/> class.
+        /// </summary>
+        /// <param name="medicines">The medications.</param>
+        public Result(IEnumerable<Medication> medicines) => Dosages = medicines
+           .SelectMany(medication => medication.Dosages)
+           .GroupBy(dosage => dosage.Weight, dosage => dosage)
+           .SelectMany(grouping => grouping.DistinctBy(dosage => (Quantity: dosage.Amount, dosage.Weight)))
+           .ToArray();
+
+        /// <summary>
+        /// Gets the dosages.
+        /// </summary>
+        public IReadOnlyCollection<Dosage> Dosages { get; }
+    }
 
     /// <summary>
     /// The add medication query handler.
@@ -47,12 +63,12 @@ public static class LoadMedication
     /// Creates a <see cref="Query"/>.
     /// </summary>
     /// <returns>A query.</returns>
-    public static Query Create() => new Query();
+    public static Query Create() => new();
 
     /// <summary>
     /// Creates a <see cref="Result"/>.
     /// </summary>
     /// <param name="medications">The medications.</param>
     /// <returns>A result.</returns>
-    public static Result Create(IEnumerable<Medication> medications) => new Result(medications.ToArray());
+    public static Result Create(IEnumerable<Medication> medications) => new(medications.ToArray());
 }

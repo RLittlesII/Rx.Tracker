@@ -17,7 +17,9 @@ This is an application to schedule, track, and report taken medication.  The mai
     - Get All Medications
   - [ ] Provide
     - Dosage
-    - Ingestion - Pill, Topical, Inhalant, Injection
+      - Weight
+      - Amount
+      - Ingestion - Pill, Topical, Inhalant, Injection
     - Recurrence - Weekly, Daily, TimedPerDay
     - Time, value per Recurrence
     - Meal
