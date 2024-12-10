@@ -12,12 +12,12 @@ public sealed class Cqrs : ICqrs
 {
     /// <inheritdoc cref="ICommander"/>
     public Task Execute<TCommand>(TCommand command)
-        where TCommand : ICommand => throw new System.NotImplementedException();
+        where TCommand : ICommand => Task.CompletedTask;
 
     /// <inheritdoc cref="IPublisher"/>
     public Task Publish<TNotification>(TNotification notification)
-        where TNotification : INotification => throw new System.NotImplementedException();
+        where TNotification : INotification => Task.CompletedTask;
 
     /// <inheritdoc cref="ISender"/>
-    public Task<TResult> Query<TResult>(IQuery<TResult> query) => throw new System.NotImplementedException();
+    public Task<TResult> Query<TResult>(IQuery<TResult> query) => Task.FromResult(default(TResult));
 }

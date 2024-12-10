@@ -49,6 +49,8 @@ public class AddMedicineViewModel : ViewModelBase
         // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
         whenChanged
            .Where(ArePropertiesValid)
+
+            // TODO: [rlittlesii: December 07, 2024] What were you thinking?!
            .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
@@ -154,13 +156,15 @@ public class AddMedicineViewModel : ViewModelBase
 
         var result = await cqrs.Query(LoadMedication.Create());
 
-        Medicine = new ObservableCollection<Medication>(result.Medicines);
+        // TODO: [rlittlesii: December 07, 2024] Remove me when Cqrs has an implementation.
+        if (result == null)
+        {
+            await _stateMachine.FireAsync(AddMedicineTrigger.Failure);
+            return;
+        }
 
-        Dosages = new ObservableCollection<Dosage>(
-            result.Medicines
-               .SelectMany(medication => medication.Dosages)
-               .GroupBy(dosage => dosage.Weight, dosage => dosage)
-               .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight))));
+        Dosages = new ObservableCollection<Dosage>(result.Dosages);
+
         await _stateMachine.FireAsync(AddMedicineTrigger.Load);
     }
 
@@ -169,21 +173,28 @@ public class AddMedicineViewModel : ViewModelBase
         _stateMachine
            .Configure(AddMedicineState.Initial)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
-           .OnEntryAsync(transition => Initialize(Mediator));
+           .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
            .Configure(AddMedicineState.Busy)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Loaded)
-           .OnEntryAsync(transition => Task.CompletedTask);
+           .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
            .Configure(AddMedicineState.Loaded)
            .Permit(AddMedicineTrigger.Validated, AddMedicineState.Valid)
-           .OnEntryAsync(transition => Task.CompletedTask);
+           .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
            .Configure(AddMedicineState.Valid)
-           .OnEntryAsync(transition => Task.CompletedTask);
+           .OnEntryAsync(_ => Task.CompletedTask);
+
+        _stateMachine
+           .Configure(AddMedicineState.Failed)
+           .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
+           .OnEntryAsync(_ => Task.CompletedTask);
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]

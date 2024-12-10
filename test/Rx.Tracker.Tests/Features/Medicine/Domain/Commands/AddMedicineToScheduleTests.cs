@@ -11,7 +11,7 @@ namespace Rx.Tracker.Tests.Features.Medicine.Domain.Commands;
 public class AddMedicationToScheduleTests
 {
     [Fact]
-    public async Task GivenReminders_WhenHandle_ThenDoesNotThrow()
+    public async Task GivenCommandHandler_WhenHandle_ThenDoesNotThrow()
     {
         // Given
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture();
@@ -26,7 +26,7 @@ public class AddMedicationToScheduleTests
     }
 
     [Fact]
-    public async Task GivenReminders_WhenHandle_ThenCallsCreate()
+    public async Task GivenCommandHandler_WhenHandle_ThenCallsReminderCreate()
     {
         // Given
         var reminders = Substitute.For<IReminders>();
@@ -37,5 +37,18 @@ public class AddMedicationToScheduleTests
 
         // Then
         await reminders.Received(1).Create(Arg.Any<MedicationReminder>());
+    }
+
+    [Fact]
+    public async Task GivenReminders_WhenHandle_ThenReturnsCompletion()
+    {
+        // Given
+        var reminders = Substitute.For<IReminders>();
+        AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture().WithReminders(reminders);
+
+        // When
+        await sut.Handle(AddMedicationToSchedule.Create(new ScheduledMedicationFixture()));
+
+        // Then
     }
 }

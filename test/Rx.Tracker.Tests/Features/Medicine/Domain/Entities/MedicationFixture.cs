@@ -15,5 +15,5 @@ internal class MedicationFixture : ITestFixtureBuilder
     private Medication Build() => new(this._id, _dosages);
 
     private MedicationId _id = new();
-    private List<Dosage> _dosages = [new()];
+    private List<Dosage> _dosages = [new DosageFixture()];
 }
