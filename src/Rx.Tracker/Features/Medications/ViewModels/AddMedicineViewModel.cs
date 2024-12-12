@@ -143,20 +143,21 @@ public class AddMedicineViewModel : ViewModelBase
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
-        await _stateMachine.FireAsync(AddMedicineTrigger.Load);
-
-        var result = await cqrs.Query(LoadMedication.Create());
-
-        // TODO: [rlittlesii: December 07, 2024] Remove me when Cqrs has an implementation.
-        if (result == null)
+        try
         {
-            await _stateMachine.FireAsync(AddMedicineTrigger.Failure);
-            return;
+            await _stateMachine.FireAsync(AddMedicineTrigger.Load);
+
+            var result = await cqrs.Query(LoadMedication.Create());
+
+            Dosages = new ObservableCollection<Dosage>(result.Dosages);
+
+            await _stateMachine.FireAsync(AddMedicineTrigger.Load);
         }
-
-        Dosages = new ObservableCollection<Dosage>(result.Dosages);
-
-        await _stateMachine.FireAsync(AddMedicineTrigger.Load);
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, string.Empty);
+            await _stateMachine.FireAsync(AddMedicineTrigger.Failure);
+        }
     }
 
     private void ConfigureMachine()
