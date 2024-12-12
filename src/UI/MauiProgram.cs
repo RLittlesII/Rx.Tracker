@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using Prism;
@@ -29,6 +30,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp() => MauiApp.CreateBuilder()
        .UseMauiApp<App>()
+       .UseMauiCommunityToolkitMarkup()
        .UseAirframe(ContainerRegistry.GetContainer(), BuildAirframe())
        .UsePrism((IContainerExtension)ContainerRegistry, ConfigurePrism())
        .ConfigureFonts(FontDelegate)
