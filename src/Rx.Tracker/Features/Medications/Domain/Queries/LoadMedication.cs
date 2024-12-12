@@ -24,17 +24,13 @@ public static class LoadMedication
         /// <summary>
         /// Initializes a new instance of the <see cref="Result"/> class.
         /// </summary>
-        /// <param name="medicines">The medications.</param>
-        public Result(IEnumerable<Medication> medicines) => Dosages = medicines
-           .SelectMany(medication => medication.Dosages)
-           .GroupBy(dosage => dosage.Weight, dosage => dosage)
-           .SelectMany(grouping => grouping.DistinctBy(dosage => (Quantity: dosage.Amount, dosage.Weight)))
-           .ToArray();
+        /// <param name="medications">The medications.</param>
+        public Result(IEnumerable<Medication> medications) => Medications = new MedicationCollection(medications);
 
         /// <summary>
-        /// Gets the dosages.
+        /// Gets the medications.
         /// </summary>
-        public IReadOnlyCollection<Dosage> Dosages { get; }
+        public MedicationCollection Medications { get; }
     }
 
     /// <summary>
