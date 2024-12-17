@@ -10,7 +10,7 @@ public class FeaturesModule : ContainerModule
     protected override IContainer Register(IContainer registrar)
     {
         registrar.Register<HttpClient>(reuse: Reuse.Singleton);
-        registrar.Register<ICqrs>();
+        registrar.Register<ICqrs, Cqrs>();
 
         return registrar;
     }

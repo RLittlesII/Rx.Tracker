@@ -2,8 +2,30 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Rx.Tracker.UI.Features.Medicine.Add.AddMedicine">
+             xmlns:add="clr-namespace:Rx.Tracker.UI.Features.Medicine.Add"
+             xmlns:viewModels="clr-namespace:Rx.Tracker.Features.Medications.ViewModels;assembly=Rx.Tracker"
+             x:Class="Rx.Tracker.UI.Features.Medicine.Add.AddMedicine"
+             x:DataType="viewModels:AddMedicineViewModel">
     <ContentPage.Content>
-        
+        <StackLayout>
+            <StackLayout.Resources>
+                <add:AddMedicineStateConverter x:Key="AddMedicineStateConverter" />
+                <add:DosageTypeConverter x:Key="DosageTypeConverter" />
+            </StackLayout.Resources>
+            <Label Text="{x:Binding CurrentState}" />
+            <Label Text="Choose a Medication" />
+
+            <Picker x:Name="Medications"
+                    ItemsSource="{Binding Names}"
+                    SelectedItem="{Binding SelectedName}"
+                    IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+            <Picker x:Name="Dosage"
+                    ItemsSource="{Binding Dosages, Converter={x:StaticResource DosageTypeConverter}}"
+                    SelectedItem="{Binding SelectedDosage}"
+                    IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+            <RadioButton x:Name="Recurrence" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+            <TimePicker x:Name="Time" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+        </StackLayout>
+
     </ContentPage.Content>
 </ContentPage>

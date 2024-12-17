@@ -43,6 +43,6 @@ public class Medication
     /// <returns>The distinct dosages.</returns>
     public IReadOnlyCollection<Dosage> AvailableDosage() => Dosages
        .GroupBy(dosage => dosage.Weight, dosage => dosage)
-       .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight)))
+       .SelectMany(grouping => grouping.DistinctBy(dosage => (Quantity: dosage.Amount, dosage.Weight)))
        .ToArray();
 }

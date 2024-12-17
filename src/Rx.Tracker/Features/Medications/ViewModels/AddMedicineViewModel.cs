@@ -49,19 +49,20 @@ public class AddMedicineViewModel : ViewModelBase
         // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
         whenChanged
            .Where(ArePropertiesValid)
+
+            // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
            .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
            .Subscribe();
 
-        AddCommand = RxCommand.Create<ScheduledMedication?>(
-            ExecuteAdd,
-            whenChanged.Select(ArePropertiesValid));
+        AddCommand = RxCommand.Create<ScheduledMedication?>(ExecuteAdd, _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
 
         _currentState =
             _stateMachine
                .Current
+               .LogTrace(Logger, "State: {State}")
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
                .DisposeWith(Garbage);
 
@@ -87,15 +88,6 @@ public class AddMedicineViewModel : ViewModelBase
     /// Gets the add command.
     /// </summary>
     public RxCommand<ScheduledMedication?, Unit> AddCommand { get; }
-
-    /// <summary>
-    /// Gets or sets the list of medicine.
-    /// </summary>
-    public ObservableCollection<Medication> Medicine
-    {
-        get => _medicine;
-        set => RaiseAndSetIfChanged(ref _medicine, value);
-    }
 
     /// <summary>
     /// Gets or sets the selected name.
@@ -143,6 +135,15 @@ public class AddMedicineViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// Gets or sets the names.
+    /// </summary>
+    public ObservableCollection<MedicationId> Names
+    {
+        get => _names;
+        set => RaiseAndSetIfChanged(ref _names, value);
+    }
+
+    /// <summary>
     /// Gets the current state of the machine.
     /// </summary>
     public AddMedicineState CurrentState => _currentState.Value;
@@ -150,18 +151,22 @@ public class AddMedicineViewModel : ViewModelBase
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
-        await _stateMachine.FireAsync(AddMedicineTrigger.Load);
+        try
+        {
+            await _stateMachine.FireAsync(AddMedicineTrigger.Load);
 
-        var result = await cqrs.Query(LoadMedication.Create());
+            var result = await cqrs.Query(LoadMedication.Create());
 
-        Medicine = new ObservableCollection<Medication>(result.Medicines);
+            Names = new ObservableCollection<MedicationId>(result.Medications.Select(x => x.Id));
+            Dosages = new ObservableCollection<Dosage>(result.Medications.Dosages);
 
-        Dosages = new ObservableCollection<Dosage>(
-            result.Medicines
-               .SelectMany(medication => medication.Dosages)
-               .GroupBy(dosage => dosage.Weight, dosage => dosage)
-               .SelectMany(grouping => grouping.DistinctBy(dosage => (dosage.Quantity, dosage.Weight))));
-        await _stateMachine.FireAsync(AddMedicineTrigger.Load);
+            await _stateMachine.FireAsync(AddMedicineTrigger.Load);
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, string.Empty);
+            await _stateMachine.FireAsync(AddMedicineTrigger.Failure);
+        }
     }
 
     private void ConfigureMachine()
@@ -169,21 +174,28 @@ public class AddMedicineViewModel : ViewModelBase
         _stateMachine
            .Configure(AddMedicineState.Initial)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
-           .OnEntryAsync(transition => Initialize(Mediator));
+           .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
            .Configure(AddMedicineState.Busy)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Loaded)
-           .OnEntryAsync(transition => Task.CompletedTask);
+           .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
            .Configure(AddMedicineState.Loaded)
            .Permit(AddMedicineTrigger.Validated, AddMedicineState.Valid)
-           .OnEntryAsync(transition => Task.CompletedTask);
+           .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
            .Configure(AddMedicineState.Valid)
-           .OnEntryAsync(transition => Task.CompletedTask);
+           .OnEntryAsync(_ => Task.CompletedTask);
+
+        _stateMachine
+           .Configure(AddMedicineState.Failed)
+           .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
+           .OnEntryAsync(_ => Task.CompletedTask);
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
@@ -197,5 +209,5 @@ public class AddMedicineViewModel : ViewModelBase
     private Recurrence? _selectedRecurrence;
     private DateTimeOffset? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
-    private ObservableCollection<Medication> _medicine = [];
+    private ObservableCollection<MedicationId> _names = [];
 }

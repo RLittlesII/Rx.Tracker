@@ -67,6 +67,11 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         /// <summary>
         /// Validated trigger.
         /// </summary>
-        Validated
+        Validated,
+
+        /// <summary>
+        /// Failure trigger.
+        /// </summary>
+        Failure
     }
 }

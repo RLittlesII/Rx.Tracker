@@ -28,5 +28,10 @@ public enum DosageType
     /// <summary>
     /// Topical.
     /// </summary>
-    Topical
+    Topical,
+
+    /// <summary>
+    /// Inhalant.
+    /// </summary>
+    Inhalant
 }
