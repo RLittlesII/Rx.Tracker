@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
@@ -62,9 +63,8 @@ public class AddMedicineViewModelTests
            .Be(AddMedicineState.Loaded);
     }
 
-
     [Fact]
-    public async Task GivenCqrs_WhenInitialize_ThenShouldBeInFailed()
+    public async Task GivenQueryReturnsNull_WhenInitialize_ThenShouldBeInFailed()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
@@ -82,12 +82,33 @@ public class AddMedicineViewModelTests
     }
 
     [Fact]
-    public void GivenValid_WhenCanCommandExecute_ThenCanExecute()
+    public async Task GivenQueryThrows_WhenInitialize_ThenShouldBeInFailed()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).ThrowsAsync(new Exception());
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        _ = await Record.ExceptionAsync(async () => await sut.InitializeCommand.Execute(Unit.Default));
+
+        // Then
+        sut
+           .CurrentState
+           .Should()
+           .Be(AddMedicineState.Failed);
+    }
+
+    [Fact]
+    public async Task GivenValid_WhenCanCommandExecute_ThenCanExecute()
     {
         var result = false;
         var cqrs = Substitute.For<ICqrs>();
         cqrs.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+
+        await sut.InitializeCommand.Execute(Unit.Default);
 
         // When
         using (sut.AddCommand.CanCommandExecute.Subscribe(canExecute => result = canExecute))

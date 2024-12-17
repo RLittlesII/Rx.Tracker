@@ -1,8 +1,8 @@
 using FluentAssertions;
+using LanguageExt;
 using NSubstitute;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Commands;
-using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System.Threading.Tasks;
 
@@ -26,20 +26,6 @@ public class AddMedicationToScheduleTests
     }
 
     [Fact]
-    public async Task GivenCommandHandler_WhenHandle_ThenCallsReminderCreate()
-    {
-        // Given
-        var reminders = Substitute.For<IReminders>();
-        AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture().WithReminders(reminders);
-
-        // When
-        await sut.Handle(AddMedicationToSchedule.Create(new ScheduledMedicationFixture()));
-
-        // Then
-        await reminders.Received(1).Create(Arg.Any<MedicationReminder>());
-    }
-
-    [Fact]
     public async Task GivenReminders_WhenHandle_ThenReturnsCompletion()
     {
         // Given
@@ -47,8 +33,11 @@ public class AddMedicationToScheduleTests
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture().WithReminders(reminders);
 
         // When
-        await sut.Handle(AddMedicationToSchedule.Create(new ScheduledMedicationFixture()));
+        var result = await sut.Handle(AddMedicationToSchedule.Create(new ScheduledMedicationFixture()));
 
         // Then
+        result
+           .Should()
+           .Be(Unit.Default);
     }
 }

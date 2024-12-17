@@ -15,9 +15,13 @@
             <Label Text="{x:Binding CurrentState}" />
             <Label Text="Choose a Medication" />
 
-            <Picker x:Name="Medications" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+            <Picker x:Name="Medications"
+                    ItemsSource="{Binding Names}"
+                    SelectedItem="{Binding SelectedName}"
+                    IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
             <Picker x:Name="Dosage"
                     ItemsSource="{Binding Dosages, Converter={x:StaticResource DosageTypeConverter}}"
+                    SelectedItem="{Binding SelectedDosage}"
                     IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
             <RadioButton x:Name="Recurrence" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
             <TimePicker x:Name="Time" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />

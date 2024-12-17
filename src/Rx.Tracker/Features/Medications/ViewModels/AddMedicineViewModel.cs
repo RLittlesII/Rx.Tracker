@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -49,16 +50,14 @@ public class AddMedicineViewModel : ViewModelBase
         whenChanged
            .Where(ArePropertiesValid)
 
-            // TODO: [rlittlesii: December 07, 2024] What were you thinking?!
+            // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
            .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
            .Subscribe();
 
-        AddCommand = RxCommand.Create<ScheduledMedication?>(
-            ExecuteAdd,
-            whenChanged.Select(ArePropertiesValid));
+        AddCommand = RxCommand.Create<ScheduledMedication?>(ExecuteAdd, _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
 
         _currentState =
             _stateMachine
@@ -136,6 +135,15 @@ public class AddMedicineViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// Gets or sets the names.
+    /// </summary>
+    public ObservableCollection<MedicationId> Names
+    {
+        get => _names;
+        set => RaiseAndSetIfChanged(ref _names, value);
+    }
+
+    /// <summary>
     /// Gets the current state of the machine.
     /// </summary>
     public AddMedicineState CurrentState => _currentState.Value;
@@ -149,7 +157,7 @@ public class AddMedicineViewModel : ViewModelBase
 
             var result = await cqrs.Query(LoadMedication.Create());
 
-            Names = new ObservableCollection<Dosage>(result.Medications.Dosages);
+            Names = new ObservableCollection<MedicationId>(result.Medications.Select(x => x.Id));
             Dosages = new ObservableCollection<Dosage>(result.Medications.Dosages);
 
             await _stateMachine.FireAsync(AddMedicineTrigger.Load);
@@ -201,4 +209,5 @@ public class AddMedicineViewModel : ViewModelBase
     private Recurrence? _selectedRecurrence;
     private DateTimeOffset? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
+    private ObservableCollection<MedicationId> _names = [];
 }

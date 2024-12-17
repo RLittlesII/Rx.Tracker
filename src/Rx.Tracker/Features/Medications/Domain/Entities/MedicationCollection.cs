@@ -37,5 +37,5 @@ public class MedicationCollection : IReadOnlyCollection<Medication>
     /// <inheritdoc/>
     public int Count => _medications.Count;
 
-    private List<Medication> _medications;
+    private readonly List<Medication> _medications;
 }
