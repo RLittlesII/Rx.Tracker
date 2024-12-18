@@ -3,5 +3,5 @@ using Rx.Tracker.Features.Schedule.Domain.Queries;
 
 namespace Rx.Tracker.Tests.Features.Schedule.Domain.Queries;
 
-// [AutoFixture(typeof(LoadSchedule.QueryHandler))]
+[AutoFixture(typeof(LoadSchedule.QueryHandler))]
 internal partial class LoadScheduleQueryHandlerFixture;

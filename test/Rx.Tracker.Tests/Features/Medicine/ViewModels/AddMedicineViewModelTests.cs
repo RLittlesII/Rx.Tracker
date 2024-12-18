@@ -68,7 +68,7 @@ public class AddMedicineViewModelTests
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult<LoadMedication.Result>(null));
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult<LoadMedication.Result>(null!));
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
 
         // When

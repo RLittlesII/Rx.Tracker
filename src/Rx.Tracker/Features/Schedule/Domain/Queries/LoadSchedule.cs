@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Mediation.Queries;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Queries;
@@ -24,8 +25,16 @@ public static class LoadSchedule
     /// </summary>
     public class QueryHandler : IQueryHandler<Query, Result>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryHandler"/> class.
+        /// </summary>
+        /// <param name="apiContract">The api contract.</param>
+        public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
+
         /// <inheritdoc/>
         public Task<Result> Handle(Query query) => Task.FromResult(new Result());
+
+        private readonly IScheduleApiContract _apiContract;
     }
 
     /// <summary>
