@@ -1,7 +1,3 @@
-// <copyright file="ScheduledMedicationFixture.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using System;
