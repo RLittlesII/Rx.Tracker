@@ -1,7 +1,3 @@
-// <copyright file="IMediatorCommandHandler.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 using System.Threading.Tasks;
 using LanguageExt;
 
