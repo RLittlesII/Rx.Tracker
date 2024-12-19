@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Mediation.Queries;
@@ -12,8 +13,8 @@ public static class LoadSchedule
     /// <summary>
     /// Load schedule query.
     /// </summary>
-    /// <param name="UserId">The user id.</param>
-    public record Query(UserId UserId) : IQuery<Result>;
+    /// <param name="User">The user id.</param>
+    public record Query(UserId User, DateTimeOffset Date) : IQuery<Result>;
 
     /// <summary>
     /// Load schedule query.
@@ -41,6 +42,7 @@ public static class LoadSchedule
     /// Creates a <see cref="Query"/>.
     /// </summary>
     /// <param name="userId">The user id.</param>
+    /// <param name="date">The date.</param>
     /// <returns>A query.</returns>
-    public static Query Create(UserId userId) => new(userId);
+    public static Query Create(UserId userId, DateTimeOffset date) => new(userId, date);
 }
