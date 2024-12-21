@@ -14,6 +14,7 @@ using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
@@ -36,27 +37,6 @@ public class AddMedicineViewModel : ViewModelBase
         : base(navigator, cqrs, loggerFactory)
     {
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
-        var whenChanged =
-            this.WhenChanged(
-                    static viewModel => viewModel.SelectedName,
-                    static viewModel => viewModel.SelectedDosage,
-                    static viewModel => viewModel.SelectedRecurrence,
-                    static viewModel => viewModel.SelectedTime,
-                    static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
-               .Publish()
-               .RefCount();
-
-        // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
-        whenChanged
-           .Where(ArePropertiesValid)
-
-            // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
-           .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
-           .WhereIsNotNull()
-           .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
-           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
-           .Subscribe();
-
         AddCommand = RxCommand.Create<ScheduledMedication?>(ExecuteAdd, _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
 
         _currentState =
@@ -66,10 +46,26 @@ public class AddMedicineViewModel : ViewModelBase
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
                .DisposeWith(Garbage);
 
+        // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
+        this.WhenChanged(
+                static viewModel => viewModel.SelectedName,
+                static viewModel => viewModel.SelectedDosage,
+                static viewModel => viewModel.SelectedRecurrence,
+                static viewModel => viewModel.SelectedTime,
+                static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
+           .Where(ArePropertiesValid)
+
+            // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
+           .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue))
+           .WhereIsNotNull()
+           .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
+           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
+           .Subscribe();
+
         ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
+        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Schedule.Domain.Entities.Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,

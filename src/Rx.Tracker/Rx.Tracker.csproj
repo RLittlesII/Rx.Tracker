@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="DynamicData" />
         <PackageReference Include="LanguageExt.Core" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Nanoid" />

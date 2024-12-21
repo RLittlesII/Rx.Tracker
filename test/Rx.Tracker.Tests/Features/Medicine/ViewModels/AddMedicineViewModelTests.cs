@@ -5,6 +5,7 @@ using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Features.Medications.ViewModels;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;

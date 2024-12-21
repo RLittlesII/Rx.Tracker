@@ -1,4 +1,4 @@
-namespace Rx.Tracker.Features.Medications.Domain.Entities;
+namespace Rx.Tracker.Features.Schedule.Domain.Entities;
 
 /// <summary>
 /// Does the medication require a meal.

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using LanguageExt;
-using Rx.Tracker.Features.Medications.Domain.Entities;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
 
 namespace Rx.Tracker.Features.Medications.Domain.Commands;

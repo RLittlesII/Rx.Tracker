@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Data.Api;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Queries;
@@ -19,7 +20,7 @@ public static class LoadSchedule
     /// <summary>
     /// Load schedule query.
     /// </summary>
-    public record Result;
+    public record Result(MedicationSchedule Schedule);
 
     /// <summary>
     /// The load schedule query handler.
@@ -33,7 +34,7 @@ public static class LoadSchedule
         public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
 
         /// <inheritdoc/>
-        public Task<Result> Handle(Query query) => Task.FromResult(new Result());
+        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([])));
 
         private readonly IScheduleApiContract _apiContract;
     }
