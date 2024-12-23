@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using ReactiveMarbles.Mvvm;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 
@@ -68,12 +69,22 @@ public class ScheduledMedication : RxObject
     public DateTimeOffset ScheduledTime { get; }
 
     /// <summary>
-    /// Gets or sets the taken time.
+    /// Gets the taken time.
     /// </summary>
     public DateTimeOffset? TakenTime
     {
         get => _takenTime;
-        set => RaiseAndSetIfChanged(ref _takenTime, value);
+        private set => RaiseAndSetIfChanged(ref _takenTime, value);
+    }
+
+    /// <summary>
+    /// Take the <see cref="Medication"/>.
+    /// </summary>
+    /// <returns>A completion notification.</returns>
+    public Task Take()
+    {
+        TakenTime = DateTimeOffset.Now;
+        return Task.CompletedTask;
     }
 
     private DateTimeOffset? _takenTime;

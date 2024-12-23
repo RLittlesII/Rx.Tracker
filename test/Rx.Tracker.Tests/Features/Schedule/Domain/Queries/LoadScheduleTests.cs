@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using System;
 using System.Threading.Tasks;
 using static Rx.Tracker.Features.Schedule.Domain.Queries.LoadSchedule;
@@ -39,5 +40,25 @@ public class LoadScheduleTests
            .Subject
            .Should()
            .BeOfType<Result>();
+    }
+
+    [Fact]
+    public async Task GivenQueryHandler_WhenHandle_ThenResultHasMedicationSchedule()
+    {
+        // Given
+        QueryHandler sut = new LoadScheduleQueryHandlerFixture();
+
+        // When
+        var result = await sut.Handle(Create(new UserId(), DateTimeOffset.Now));
+
+        // Then
+        result
+           .Schedule
+           .Should()
+           .NotBeNull()
+           .And
+           .Subject
+           .Should()
+           .BeOfType<MedicationSchedule>();
     }
 }

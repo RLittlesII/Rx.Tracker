@@ -35,7 +35,7 @@ public class MedicationSchedule : DisposableObject, ISourceCache<ScheduledMedica
 
     /// <inheritdoc/>
     public IObservable<IChangeSet<ScheduledMedication, Id>> Connect(Func<ScheduledMedication, bool>? predicate = null, bool suppressEmptyChangeSets = true)
-        => _cache.Connect(predicate, suppressEmptyChangeSets);
+        => _cache.Connect(predicate, suppressEmptyChangeSets).AutoRefresh(x => x.TakenTime);
 
     /// <inheritdoc/>
     public IObservable<IChangeSet<ScheduledMedication, Id>> Preview(Func<ScheduledMedication, bool>? predicate = null) => _cache.Preview(predicate);

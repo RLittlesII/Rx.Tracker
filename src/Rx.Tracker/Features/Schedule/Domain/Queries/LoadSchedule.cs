@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
@@ -20,7 +22,7 @@ public static class LoadSchedule
     /// <summary>
     /// Load schedule query.
     /// </summary>
-    public record Result(MedicationSchedule Schedule);
+    public record Result(MedicationSchedule Schedule, IReadOnlyDictionary<DayOfWeek, DateOnly> Week);
 
     /// <summary>
     /// The load schedule query handler.
@@ -34,7 +36,7 @@ public static class LoadSchedule
         public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
 
         /// <inheritdoc/>
-        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([])));
+        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([]), ReadOnlyDictionary<DayOfWeek, DateOnly>.Empty));
 
         private readonly IScheduleApiContract _apiContract;
     }
