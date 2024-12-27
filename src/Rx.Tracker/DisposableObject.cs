@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
 
-namespace Rx.Tracker.Features.Schedule.Domain.Entities;
+namespace Rx.Tracker;
 
 /// <summary>
 /// A disposable object.
