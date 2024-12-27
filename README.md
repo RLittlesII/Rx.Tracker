@@ -12,17 +12,14 @@ This is an application to schedule, track, and report taken medication.  The mai
   - [ ] Count Down Timer to next medicine?
   - Tap Cards to Edit
   - Tap to add medicine
-- Add Medicine
-  - [ ] Lookup medication by name
-    - Get All Medications
-  - [ ] Provide
-    - Dosage
-      - Weight
-      - Amount
-      - Ingestion - Pill, Topical, Inhalant, Injection
-    - Recurrence - Weekly, Daily, TimedPerDay
-    - Time, value per Recurrence
-    - Meal
+
+- [Add Medication](src/Rx.Tracker/Features/Medications/README.md)
+
+## Architecture
+- [Mediator](src/Rx.Tracker/Mediation/README.md)
+- [Navigation](src/Rx.Tracker/Navigation/README.md)
+- [State](src/Rx.Tracker/State/README.md)
+
 
 ### OSS Projects
 - DryIoc
