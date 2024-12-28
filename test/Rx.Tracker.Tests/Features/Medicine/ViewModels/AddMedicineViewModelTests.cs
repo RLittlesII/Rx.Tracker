@@ -2,7 +2,6 @@ using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
-using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.Features.Schedule.Domain.Entities;

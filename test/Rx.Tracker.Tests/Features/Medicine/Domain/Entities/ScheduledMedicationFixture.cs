@@ -9,7 +9,7 @@ internal class ScheduledMedicationFixture : ITestFixtureBuilder
 {
     public static implicit operator ScheduledMedication(ScheduledMedicationFixture fixture) => fixture.Build();
     private ScheduledMedication Build() => new(this._scheduleId, this._mealRequirements, this._medication, this._recurrence, this._scheduledTime);
-
+    public ScheduledMedicationFixture WithScheduledTime(DateTimeOffset scheduledTime) => this.With(ref _scheduledTime, scheduledTime);
     private MealRequirements _mealRequirements = MealRequirements.None;
     private Medication _medication = new();
     private Recurrence _recurrence = Recurrence.Daily;

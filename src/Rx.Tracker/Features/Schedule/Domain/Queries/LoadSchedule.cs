@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain.Entities;

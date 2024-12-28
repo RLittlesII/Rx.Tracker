@@ -1,5 +1,6 @@
 using DynamicData;
 using FluentAssertions;
+using LanguageExt;
 using Rocket.Surgery.Extensions.Testing.AutoFixtures;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
@@ -11,7 +12,7 @@ namespace Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 public class MedicationScheduleTests
 {
     [Fact]
-    public async Task Given_When_ThenShouldNotBeEmpty()
+    public async Task GivenScheduledMedication_WhenTake_ThenShouldNotBeEmpty()
     {
         // Given
         ScheduledMedication scheduledMedication = new ScheduledMedicationFixture();
@@ -32,7 +33,7 @@ public class MedicationScheduleTests
     }
 
     [Fact]
-    public void Given_When_ThenShouldBeEmpty()
+    public void GivenScheduledMedication_WhenFilterTaken_ThenShouldBeEmpty()
     {
         // Given
         MedicationSchedule sut = new MedicationScheduleFixture().WithEnumerable([new ScheduledMedicationFixture()]);
@@ -44,6 +45,43 @@ public class MedicationScheduleTests
         result
            .Should()
            .BeEmpty();
+    }
+
+    [Fact]
+    public void ScheduledMedication_WhenGroupedByDayOfWeek_ThenGroupContainsMedication()
+    {
+        // Given
+        MedicationSchedule sut = new MedicationScheduleFixture().WithEnumerable(
+            [
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-4)),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-3)),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-2)),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-1)),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now)
+            ]
+        );
+
+        // When
+        using var _ = sut.Connect()
+           .Filter(medication => medication.TakenTime.IsNull())
+           .GroupOnProperty(medication => medication.ScheduledTime.DayOfWeek)
+           .Bind(out var result)
+           .Subscribe();
+
+        // Then
+        result
+           .Should()
+           .NotBeNullOrEmpty()
+           .And
+           .Subject
+           .Should()
+           .SatisfyRespectively(
+                first => first.Cache.Items.Should().ContainSingle(),
+                second => second.Cache.Items.Should().ContainSingle(),
+                third => third.Cache.Items.Should().ContainSingle(),
+                fourth => fourth.Cache.Items.Should().ContainSingle(),
+                fifth => fifth.Cache.Items.Should().ContainSingle()
+            );
     }
 }
 

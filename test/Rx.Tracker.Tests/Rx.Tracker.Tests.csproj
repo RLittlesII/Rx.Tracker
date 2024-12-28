@@ -18,6 +18,9 @@
       <Compile Update="Features\Schedule\Domain\Queries\LoadScheduleQueryHandlerFixture.cs">
         <DependentUpon>LoadScheduleTests.cs</DependentUpon>
       </Compile>
+      <Compile Update="Features\Schedule\Domain\Commands\TakeMedicationCommandHandlerFixture.cs">
+        <DependentUpon>TakeMedicationTests.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
