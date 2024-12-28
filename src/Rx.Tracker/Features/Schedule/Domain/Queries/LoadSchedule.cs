@@ -22,7 +22,7 @@ public static class LoadSchedule
     /// <summary>
     /// Load schedule query.
     /// </summary>
-    public record Result(MedicationSchedule Schedule, IReadOnlyDictionary<DayOfWeek, DateOnly> Week);
+    public record Result(MedicationSchedule Schedule);
 
     /// <summary>
     /// The load schedule query handler.
@@ -36,7 +36,7 @@ public static class LoadSchedule
         public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
 
         /// <inheritdoc/>
-        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([]), ReadOnlyDictionary<DayOfWeek, DateOnly>.Empty));
+        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([])));
 
         private readonly IScheduleApiContract _apiContract;
     }
