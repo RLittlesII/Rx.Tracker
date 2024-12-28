@@ -22,10 +22,15 @@ This is an application to schedule, track, and report taken medication.  The mai
 
 
 ### OSS Projects
-- DryIoc
-- Prism
-- Stateless
-- Serilog
-- Shiny
-- ReactiveUI
-- ReactiveMarbles
+- [DryIoc](https://github.com/dadhi/DryIoc)
+- [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
+- [Language Extensions](https://github.com/louthy/language-ext)
+- [Nanoid](https://github.com/codeyu/nanoid-net)
+- [NSubstitute](https://github.com/nsubstitute/NSubstitute)
+- [Prism](https://github.com/PrismLibrary/Prism)
+- [Stateless](https://github.com/dotnet-state-machine/stateless)
+- [Serilog](https://github.com/serilog/serilog)
+- [Shiny](https://github.com/shinyorg/shiny)
+- [ReactiveUI](https://github.com/reactiveui/ReactiveUI)
+- [ReactiveMarbles](https://github.com/reactivemarbles)
+- [xUnit](https://github.com/xunit/xunit)
