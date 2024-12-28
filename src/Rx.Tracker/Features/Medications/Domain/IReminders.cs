@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LanguageExt;
 using Rx.Tracker.Features.Medications.Domain.Entities;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 
 namespace Rx.Tracker.Features.Medications.Domain;
 

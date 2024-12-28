@@ -103,7 +103,7 @@
     <PackageVersion Include="Splat.Microsoft.Extensions.DependencyInjection" Version="$(SplatVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="DynamicData" Version="7.9.7" />
+    <PackageVersion Include="DynamicData" Version="9.0.4" />
     <PackageVersion Include="Humanizer" Version="2.7.9" />
     <PackageVersion Include="LanguageExt.Core" Version="5.0.0-beta-39" />
     <PackageVersion Include="Nanoid" Version="3.1.0" />

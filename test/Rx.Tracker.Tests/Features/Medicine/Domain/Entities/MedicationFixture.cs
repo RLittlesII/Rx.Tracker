@@ -10,7 +10,7 @@ internal class MedicationFixture : ITestFixtureBuilder
 
     public MedicationFixture WithId(MedicationId id) => this.With(ref _id, id);
 
-    public MedicationFixture WithDosage(Dosage dosage) => this.With(ref _dosages, dosage);
+    public MedicationFixture WithDosage(Dosage dosage) => this.With(ref _dosages!, dosage);
 
     private Medication Build() => new(this._id, _dosages);
 

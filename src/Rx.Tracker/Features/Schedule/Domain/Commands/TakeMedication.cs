@@ -1,23 +1,25 @@
 using System.Threading.Tasks;
 using LanguageExt;
+using Rx.Tracker.Features.Medications.Domain;
+using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
 
-namespace Rx.Tracker.Features.Medications.Domain.Commands;
+namespace Rx.Tracker.Features.Schedule.Domain.Commands;
 
 /// <summary>
-/// The add medicine command definition.
+/// The take medicine command definition.
 /// </summary>
-public static class AddMedicationToSchedule
+public static class TakeMedication
 {
     /// <summary>
-    /// Add medicine command.
+    /// Take medicine command.
     /// </summary>
-    /// <param name="ScheduledMedication">The scheduled medication.</param>
-    public record Command(ScheduledMedication ScheduledMedication) : ICommand;
+    /// <param name="Medication">The medication.</param>
+    public record Command(Medication Medication) : ICommand;
 
     /// <summary>
-    /// The add medicine command handler.
+    /// The take medicine command handler.
     /// </summary>
     public class CommandHandler : ICommandHandler<Command>
     {
@@ -28,11 +30,11 @@ public static class AddMedicationToSchedule
         public CommandHandler(IReminders reminders) => _reminders = reminders;
 
         /// <inheritdoc />
-        public async Task<Unit> Handle(Command command) =>
+        public Task<Unit> Handle(Command command) =>
 
             // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
-            await _reminders.Create(command.ScheduledMedication.Id, command.ScheduledMedication.Medication, command.ScheduledMedication.ScheduledTime, command.ScheduledMedication.MealRequirement);
+            Task.FromResult(Unit.Default);
 
         private readonly IReminders _reminders;
     }
@@ -42,5 +44,5 @@ public static class AddMedicationToSchedule
     /// </summary>
     /// <param name="medication">The medication.</param>
     /// <returns>The command.</returns>
-    public static Command Create(ScheduledMedication medication) => new(medication);
+    public static Command Create(ScheduledMedication medication) => new(medication.Medication);
 }
