@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 [GitHubActions(
     "pull-request",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.MacOs14,
     AutoGenerate = true,
     OnPullRequestBranches = ["main"],
     InvokedTargets = [nameof(GitHubPullRequest)]
@@ -25,6 +25,7 @@ partial class Tracker
     Target GitHubPullRequest => _ => _
        .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
        .DependsOn(Clean)
+       .DependsOn(Workload)
        .DependsOn(Restore)
        .DependsOn(Build);
 

@@ -22,9 +22,9 @@ on:
       - main
 
 jobs:
-  ubuntu-latest:
-    name: ubuntu-latest
-    runs-on: ubuntu-latest
+  macos-14:
+    name: macos-14
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - name: 'Cache: .nuke/temp, ~/.nuget/packages'

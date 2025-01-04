@@ -21,6 +21,11 @@ partial class Tracker : NukeBuild
        .Executes(() => DotNetTasks.DotNetClean())
        .ProceedAfterFailure();
 
+    Target Workload => definition => definition
+       .DependsOn(Clean)
+       .Before(Restore)
+       .Executes(() => DotNetTasks.DotNetWorkloadInstall(configurator => configurator.SetVerbosity(DotNetVerbosity.detailed).AddWorkloadId("maui")));
+
     Target Restore => definition => definition
        .DependsOn(Clean)
        .Executes(() => DotNetTasks.DotNetRestore(configurator => configurator.EnableForce().EnableNoCache()));

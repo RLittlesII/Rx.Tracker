@@ -342,6 +342,3 @@ test/**/coverage.json
 
 # VSCode
 .mono
-
-# Nuke
-.nuke
