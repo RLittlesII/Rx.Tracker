@@ -108,7 +108,7 @@ public class ScheduleViewModelTests
     public async Task Given_WhenLoaded_ThenScheduleShouldBeForDate()
     {
         // Given
-        var now = DateTimeOffset.Now;
+        var now = DateTimeOffset.UtcNow;
         var cqrs = Substitute.For<ICqrs>();
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
@@ -118,7 +118,7 @@ public class ScheduleViewModelTests
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(2)),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.AddDays(2)),
                         ]
                     )
                 )

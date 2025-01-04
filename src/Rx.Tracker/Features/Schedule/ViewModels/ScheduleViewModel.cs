@@ -47,7 +47,7 @@ public class ScheduleViewModel : ViewModelBase
                .RefCount();
 
         medicationSchedule
-           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.Now.Date)
+           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.Date)
            .Bind(out _today)
            .Subscribe()
            .DisposeWith(Garbage);
