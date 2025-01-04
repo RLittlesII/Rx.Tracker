@@ -24,7 +24,7 @@ partial class Tracker : NukeBuild
     Target Workload => definition => definition
        .DependsOn(Clean)
        .Before(Restore)
-       .Executes(() => DotNetTasks.DotNetWorkloadInstall(configurator => configurator.SetVerbosity(DotNetVerbosity.detailed).AddWorkloadId("maui-ios")));
+       .Executes(() => DotNetTasks.DotNetWorkloadInstall(configurator => configurator.SetVerbosity(DotNetVerbosity.detailed).AddWorkloadId("maui")));
 
     Target Restore => definition => definition
        .DependsOn(Clean)
