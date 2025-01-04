@@ -29,7 +29,11 @@ public class MedicationScheduleTests
         // Then
         result
            .Should()
-           .NotBeEmpty();
+           .NotBeEmpty()
+           .And
+           .Subject
+           .Should()
+           .ContainSingle(medication => medication == scheduledMedication);
     }
 
     [Fact]
