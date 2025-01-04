@@ -10,3 +10,5 @@
     - [ ] Count Down Timer to next medicine?
     - Tap Cards to Edit
     - Tap to add medicine
+    - Medication Cards
+      - [ ] Long Press Take

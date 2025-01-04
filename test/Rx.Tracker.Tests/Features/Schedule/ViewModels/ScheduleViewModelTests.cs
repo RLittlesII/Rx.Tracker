@@ -2,7 +2,6 @@ using FluentAssertions;
 using NodaTime;
 using NodaTime.Extensions;
 using NSubstitute;
-using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.Mediation;

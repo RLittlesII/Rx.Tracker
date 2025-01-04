@@ -18,6 +18,9 @@ public class ScheduleStateMachine : ObservableStateMachine<ScheduleState, Schedu
     {
     }
 
+    /// <summary>
+    /// The available state.
+    /// </summary>
     public enum ScheduleState
     {
         /// <summary>
@@ -39,15 +42,32 @@ public class ScheduleStateMachine : ObservableStateMachine<ScheduleState, Schedu
         /// The application failed state.
         /// </summary>
         Failed,
+
+        /// <summary>
+        /// The days schedule.
+        /// </summary>
         DaySchedule
     }
 
+    /// <summary>
+    /// The available triggers.
+    /// </summary>
     public enum ScheduleTrigger
     {
         /// <summary>
         /// Load trigger.
         /// </summary>
         Load,
+
+        /// <summary>
+        /// Forward trigger.
+        /// </summary>
+        Forward,
+
+        /// <summary>
+        /// Back trigger.
+        /// </summary>
+        Back,
 
         /// <summary>
         /// Failure trigger.
