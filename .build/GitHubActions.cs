@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 [GitHubActions(
     "pull-request",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.MacOs12,
     AutoGenerate = true,
     OnPullRequestBranches = ["main"],
     InvokedTargets = [nameof(GitHubPullRequest)]
