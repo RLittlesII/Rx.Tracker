@@ -16,30 +16,17 @@ namespace Rx.Tracker.Tests.Features.Schedule.ViewModels;
 public class ScheduleViewModelTests
 {
     [Fact]
-    public void Given_When_Then()
+    public void WhenConstructed_ThenCurrentStateShouldBeInitial()
     {
         // Given
         ScheduleViewModel sut = new ScheduleViewModelFixture();
 
-        // When
-
-        // Then
-    }
-
-    [Fact]
-    public void Given_When_ThenCurrentStateShouldBeInitial()
-    {
-        // Given
-        ScheduleViewModel sut = new ScheduleViewModelFixture();
-
-        // When
-
-        // Then
+        // When, Then
         sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.Initial);
     }
 
     [Fact]
-    public async Task Given_When_ThenCurrentStateShouldBeBusy()
+    public async Task GivenNoResult_WhenInitialized_ThenCurrentStateShouldBeBusy()
     {
         // Given
         ScheduleViewModel sut = new ScheduleViewModelFixture();
@@ -52,7 +39,7 @@ public class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task Given_When_ThenCurrentStateShouldBeLoaded()
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenCurrentStateShouldBeLoaded()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
@@ -67,10 +54,22 @@ public class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task Given_WhenLoaded_ThenWeekShouldNotBeNull()
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenWeekShouldNotBeNull()
     {
         // Given
-        ScheduleViewModel sut = new ScheduleViewModelFixture();
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
+            Task.FromResult(
+                new LoadSchedule.Result(
+                    new MedicationScheduleFixture().WithEnumerable(
+                        [
+                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.UtcNow),
+                        ]
+                    )
+                )
+            )
+        );
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -80,7 +79,7 @@ public class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task Given_WhenLoaded_ThenScheduleShouldNotBeNull()
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldNotBeNull()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
@@ -105,7 +104,7 @@ public class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task Given_WhenLoaded_ThenScheduleShouldBeForDate()
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate()
     {
         // Given
         var now = DateTimeOffset.UtcNow;

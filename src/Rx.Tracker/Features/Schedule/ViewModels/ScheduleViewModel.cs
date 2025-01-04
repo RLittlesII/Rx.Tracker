@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Linq;
@@ -53,7 +54,9 @@ public class ScheduleViewModel : ViewModelBase
            .DisposeWith(Garbage);
 
         medicationSchedule
-           .Subscribe(_ => { })
+           .DistinctValues(x => x.ScheduledTime.Date)
+           .SortAndBind(out _week, Comparer<DateTime>.Default)
+           .Subscribe()
            .DisposeWith(Garbage);
 
         ConfigureMachine(_stateMachine);
@@ -67,7 +70,7 @@ public class ScheduleViewModel : ViewModelBase
     /// <summary>
     /// Gets the days in the week.
     /// </summary>
-    public ObservableCollection<DateOnly> Week { get; private set; } = [];
+    public ReadOnlyObservableCollection<DateTime> Week => _week;
 
     /// <summary>
     /// Gets scheduled medications.
@@ -79,7 +82,6 @@ public class ScheduleViewModel : ViewModelBase
     {
         await _stateMachine.FireAsync(ScheduleTrigger.Load);
         var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), DateTimeOffset.Now));
-        Week = new ObservableCollection<DateOnly>();
         MedicationSchedule = result.Schedule;
         await _stateMachine.FireAsync(ScheduleTrigger.Load);
     }
@@ -126,6 +128,8 @@ public class ScheduleViewModel : ViewModelBase
     private readonly IValueBinder<ScheduleState> _currentState;
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _today;
+
+    private readonly ReadOnlyObservableCollection<DateTime> _week;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
