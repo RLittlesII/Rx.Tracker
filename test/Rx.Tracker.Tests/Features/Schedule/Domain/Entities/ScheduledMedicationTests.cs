@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
-using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;

@@ -24,6 +24,12 @@
       <Compile Update="Features\Schedule\Domain\Entities\MedicationScheduleFixture.cs">
         <DependentUpon>MedicationScheduleTests.cs</DependentUpon>
       </Compile>
+      <Compile Update="Features\Schedule\ViewModels\ScheduleViewModelFixture.cs">
+        <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Features\Schedule\Domain\Entities\ScheduledMedicationFixture.cs">
+        <DependentUpon>ScheduledMedicationTests.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

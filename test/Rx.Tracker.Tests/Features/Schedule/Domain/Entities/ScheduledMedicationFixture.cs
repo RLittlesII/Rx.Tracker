@@ -4,7 +4,7 @@ using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using System;
 
-namespace Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
+namespace Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 
 internal class ScheduledMedicationFixture : ITestFixtureBuilder
 {

@@ -5,7 +5,6 @@ using NSubstitute;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.Mediation;
-using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System;
 using System.Reactive;

@@ -3,7 +3,6 @@ using FluentAssertions;
 using LanguageExt;
 using NodaTime.Extensions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
-using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
 using System.Threading.Tasks;
 
