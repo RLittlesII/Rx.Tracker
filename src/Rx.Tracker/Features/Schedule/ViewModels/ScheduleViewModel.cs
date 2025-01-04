@@ -1,0 +1,132 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using DynamicData;
+using Microsoft.Extensions.Logging;
+using ReactiveMarbles.Extensions;
+using ReactiveMarbles.Mvvm;
+using ReactiveMarbles.PropertyChanged;
+using Rx.Tracker.Extensions;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
+using Rx.Tracker.Features.Schedule.Domain.Queries;
+using Rx.Tracker.Mediation;
+using Rx.Tracker.Navigation;
+using static Rx.Tracker.Features.Schedule.ViewModels.ScheduleStateMachine;
+
+namespace Rx.Tracker.Features.Schedule.ViewModels;
+
+/// <inheritdoc />
+public class ScheduleViewModel : ViewModelBase
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ScheduleViewModel"/> class.
+    /// </summary>
+    /// <param name="navigator">The navigator.</param>
+    /// <param name="cqrs">The cqrs mediator.</param>
+    /// <param name="loggerFactory">The logger factory.</param>
+    /// <param name="stateMachineFactory">The state machine factory.</param>
+    public ScheduleViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<ScheduleStateMachine> stateMachineFactory)
+        : base(navigator, cqrs, loggerFactory)
+    {
+        _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
+        _currentState =
+            _stateMachine
+               .Current
+               .LogTrace(Logger, "State: {State}")
+               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleState.Initial)
+               .DisposeWith(Garbage);
+
+        var medicationSchedule =
+            this.WhenChanged(viewModel => viewModel.MedicationSchedule)
+               .WhereIsNotNull()
+               .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
+               .Select(schedule => schedule!.Connect())
+               .Switch()
+               .RefCount();
+
+        medicationSchedule
+           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.Now.Date)
+           .Bind(out _today)
+           .Subscribe()
+           .DisposeWith(Garbage);
+
+        medicationSchedule
+           .Subscribe(_ => { })
+           .DisposeWith(Garbage);
+
+        ConfigureMachine(_stateMachine);
+    }
+
+    /// <summary>
+    /// Gets the current state of the machine.
+    /// </summary>
+    public ScheduleState CurrentState => _currentState.Value;
+
+    /// <summary>
+    /// Gets the days in the week.
+    /// </summary>
+    public ObservableCollection<DateOnly> Week { get; private set; } = [];
+
+    /// <summary>
+    /// Gets scheduled medications.
+    /// </summary>
+    public ReadOnlyObservableCollection<ScheduledMedication> Schedule => _today;
+
+    /// <inheritdoc/>
+    protected override async Task Initialize(ICqrs cqrs)
+    {
+        await _stateMachine.FireAsync(ScheduleTrigger.Load);
+        var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), DateTimeOffset.Now));
+        Week = new ObservableCollection<DateOnly>();
+        MedicationSchedule = result.Schedule;
+        await _stateMachine.FireAsync(ScheduleTrigger.Load);
+    }
+
+    private void ConfigureMachine(ScheduleStateMachine stateMachine)
+    {
+        stateMachine
+           .Configure(ScheduleState.Initial)
+           .Permit(ScheduleTrigger.Load, ScheduleState.Busy)
+           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
+
+        stateMachine
+           .Configure(ScheduleState.Busy)
+           .Permit(ScheduleTrigger.Load, ScheduleState.Loaded)
+           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
+
+        stateMachine
+           .Configure(ScheduleState.Loaded)
+           .Permit(ScheduleTrigger.Load, ScheduleState.DaySchedule)
+           .OnEntryAsync(_ => Task.CompletedTask);
+
+        stateMachine
+           .Configure(ScheduleState.DaySchedule)
+           .Permit(ScheduleTrigger.Load, ScheduleState.Loaded)
+           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
+           .OnEntryAsync(_ => Task.CompletedTask);
+    }
+
+    /// <summary>
+    /// Gets the medication schedule.
+    /// </summary>
+    public MedicationSchedule? MedicationSchedule
+    {
+        get => _medicationSchedule;
+        private set => RaiseAndSetIfChanged(ref _medicationSchedule, value);
+    }
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
+    private readonly ScheduleStateMachine _stateMachine;
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
+    private readonly IValueBinder<ScheduleState> _currentState;
+
+    private readonly ReadOnlyObservableCollection<ScheduledMedication> _today;
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
+    private MedicationSchedule? _medicationSchedule;
+}
