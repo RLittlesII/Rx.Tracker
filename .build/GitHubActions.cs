@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 )]
 [GitHubActions(
     "integration",
-    GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.MacOs14,
     AutoGenerate = true,
     OnPushBranches = ["main"],
     InvokedTargets = [nameof(GitHubIntegration)]
@@ -22,7 +22,7 @@ partial class Tracker
     /// <summary>
     /// Gets github action Pipelines target.
     /// </summary>
-    Target GitHubPullRequest => _ => _
+    Target GitHubPullRequest => definition => definition
        .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
        .DependsOn(Clean)
        .DependsOn(Workload)
@@ -32,7 +32,7 @@ partial class Tracker
     /// <summary>
     /// Gets github action Pipelines target.
     /// </summary>
-    Target GitHubIntegration => _ => _
+    Target GitHubIntegration => definition => definition
        .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
        .DependsOn(Clean)
        .DependsOn(Restore)
