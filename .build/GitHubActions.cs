@@ -25,6 +25,7 @@ partial class Tracker
     Target GitHubPullRequest => _ => _
        .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
        .DependsOn(Clean)
+       .DependsOn(Workload)
        .DependsOn(Restore)
        .DependsOn(Build);
 

@@ -32,7 +32,8 @@
         "iPhoneRelease",
         "Release",
         "Restore",
-        "Test"
+        "Test",
+        "Workload"
       ]
     },
     "Verbosity": {
