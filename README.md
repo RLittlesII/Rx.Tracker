@@ -11,8 +11,8 @@ receive reminders, and explicitly acknowledge the time it was taken.
 | Integration  | [![integration](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml/badge.svg)](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml)  |
 
 ## Features
-- [Add Medication](src/Rx.Tracker/Features/Medications/README.md)
-- [Medication Schedule](src/Rx.Tracker/Features/Schedule/README.md)
+- [Medications](src/Rx.Tracker/Features/Medications/README.md)
+- [Schedule](src/Rx.Tracker/Features/Schedule/README.md)
 
 ## Architecture
 
