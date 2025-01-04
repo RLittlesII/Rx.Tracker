@@ -27,7 +27,7 @@ public class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task GivenNoResult_WhenInitialized_ThenCurrentStateShouldBeBusy()
+    public async Task GivenNoResult_WhenInitialized_ThenCurrentStateShouldBeFailed()
     {
         // Given
         ScheduleViewModel sut = new ScheduleViewModelFixture();
@@ -36,7 +36,7 @@ public class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.Busy);
+        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.Failed);
     }
 
     [Fact]

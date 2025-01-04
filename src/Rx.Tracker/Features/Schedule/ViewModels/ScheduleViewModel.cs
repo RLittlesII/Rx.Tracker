@@ -82,10 +82,18 @@ public class ScheduleViewModel : ViewModelBase
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
-        await _stateMachine.FireAsync(ScheduleTrigger.Load);
-        var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
-        MedicationSchedule = result.Schedule;
-        await _stateMachine.FireAsync(ScheduleTrigger.Load);
+        try
+        {
+            await _stateMachine.FireAsync(ScheduleTrigger.Load);
+            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
+            MedicationSchedule = result.Schedule;
+            await _stateMachine.FireAsync(ScheduleTrigger.Load);
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, string.Empty);
+            await _stateMachine.FireAsync(ScheduleTrigger.Failure);
+        }
     }
 
     private void ConfigureMachine(ScheduleStateMachine stateMachine)
