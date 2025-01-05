@@ -6,6 +6,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
+using NodaTime;
+using NodaTime.Extensions;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
@@ -48,14 +50,14 @@ public class ScheduleViewModel : ViewModelBase
                .RefCount();
 
         medicationSchedule
-           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.Date)
+           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.Date.ToLocalDateTime().Date)
            .Bind(out _today)
            .Subscribe()
            .DisposeWith(Garbage);
 
         medicationSchedule
            .DistinctValues(x => x.ScheduledTime.Date)
-           .SortAndBind(out _week, Comparer<DateTime>.Default)
+           .SortAndBind(out _week, Comparer<LocalDate>.Default)
            .Subscribe()
            .DisposeWith(Garbage);
 
@@ -70,7 +72,7 @@ public class ScheduleViewModel : ViewModelBase
     /// <summary>
     /// Gets the days in the week.
     /// </summary>
-    public ReadOnlyObservableCollection<DateTime> Week => _week;
+    public ReadOnlyObservableCollection<LocalDate> Week => _week;
 
     /// <summary>
     /// Gets scheduled medications.
@@ -81,7 +83,7 @@ public class ScheduleViewModel : ViewModelBase
     protected override async Task Initialize(ICqrs cqrs)
     {
         await _stateMachine.FireAsync(ScheduleTrigger.Load);
-        var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), DateTimeOffset.Now));
+        var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
         MedicationSchedule = result.Schedule;
         await _stateMachine.FireAsync(ScheduleTrigger.Load);
     }
@@ -129,7 +131,7 @@ public class ScheduleViewModel : ViewModelBase
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _today;
 
-    private readonly ReadOnlyObservableCollection<DateTime> _week;
+    private readonly ReadOnlyObservableCollection<LocalDate> _week;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;

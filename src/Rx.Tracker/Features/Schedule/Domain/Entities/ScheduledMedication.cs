@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using NodaTime;
+using NodaTime.Extensions;
 using ReactiveMarbles.Mvvm;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 
@@ -21,7 +23,7 @@ public class ScheduledMedication : RxObject
         MealRequirements mealRequirement,
         Medication medication,
         Recurrence recurrence,
-        DateTimeOffset scheduledTime)
+        OffsetDateTime scheduledTime)
         : this(new Id(), mealRequirement, medication, recurrence, scheduledTime)
     {
     }
@@ -34,7 +36,7 @@ public class ScheduledMedication : RxObject
     /// <param name="medication">The medication.</param>
     /// <param name="recurrence">The recurrence.</param>
     /// <param name="scheduledTime">The scheduled time.</param>
-    public ScheduledMedication(Id id, MealRequirements mealRequirement, Medication medication, Recurrence recurrence, DateTimeOffset scheduledTime)
+    public ScheduledMedication(Id id, MealRequirements mealRequirement, Medication medication, Recurrence recurrence, OffsetDateTime scheduledTime)
     {
         Id = id;
         MealRequirement = mealRequirement;
@@ -66,12 +68,12 @@ public class ScheduledMedication : RxObject
     /// <summary>
     /// Gets the scheduled time.
     /// </summary>
-    public DateTimeOffset ScheduledTime { get; }
+    public OffsetDateTime ScheduledTime { get; }
 
     /// <summary>
     /// Gets the taken time.
     /// </summary>
-    public DateTimeOffset? TakenTime
+    public OffsetDateTime? TakenTime
     {
         get => _takenTime;
         private set => RaiseAndSetIfChanged(ref _takenTime, value);
@@ -83,9 +85,9 @@ public class ScheduledMedication : RxObject
     /// <returns>A completion notification.</returns>
     public Task Take()
     {
-        TakenTime = DateTimeOffset.Now;
+        TakenTime = DateTimeOffset.UtcNow.ToOffsetDateTime();
         return Task.CompletedTask;
     }
 
-    private DateTimeOffset? _takenTime;
+    private OffsetDateTime? _takenTime;
 }

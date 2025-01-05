@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LanguageExt;
+using NodaTime;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 
@@ -27,7 +28,7 @@ public interface IReminders
     /// <param name="reminderTime">The reminder time.</param>
     /// <param name="mealRequirement">The mealRequirement.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    Task<Unit> Create(Id id, Medication medication, DateTimeOffset reminderTime, MealRequirements mealRequirement);
+    Task<Unit> Create(Id id, Medication medication, OffsetDateTime reminderTime, MealRequirements mealRequirement);
 
     /// <summary>
     /// Reads the medication reminder with the provided <see cref="Id"/>.

@@ -8,6 +8,7 @@
         <PackageReference Include="LanguageExt.Core" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Nanoid" />
+        <PackageReference Include="NodaTime" />
         <PackageReference Include="ReactiveMarbles.Command" />
         <PackageReference Include="ReactiveMarbles.Mvvm" />
         <PackageReference Include="Refit" />
