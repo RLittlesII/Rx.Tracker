@@ -1,27 +1,38 @@
 # Rx Tracker
-This is an application to schedule, track, and report taken medication.  The main purpose of this application is to allow a user to schedule a given medication, receive reminders, and explicitly acknowledge the time it was taken.
+
+This is an application to schedule, track, and report taken medication. The main purpose of this application is to allow a user to schedule a given medication,
+receive reminders, and explicitly acknowledge the time it was taken.
+
+### Builds
+
+| Build        | Status                                                                                                                                                                              |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Pull Request | [![pull-request](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/pull-request.yml/badge.svg)](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/pull-request.yml) |
+| Integration  | [![integration](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml/badge.svg)](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml)  |
 
 ## Features
+
 - Main Page
-  - [ ] Display Calendar for current day
-  - [ ] Display week view at the top
-  - [ ] Highlight Events
-    - Within 2 hours => Yellow
-    - Within 1 hour => Orange
-    - Within 30 minutes => Red
-  - [ ] Count Down Timer to next medicine?
-  - Tap Cards to Edit
-  - Tap to add medicine
+    - [ ] Display Calendar for current day
+    - [ ] Display week view at the top
+    - [ ] Highlight Events
+        - Within 2 hours => Yellow
+        - Within 1 hour => Orange
+        - Within 30 minutes => Red
+    - [ ] Count Down Timer to next medicine?
+    - Tap Cards to Edit
+    - Tap to add medicine
 
 - [Add Medication](src/Rx.Tracker/Features/Medications/README.md)
 
 ## Architecture
+
 - [Mediator](src/Rx.Tracker/Mediation/README.md)
 - [Navigation](src/Rx.Tracker/Navigation/README.md)
 - [State](src/Rx.Tracker/State/README.md)
 
-
 ### OSS Projects
+
 - [DryIoc](https://github.com/dadhi/DryIoc)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
 - [Language Extensions](https://github.com/louthy/language-ext)
