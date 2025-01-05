@@ -15,6 +15,7 @@ public static class LoadSchedule
     /// Load schedule query.
     /// </summary>
     /// <param name="User">The user id.</param>
+    /// <param name="Date">The date for the schedule.</param>
     public record Query(UserId User, OffsetDate Date) : IQuery<Result>;
 
     /// <summary>
