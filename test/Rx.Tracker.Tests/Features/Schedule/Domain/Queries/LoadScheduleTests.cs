@@ -1,7 +1,6 @@
 using FluentAssertions;
 using NodaTime;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
-using System;
 using System.Threading.Tasks;
 using static Rx.Tracker.Features.Schedule.Domain.Queries.LoadSchedule;
 

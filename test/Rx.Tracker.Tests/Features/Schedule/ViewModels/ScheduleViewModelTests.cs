@@ -84,9 +84,9 @@ public class ScheduleViewModelTests
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
-        var sunday = new DateTimeOffset(new DateTime(2025, 01, 05), TimeSpan.Zero);
-        var monday = sunday.AddDays(1);
-        var tuesday = monday.AddDays(1);
+        var sunday = new DateTimeOffset(new DateTime(2025, 01, 05), TimeSpan.Zero).ToOffsetDateTime();
+        var monday = sunday.Plus(Duration.FromDays(1));
+        var tuesday = monday.Plus(Duration.FromDays(1));
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
                 new LoadSchedule.Result(
@@ -96,7 +96,7 @@ public class ScheduleViewModelTests
                             new ScheduledMedicationFixture().WithScheduledTime(monday),
                             new ScheduledMedicationFixture().WithScheduledTime(sunday),
                         ]
-                    )
+                    ).WithToday(sunday.Date)
                 )
             )
         );
@@ -106,7 +106,7 @@ public class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.Week.Should().StartWith(sunday.DateTime);
+        sut.Week.Should().StartWith(sunday.LocalDateTime.Date);
     }
 
     [Fact]
@@ -114,14 +114,15 @@ public class ScheduleViewModelTests
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
+        var now = DateTimeOffset.UtcNow.ToOffsetDateTime();
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
                 new LoadSchedule.Result(
                     new MedicationScheduleFixture().WithEnumerable(
                         [
-                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.UtcNow.ToOffsetDateTime()),
+                            new ScheduledMedicationFixture().WithScheduledTime(now),
                         ]
-                    )
+                    ).WithToday(now.Date)
                 )
             )
         );
@@ -150,7 +151,7 @@ public class ScheduleViewModelTests
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
                         ]
-                    )
+                    ).WithToday(now.Date)
                 )
             )
         );

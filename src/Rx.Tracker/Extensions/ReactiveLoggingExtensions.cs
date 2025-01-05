@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace Rx.Tracker.Extensions;
 
 /// <summary>
-/// Logging extensions for observable notifications.
+/// Logging extensions for <see cref="IObservable{T}"/> notifications.
 /// </summary>
 public static class ReactiveLoggingExtensions
 {

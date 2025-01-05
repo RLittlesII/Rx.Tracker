@@ -2,7 +2,6 @@ using NodaTime;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
-using System;
 
 namespace Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 

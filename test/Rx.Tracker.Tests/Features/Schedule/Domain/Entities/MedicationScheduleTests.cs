@@ -2,6 +2,7 @@ using DynamicData;
 using FluentAssertions;
 using LanguageExt;
 using NodaTime.Extensions;
+using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using System;
 using System.Threading.Tasks;
@@ -54,15 +55,16 @@ public class MedicationScheduleTests
     public void ScheduledMedication_WhenGroupedByDayOfWeek_ThenGroupContainsMedication()
     {
         // Given
+        var now = new DateTimeOffset(new DateTime(2025, 01, 05));
         MedicationSchedule sut = new MedicationScheduleFixture().WithEnumerable(
             [
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-4).ToOffsetDateTime()),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-3).ToOffsetDateTime()),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-2).ToOffsetDateTime()),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-1).ToOffsetDateTime()),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.ToOffsetDateTime())
+                new ScheduledMedicationFixture().WithScheduledTime(now.AddDays(-4).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(now.AddDays(-3).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(now.AddDays(-2).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(now.AddDays(-1).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(now.ToOffsetDateTime())
             ]
-        );
+        ).WithToday(now.ToLocalDate());
 
         // When
         using var _ = sut.Connect()

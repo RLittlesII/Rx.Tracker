@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using NodaTime.Extensions;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
@@ -50,7 +49,7 @@ public class ScheduleViewModel : ViewModelBase
                .RefCount();
 
         medicationSchedule
-           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.Date.ToLocalDateTime().Date)
+           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.ToLocalDate())
            .Bind(out _today)
            .Subscribe()
            .DisposeWith(Garbage);
