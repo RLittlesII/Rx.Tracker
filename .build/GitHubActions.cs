@@ -35,6 +35,7 @@ partial class Tracker
     Target GitHubIntegration => definition => definition
        .OnlyWhenStatic(GitHubActionsTasks.IsRunningOnGitHubActions)
        .DependsOn(Clean)
+       .DependsOn(Workload)
        .DependsOn(Restore)
        .DependsOn(Build);
 }
