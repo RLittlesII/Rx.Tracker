@@ -1,4 +1,5 @@
 using FluentAssertions;
+using NodaTime;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using System;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ public class LoadScheduleTests
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), DateTimeOffset.Now)));
+        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new OffsetDate())));
 
         // Then
         result
@@ -30,7 +31,7 @@ public class LoadScheduleTests
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await sut.Handle(Create(new UserId(), DateTimeOffset.Now));
+        var result = await sut.Handle(Create(new UserId(), new OffsetDate()));
 
         // Then
         result
@@ -49,7 +50,7 @@ public class LoadScheduleTests
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await sut.Handle(Create(new UserId(), DateTimeOffset.Now));
+        var result = await sut.Handle(Create(new UserId(), new OffsetDate()));
 
         // Then
         result

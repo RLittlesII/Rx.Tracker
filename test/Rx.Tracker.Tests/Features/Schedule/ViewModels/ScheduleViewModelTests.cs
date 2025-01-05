@@ -1,4 +1,6 @@
 using FluentAssertions;
+using NodaTime;
+using NodaTime.Extensions;
 using NSubstitute;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
@@ -63,7 +65,7 @@ public class ScheduleViewModelTests
                 new LoadSchedule.Result(
                     new MedicationScheduleFixture().WithEnumerable(
                         [
-                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.UtcNow),
+                            new ScheduledMedicationFixture(),
                         ]
                     )
                 )
@@ -88,7 +90,7 @@ public class ScheduleViewModelTests
                 new LoadSchedule.Result(
                     new MedicationScheduleFixture().WithEnumerable(
                         [
-                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.UtcNow),
+                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.UtcNow.ToOffsetDateTime()),
                         ]
                     )
                 )
@@ -107,7 +109,7 @@ public class ScheduleViewModelTests
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate()
     {
         // Given
-        var now = DateTimeOffset.UtcNow;
+        var now = DateTimeOffset.UtcNow.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
@@ -117,7 +119,7 @@ public class ScheduleViewModelTests
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.AddDays(2)),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
                         ]
                     )
                 )

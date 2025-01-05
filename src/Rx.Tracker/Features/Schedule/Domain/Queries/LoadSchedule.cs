@@ -1,5 +1,5 @@
-using System;
 using System.Threading.Tasks;
+using NodaTime;
 using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
@@ -15,7 +15,7 @@ public static class LoadSchedule
     /// Load schedule query.
     /// </summary>
     /// <param name="User">The user id.</param>
-    public record Query(UserId User, DateTimeOffset Date) : IQuery<Result>;
+    public record Query(UserId User, OffsetDate Date) : IQuery<Result>;
 
     /// <summary>
     /// Load schedule query.
@@ -34,7 +34,7 @@ public static class LoadSchedule
         public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
 
         /// <inheritdoc/>
-        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([])));
+        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([], LocalDate.MinIsoValue)));
 
         private readonly IScheduleApiContract _apiContract;
     }
@@ -45,5 +45,5 @@ public static class LoadSchedule
     /// <param name="userId">The user id.</param>
     /// <param name="date">The date.</param>
     /// <returns>A query.</returns>
-    public static Query Create(UserId userId, DateTimeOffset date) => new(userId, date);
+    public static Query Create(UserId userId, OffsetDate date) => new(userId, date);
 }

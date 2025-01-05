@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using DynamicData;
 using DynamicData.Kernel;
+using NodaTime;
 using ReactiveMarbles.Extensions;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Entities;
@@ -16,7 +17,8 @@ public class MedicationSchedule : DisposableObject, ISourceCache<ScheduledMedica
     /// Initializes a new instance of the <see cref="MedicationSchedule"/> class.
     /// </summary>
     /// <param name="scheduledMedications">The scheduled medications.</param>
-    public MedicationSchedule(IEnumerable<ScheduledMedication> scheduledMedications)
+    /// <param name="today">The current date.</param>
+    public MedicationSchedule(IEnumerable<ScheduledMedication> scheduledMedications, LocalDate today)
     {
         _cache = new SourceCache<ScheduledMedication, Id>(scheduledMedication => scheduledMedication.Id).DisposeWith(Garbage);
 

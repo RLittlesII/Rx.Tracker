@@ -1,7 +1,7 @@
 using DynamicData;
 using FluentAssertions;
 using LanguageExt;
-using Rocket.Surgery.Extensions.Testing.AutoFixtures;
+using NodaTime.Extensions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using System;
@@ -53,11 +53,11 @@ public class MedicationScheduleTests
         // Given
         MedicationSchedule sut = new MedicationScheduleFixture().WithEnumerable(
             [
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-4)),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-3)),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-2)),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-1)),
-                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now)
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-4).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-3).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-2).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.AddDays(-1).ToOffsetDateTime()),
+                new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.Now.ToOffsetDateTime())
             ]
         );
 
@@ -84,6 +84,3 @@ public class MedicationScheduleTests
             );
     }
 }
-
-[AutoFixture(typeof(MedicationSchedule))]
-internal partial class MedicationScheduleFixture;
