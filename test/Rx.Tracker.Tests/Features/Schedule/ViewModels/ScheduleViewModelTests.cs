@@ -78,6 +78,37 @@ public class ScheduleViewModelTests
         sut.Week.Should().NotBeNullOrEmpty();
     }
 
+
+    [Fact]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenWeekShouldStartWithSunday()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        var sunday = new DateTimeOffset(new DateTime(2025, 01, 05), TimeSpan.Zero);
+        var monday = sunday.AddDays(1);
+        var tuesday = monday.AddDays(1);
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
+            Task.FromResult(
+                new LoadSchedule.Result(
+                    new MedicationScheduleFixture().WithEnumerable(
+                        [
+                            new ScheduledMedicationFixture().WithScheduledTime(tuesday),
+                            new ScheduledMedicationFixture().WithScheduledTime(monday),
+                            new ScheduledMedicationFixture().WithScheduledTime(sunday),
+                        ]
+                    )
+                )
+            )
+        );
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        await sut.InitializeCommand.Execute(Unit.Default);
+
+        // Then
+        sut.Week.Should().StartWith(sunday.DateTime);
+    }
+
     [Fact]
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldNotBeNull()
     {
