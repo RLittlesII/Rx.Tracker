@@ -44,9 +44,8 @@ public class ScheduleViewModel : ViewModelBase
             this.WhenChanged(viewModel => viewModel.MedicationSchedule)
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
-               .Select(schedule => schedule!.Connect())
-               .Switch()
-               .RefCount();
+               .Select(schedule => schedule!.Connect().RefCount())
+               .Switch();
 
         medicationSchedule
            .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.ToLocalDate())
