@@ -3,7 +3,7 @@ using LanguageExt;
 using NSubstitute;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Commands;
-using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
+using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace Rx.Tracker.Tests.Features.Schedule.Domain.Commands;

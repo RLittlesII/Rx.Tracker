@@ -2,11 +2,9 @@ using FluentAssertions;
 using NodaTime;
 using NodaTime.Extensions;
 using NSubstitute;
-using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.Mediation;
-using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System;
 using System.Reactive;
@@ -28,7 +26,7 @@ public class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task GivenNoResult_WhenInitialized_ThenCurrentStateShouldBeBusy()
+    public async Task GivenNoResult_WhenInitialized_ThenCurrentStateShouldBeFailed()
     {
         // Given
         ScheduleViewModel sut = new ScheduleViewModelFixture();
@@ -37,7 +35,7 @@ public class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.Busy);
+        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.Failed);
     }
 
     [Fact]
@@ -80,19 +78,51 @@ public class ScheduleViewModelTests
         sut.Week.Should().NotBeNullOrEmpty();
     }
 
+
     [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldNotBeNull()
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenWeekShouldStartWithSunday()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
+        var sunday = new DateTimeOffset(new DateTime(2025, 01, 05), TimeSpan.Zero).ToOffsetDateTime();
+        var monday = sunday.Plus(Duration.FromDays(1));
+        var tuesday = monday.Plus(Duration.FromDays(1));
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
                 new LoadSchedule.Result(
                     new MedicationScheduleFixture().WithEnumerable(
                         [
-                            new ScheduledMedicationFixture().WithScheduledTime(DateTimeOffset.UtcNow.ToOffsetDateTime()),
+                            new ScheduledMedicationFixture().WithScheduledTime(tuesday),
+                            new ScheduledMedicationFixture().WithScheduledTime(monday),
+                            new ScheduledMedicationFixture().WithScheduledTime(sunday),
                         ]
-                    )
+                    ).WithToday(sunday.Date)
+                )
+            )
+        );
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        await sut.InitializeCommand.Execute(Unit.Default);
+
+        // Then
+        sut.Week.Should().StartWith(sunday.LocalDateTime.Date);
+    }
+
+    [Fact]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldNotBeNull()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        var now = DateTimeOffset.UtcNow.ToOffsetDateTime();
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
+            Task.FromResult(
+                new LoadSchedule.Result(
+                    new MedicationScheduleFixture().WithEnumerable(
+                        [
+                            new ScheduledMedicationFixture().WithScheduledTime(now),
+                        ]
+                    ).WithToday(now.Date)
                 )
             )
         );
@@ -121,7 +151,7 @@ public class ScheduleViewModelTests
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
                         ]
-                    )
+                    ).WithToday(now.Date)
                 )
             )
         );

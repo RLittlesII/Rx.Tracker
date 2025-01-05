@@ -7,6 +7,7 @@ using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
+using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;

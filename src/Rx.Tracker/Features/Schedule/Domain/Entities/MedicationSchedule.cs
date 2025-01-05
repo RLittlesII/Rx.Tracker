@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using DynamicData;
 using DynamicData.Kernel;
 using NodaTime;
 using ReactiveMarbles.Extensions;
+using Rx.Tracker.Extensions;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Entities;
 
@@ -22,7 +24,11 @@ public class MedicationSchedule : DisposableObject, ISourceCache<ScheduledMedica
     {
         _cache = new SourceCache<ScheduledMedication, Id>(scheduledMedication => scheduledMedication.Id).DisposeWith(Garbage);
 
-        _cache.Edit(updater => updater.Load(scheduledMedications));
+        _cache.Edit(updater =>
+        {
+            var medications = scheduledMedications.Where(x => x.ScheduledTime.IsInSameWeek(today)).ToList();
+            updater.Load(medications);
+        });
     }
 
     /// <summary>
@@ -36,8 +42,8 @@ public class MedicationSchedule : DisposableObject, ISourceCache<ScheduledMedica
     public UserId UserId { get; } = new UserId();
 
     /// <inheritdoc/>
-    public IObservable<IChangeSet<ScheduledMedication, Id>> Connect(Func<ScheduledMedication, bool>? predicate = null, bool suppressEmptyChangeSets = true)
-        => _cache.Connect(predicate, suppressEmptyChangeSets).AutoRefresh(x => x.TakenTime);
+    public IObservable<IChangeSet<ScheduledMedication, Id>> Connect(Func<ScheduledMedication, bool>? predicate = null, bool suppressEmptyChangeSets = false)
+        => _cache.Connect(predicate, suppressEmptyChangeSets).AutoRefresh(scheduledMedication => scheduledMedication.TakenTime);
 
     /// <inheritdoc/>
     public IObservable<IChangeSet<ScheduledMedication, Id>> Preview(Func<ScheduledMedication, bool>? predicate = null) => _cache.Preview(predicate);

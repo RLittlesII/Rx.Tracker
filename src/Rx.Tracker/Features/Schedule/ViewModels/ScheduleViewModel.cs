@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using NodaTime.Extensions;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
@@ -45,12 +44,11 @@ public class ScheduleViewModel : ViewModelBase
             this.WhenChanged(viewModel => viewModel.MedicationSchedule)
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
-               .Select(schedule => schedule!.Connect())
-               .Switch()
-               .RefCount();
+               .Select(schedule => schedule!.Connect().RefCount())
+               .Switch();
 
         medicationSchedule
-           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.Date.ToLocalDateTime().Date)
+           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.ToLocalDate())
            .Bind(out _today)
            .Subscribe()
            .DisposeWith(Garbage);
@@ -82,10 +80,18 @@ public class ScheduleViewModel : ViewModelBase
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
-        await _stateMachine.FireAsync(ScheduleTrigger.Load);
-        var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
-        MedicationSchedule = result.Schedule;
-        await _stateMachine.FireAsync(ScheduleTrigger.Load);
+        try
+        {
+            await _stateMachine.FireAsync(ScheduleTrigger.Load);
+            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
+            MedicationSchedule = result.Schedule;
+            await _stateMachine.FireAsync(ScheduleTrigger.Load);
+        }
+        catch (Exception exception)
+        {
+            Logger.LogError(exception, string.Empty);
+            await _stateMachine.FireAsync(ScheduleTrigger.Failure);
+        }
     }
 
     private void ConfigureMachine(ScheduleStateMachine stateMachine)
