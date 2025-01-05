@@ -8,7 +8,7 @@
         - Within 1 hour => Orange
         - Within 30 minutes => Red
     - [ ] Count Down Timer to next medicine?
-    - Tap Cards to Edit
-    - Tap to add medicine
-    - Medication Cards
+    - [ ] Tap Cards to Edit
+    - [ ] Tap to add medicine
+    - [ ] Medication Cards
       - [ ] Long Press Take
