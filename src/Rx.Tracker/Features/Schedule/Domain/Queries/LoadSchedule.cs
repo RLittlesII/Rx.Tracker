@@ -1,5 +1,7 @@
+using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
+using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
@@ -16,7 +18,7 @@ public static class LoadSchedule
     /// </summary>
     /// <param name="User">The user id.</param>
     /// <param name="Date">The date for the schedule.</param>
-    public record Query(UserId User, OffsetDate Date) : IQuery<Result>;
+    public record Query(UserId User, LocalDate Date) : IQuery<Result>;
 
     /// <summary>
     /// Load schedule query.
@@ -31,13 +33,18 @@ public static class LoadSchedule
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHandler"/> class.
         /// </summary>
-        /// <param name="apiContract">The api contract.</param>
-        public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
+        /// <param name="apiClient">The api contract.</param>
+        public QueryHandler(IMedicationScheduleApiClient apiClient) => this._apiClient = apiClient;
 
         /// <inheritdoc/>
-        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([], LocalDate.MinIsoValue)));
+        public async Task<Result> Handle(Query query)
+        {
+            var medicationScheduleDto = await this._apiClient.Get(query);
+            var medicationSchedule = new MedicationSchedule(medicationScheduleDto, query.Date);
+            return new Result(medicationSchedule);
+        }
 
-        private readonly IScheduleApiContract _apiContract;
+        private readonly IMedicationScheduleApiClient _apiClient;
     }
 
     /// <summary>
@@ -46,5 +53,5 @@ public static class LoadSchedule
     /// <param name="userId">The user id.</param>
     /// <param name="date">The date.</param>
     /// <returns>A query.</returns>
-    public static Query Create(UserId userId, OffsetDate date) => new(userId, date);
+    public static Query Create(UserId userId, LocalDate date) => new(userId, date);
 }

@@ -1,6 +1,11 @@
 using FluentAssertions;
 using NodaTime;
+using NSubstitute;
+using Rx.Tracker.Features.Schedule.Data.Api;
+using Rx.Tracker.Features.Schedule.Data.Dto;
+using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Rx.Tracker.Features.Schedule.Domain.Queries.LoadSchedule;
 
@@ -15,7 +20,7 @@ public class LoadScheduleTests
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new OffsetDate())));
+        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new LocalDate())));
 
         // Then
         result
@@ -27,10 +32,12 @@ public class LoadScheduleTests
     public async Task GivenQueryHandler_WhenHandle_ThenResultCorrectType()
     {
         // Given
+        var api = Substitute.For<IMedicationScheduleApiClient>();
+        api.Get(Arg.Any<Query>()).Returns(Task.FromResult<IReadOnlyCollection<ScheduledMedication>>([]));
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await sut.Handle(Create(new UserId(), new OffsetDate()));
+        var result = await sut.Handle(Create(new UserId(), new LocalDate()));
 
         // Then
         result
@@ -49,7 +56,7 @@ public class LoadScheduleTests
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await sut.Handle(Create(new UserId(), new OffsetDate()));
+        var result = await sut.Handle(Create(new UserId(), new LocalDate()));
 
         // Then
         result
