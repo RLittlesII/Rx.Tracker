@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using NodaTime;
-using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
 
@@ -15,7 +14,8 @@ public static class LoadSchedule
     /// Load schedule query.
     /// </summary>
     /// <param name="User">The user id.</param>
-    public record Query(UserId User, OffsetDate Date) : IQuery<Result>;
+    /// <param name="Date">The date for the schedule.</param>
+    public record Query(UserId User, LocalDate Date) : IQuery<Result>;
 
     /// <summary>
     /// Load schedule query.
@@ -30,13 +30,17 @@ public static class LoadSchedule
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHandler"/> class.
         /// </summary>
-        /// <param name="apiContract">The api contract.</param>
-        public QueryHandler(IScheduleApiContract apiContract) => _apiContract = apiContract;
+        /// <param name="apiClient">The api contract.</param>
+        public QueryHandler(IMedicationScheduleApiClient apiClient) => _apiClient = apiClient;
 
         /// <inheritdoc/>
-        public Task<Result> Handle(Query query) => Task.FromResult(new Result(new MedicationSchedule([], LocalDate.MinIsoValue)));
+        public async Task<Result> Handle(Query query)
+        {
+            var medicationSchedule = await _apiClient.Get(query);
+            return new Result(medicationSchedule);
+        }
 
-        private readonly IScheduleApiContract _apiContract;
+        private readonly IMedicationScheduleApiClient _apiClient;
     }
 
     /// <summary>
@@ -45,5 +49,5 @@ public static class LoadSchedule
     /// <param name="userId">The user id.</param>
     /// <param name="date">The date.</param>
     /// <returns>A query.</returns>
-    public static Query Create(UserId userId, OffsetDate date) => new(userId, date);
+    public static Query Create(UserId userId, LocalDate date) => new(userId, date);
 }

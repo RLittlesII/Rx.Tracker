@@ -1,6 +1,9 @@
 using FluentAssertions;
 using NodaTime;
+using NSubstitute;
+using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
+using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System.Threading.Tasks;
 using static Rx.Tracker.Features.Schedule.Domain.Queries.LoadSchedule;
 
@@ -15,7 +18,7 @@ public class LoadScheduleTests
         QueryHandler sut = new LoadScheduleQueryHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new OffsetDate())));
+        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new LocalDate())));
 
         // Then
         result
@@ -27,10 +30,12 @@ public class LoadScheduleTests
     public async Task GivenQueryHandler_WhenHandle_ThenResultCorrectType()
     {
         // Given
-        QueryHandler sut = new LoadScheduleQueryHandlerFixture();
+        var client = Substitute.For<IMedicationScheduleApiClient>();
+        client.Get(Arg.Any<Query>()).Returns(Task.FromResult<MedicationSchedule>(new MedicationScheduleFixture().WithEnumerable([])));
+        QueryHandler sut = new LoadScheduleQueryHandlerFixture().WithClient(client);
 
         // When
-        var result = await sut.Handle(Create(new UserId(), new OffsetDate()));
+        var result = await sut.Handle(Create(new UserId(), new LocalDate()));
 
         // Then
         result
@@ -46,10 +51,12 @@ public class LoadScheduleTests
     public async Task GivenQueryHandler_WhenHandle_ThenResultHasMedicationSchedule()
     {
         // Given
-        QueryHandler sut = new LoadScheduleQueryHandlerFixture();
+        var client = Substitute.For<IMedicationScheduleApiClient>();
+        client.Get(Arg.Any<Query>()).Returns(Task.FromResult<MedicationSchedule>(new MedicationScheduleFixture().WithEnumerable([])));
+        QueryHandler sut = new LoadScheduleQueryHandlerFixture().WithClient(client);
 
         // When
-        var result = await sut.Handle(Create(new UserId(), new OffsetDate()));
+        var result = await sut.Handle(Create(new UserId(), new LocalDate()));
 
         // Then
         result
