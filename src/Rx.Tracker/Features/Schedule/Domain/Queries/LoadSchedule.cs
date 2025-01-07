@@ -1,8 +1,5 @@
-using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
-using Rx.Tracker.Features.Medications.Domain.Entities;
-using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
 
@@ -34,13 +31,12 @@ public static class LoadSchedule
         /// Initializes a new instance of the <see cref="QueryHandler"/> class.
         /// </summary>
         /// <param name="apiClient">The api contract.</param>
-        public QueryHandler(IMedicationScheduleApiClient apiClient) => this._apiClient = apiClient;
+        public QueryHandler(IMedicationScheduleApiClient apiClient) => _apiClient = apiClient;
 
         /// <inheritdoc/>
         public async Task<Result> Handle(Query query)
         {
-            var medicationScheduleDto = await this._apiClient.Get(query);
-            var medicationSchedule = new MedicationSchedule(medicationScheduleDto, query.Date);
+            var medicationSchedule = await _apiClient.Get(query);
             return new Result(medicationSchedule);
         }
 

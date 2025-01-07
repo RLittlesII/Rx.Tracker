@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Refit;
 using Rx.Tracker.Features.Schedule.Data.Dto;
@@ -17,5 +18,5 @@ public interface IMedicationScheduleApiContract
     /// <param name="query">The query.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
     [Get("/schedule/{id}")]
-    Task<MedicationScheduleDto> Get([AliasAs("id")] string userId, [Query] LoadSchedule.Query query);
+    Task<IEnumerable<ScheduledMedicineDto>> Get([AliasAs("id")] string userId, [Query] LoadSchedule.Query query);
 }

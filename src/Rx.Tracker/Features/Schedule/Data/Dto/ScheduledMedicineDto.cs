@@ -12,4 +12,4 @@ public record ScheduledMedicineDto(
     MealRequirements MealRequirement,
     Recurrence Recurrence,
     OffsetDateTime ScheduledTime,
-    OffsetDateTime TakenTime) : MedicineDto(Id);
+    OffsetDateTime? TakenTime) : MedicineDto(Id);
