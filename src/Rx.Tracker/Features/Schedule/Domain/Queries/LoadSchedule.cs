@@ -30,7 +30,7 @@ public static class LoadSchedule
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHandler"/> class.
         /// </summary>
-        /// <param name="apiClient">The api contract.</param>
+        /// <param name="apiClient">The api client.</param>
         public QueryHandler(IMedicationScheduleApiClient apiClient) => _apiClient = apiClient;
 
         /// <inheritdoc/>
