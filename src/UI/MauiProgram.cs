@@ -13,6 +13,8 @@ using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Container;
 using Rx.Tracker.UI.Exceptions.Handlers;
 using Rx.Tracker.UI.Features;
+using Rx.Tracker.UI.Features.Main;
+using Rx.Tracker.UI.Features.Medicine;
 
 [assembly: SuppressMessage(
     "StyleCop.CSharp.DocumentationRules",
@@ -47,17 +49,14 @@ public static class MauiProgram
     private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>()
        .Navigate<Routes>(routes => routes.AddMedicine);
 
-    private static void FontDelegate(IFontCollection fonts) => fonts.AddFont(
-            "OpenSans-Regular.ttf",
-            "OpenSansRegular")
-       .AddFont(
-            "OpenSans-Semibold.ttf",
-            "OpenSansSemibold");
+    private static void FontDelegate(IFontCollection fonts) => fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular")
+       .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 
     private static void Initialize(IContainerProvider containerProvider) => containerProvider.GetContainer();
 
     private static void RegisterTypes(IContainerRegistry registrar) => registrar.ContainerRegistryModule<MarblesModule>()
-       .ContainerRegistryModule<UiModule>()
+       .ContainerRegistryModule<MainModule>()
+       .ContainerRegistryModule<MedicationModule>()
        .ContainerRegistryModule<ShinyModule>()
        .GetContainer()
        .ContainerModule<FeaturesModule>();
