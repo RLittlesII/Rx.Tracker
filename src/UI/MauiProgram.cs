@@ -56,13 +56,13 @@ public static class MauiProgram
 
     private static void Initialize(IContainerProvider containerProvider) => containerProvider.GetContainer();
 
-    private static void RegisterTypes(IContainerRegistry registrar) => registrar.ContainerRegistryModule<MarblesModule>()
+    private static void RegisterTypes(IContainerRegistry registrar) => registrar
        .ContainerRegistryModule<MainModule>()
        .ContainerRegistryModule<MedicationModule>()
        .ContainerRegistryModule<ScheduleModule>()
        .GetContainer()
        .ContainerModule<FeaturesModule>()
-       .ContainerModule<ShinyModule>();
+       .ContainerModule<MarblesModule>();
 
     private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension();
 }
