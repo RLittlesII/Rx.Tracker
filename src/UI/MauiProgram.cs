@@ -36,7 +36,6 @@ public static class MauiProgram
        .UseMauiCommunityToolkitMarkup()
        .UseAirframe(ContainerRegistry.GetContainer(), BuildAirframe())
        .UsePrism((IContainerExtension)ContainerRegistry, ConfigurePrism())
-       .AddShinyMediator(configuration => configuration.AddPerformanceLoggingMiddleware())
        .ConfigureFonts(FontDelegate)
        .Build();
 
