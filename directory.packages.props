@@ -7,6 +7,7 @@
         <ReactiveUIVersion>20.1.63</ReactiveUIVersion>
         <ShinyVersion>2.7.1</ShinyVersion>
         <SplatVersion>14.6.1</SplatVersion>
+        <RocketSurgeryTestingVersion>9.0.3</RocketSurgeryTestingVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="4.2.0"/>
@@ -101,8 +102,8 @@
         <PackageVersion Include="Shiny.Core" Version="$(ShinyVersion)"/>
         <PackageVersion Include="Shiny.Locations" Version="$(ShinyVersion)"/>
         <PackageVersion Include="Shiny.Notifications" Version="$(ShinyVersion)"/>
-        <PackageVersion Include="Shiny.Mediator" Version="3.0.0-beta-0008"/>
-        <PackageVersion Include="Shiny.Mediator.Maui" Version="2.2.0-beta-0001"/>
+<!--        <PackageVersion Include="Shiny.Mediator" Version="3.0.0-beta-0008"/>-->
+<!--        <PackageVersion Include="Shiny.Mediator.Maui" Version="2.2.0-beta-0001"/>-->
     </ItemGroup>
     <ItemGroup Label="Splat">
         <PackageVersion Include="Splat" Version="$(SplatVersion)"/>
@@ -115,6 +116,7 @@
         <PackageVersion Include="DynamicData" Version="9.0.4"/>
         <PackageVersion Include="Humanizer" Version="2.7.9"/>
         <PackageVersion Include="LanguageExt.Core" Version="5.0.0-beta-39"/>
+        <PackageVersion Include="MediatR" Version="12.4.1"/>
         <PackageVersion Include="Nanoid" Version="3.1.0"/>
         <PackageVersion Include="NodaTime" Version="3.1.0"/>
         <PackageVersion Include="Refit" Version="8.0.0"/>
@@ -129,10 +131,13 @@
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
         <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1"/>
         <PackageVersion Include="NSubstitute" Version="5.3.0"/>
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="9.0.2"/>
-        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="9.0.2"/>
         <PackageVersion Include="xunit" Version="2.9.2"/>
         <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2"/>
         <PackageVersion Include="XunitXml.TestLogger" Version="4.1.0"/>
+    </ItemGroup>
+    <ItemGroup Label="Rocket Surgery Testing">
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing" Version="$(RocketSurgeryTestingVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="$(RocketSurgeryTestingVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="$(RocketSurgeryTestingVersion)"/>
     </ItemGroup>
 </Project>

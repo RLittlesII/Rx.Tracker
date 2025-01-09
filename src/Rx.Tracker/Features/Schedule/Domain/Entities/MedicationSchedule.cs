@@ -24,11 +24,7 @@ public class MedicationSchedule : DisposableObject, ISourceCache<ScheduledMedica
     {
         _cache = new SourceCache<ScheduledMedication, Id>(scheduledMedication => scheduledMedication.Id).DisposeWith(Garbage);
 
-        _cache.Edit(updater =>
-        {
-            var medications = scheduledMedications.Where(x => x.ScheduledTime.IsInSameWeek(today)).ToList();
-            updater.Load(medications);
-        });
+        _cache.Edit(updater => updater.Load(scheduledMedications.Where(medication => medication.ScheduledTime.IsInSameWeek(today)).ToList()));
     }
 
     /// <summary>

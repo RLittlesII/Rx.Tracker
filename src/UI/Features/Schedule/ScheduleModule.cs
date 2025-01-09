@@ -1,4 +1,5 @@
 using Prism.Ioc;
+using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Features.Schedule.ViewModels;
@@ -12,5 +13,5 @@ public class ScheduleModule : ContainerRegistryModule
        .RegisterForNavigation<ScheduleScreen, ScheduleViewModel>()
        .Register<ScheduleStateMachine>()
        .Register<LoadSchedule.QueryHandler>()
-       .Register<IMedicationScheduleApiClient>();
+       .Register<IMedicationScheduleApiClient, MedicationScheduleClient>();
 }

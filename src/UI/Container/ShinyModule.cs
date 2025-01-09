@@ -1,11 +1,16 @@
-using Prism.Ioc;
-using Shiny.Stores;
+using DryIoc;
+using Rx.Tracker.Container;
+using Shiny.Mediator;
+using Shiny.Mediator.Infrastructure.Impl;
 
 namespace Rx.Tracker.UI.Container;
 
-public class ShinyModule : ContainerRegistryModule
+public class ShinyModule : ContainerModule
 {
     /// <inheritdoc />
-    protected override IContainerRegistry RegisterTypes(IContainerRegistry containerRegistry)
-        => containerRegistry.RegisterSingleton<IKeyValueStore, MemoryKeyValueStore>();
+    protected override IContainer Register(IContainer registrar)
+    {
+        registrar.Register<IMediator, Mediator>();
+        return registrar;
+    }
 }
