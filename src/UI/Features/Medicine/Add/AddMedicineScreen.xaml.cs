@@ -6,9 +6,9 @@ using Unit = System.Reactive.Unit;
 
 namespace Rx.Tracker.UI.Features.Medicine.Add;
 
-public partial class AddMedicine : IInitializeAsync
+public partial class AddMedicineScreen : IInitializeAsync
 {
-    public AddMedicine() => InitializeComponent();
+    public AddMedicineScreen() => InitializeComponent();
 
     public async Task InitializeAsync(INavigationParameters parameters) => await ((AddMedicineViewModel)BindingContext).InitializeCommand.Execute(Unit.Default);
 }

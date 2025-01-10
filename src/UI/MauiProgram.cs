@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Markup;
@@ -15,6 +15,7 @@ using Rx.Tracker.UI.Exceptions.Handlers;
 using Rx.Tracker.UI.Features;
 using Rx.Tracker.UI.Features.Main;
 using Rx.Tracker.UI.Features.Medicine;
+using Rx.Tracker.UI.Features.Schedule;
 
 [assembly: SuppressMessage(
     "StyleCop.CSharp.DocumentationRules",
@@ -54,12 +55,13 @@ public static class MauiProgram
 
     private static void Initialize(IContainerProvider containerProvider) => containerProvider.GetContainer();
 
-    private static void RegisterTypes(IContainerRegistry registrar) => registrar.ContainerRegistryModule<MarblesModule>()
+    private static void RegisterTypes(IContainerRegistry registrar) => registrar
        .ContainerRegistryModule<MainModule>()
        .ContainerRegistryModule<MedicationModule>()
-       .ContainerRegistryModule<ShinyModule>()
+       .ContainerRegistryModule<ScheduleModule>()
        .GetContainer()
-       .ContainerModule<FeaturesModule>();
+       .ContainerModule<FeaturesModule>()
+       .ContainerModule<MarblesModule>();
 
     private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension();
 }

@@ -58,8 +58,6 @@
         <PackageReference Include="ReactiveMarbles.Mvvm" />
         <PackageReference Include="ReactiveUI.Maui" />
         <PackageReference Include="Rocket.Surgery.Airframe.Core" />
-        <PackageReference Include="Shiny" />
-        <PackageReference Include="Shiny.Locations" />
     </ItemGroup>
 
     <ItemGroup>

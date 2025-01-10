@@ -4,14 +4,16 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DynamicData" />
-        <PackageReference Include="LanguageExt.Core" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-        <PackageReference Include="Nanoid" />
-        <PackageReference Include="NodaTime" />
-        <PackageReference Include="ReactiveMarbles.Command" />
-        <PackageReference Include="ReactiveMarbles.Mvvm" />
-        <PackageReference Include="Refit" />
-        <PackageReference Include="Stateless" />
+        <PackageReference Include="DryIoc.dll" PrivateAssets="true" />
+        <PackageReference Include="DynamicData"/>
+        <PackageReference Include="LanguageExt.Core"/>
+        <PackageReference Include="MediatR"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+        <PackageReference Include="Nanoid"/>
+        <PackageReference Include="NodaTime"/>
+        <PackageReference Include="ReactiveMarbles.Command"/>
+        <PackageReference Include="ReactiveMarbles.Mvvm"/>
+        <PackageReference Include="Refit"/>
+        <PackageReference Include="Stateless"/>
     </ItemGroup>
 </Project>

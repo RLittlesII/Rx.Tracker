@@ -1,11 +1,18 @@
+using DryIoc;
 using FluentAssertions;
+using MediatR;
 using NodaTime;
 using NSubstitute;
+using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
+using Rx.Tracker.Mediation;
+using Rx.Tracker.Tests.Container;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
+using System.Threading;
 using System.Threading.Tasks;
 using static Rx.Tracker.Features.Schedule.Domain.Queries.LoadSchedule;
+using Arg = NSubstitute.Arg;
 
 namespace Rx.Tracker.Tests.Features.Schedule.Domain.Queries;
 
@@ -15,10 +22,10 @@ public class LoadScheduleTests
     public async Task GivenQueryHandler_WhenHandle_TheShouldNotThrow()
     {
         // Given
-        QueryHandler sut = new LoadScheduleQueryHandlerFixture();
+        var sut = new LoadScheduleQueryHandlerFixture().AsInterface();
 
         // When
-        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new LocalDate())));
+        var result = await Record.ExceptionAsync(async () => await sut.Handle(Create(new UserId(), new LocalDate()), CancellationToken.None));
 
         // Then
         result
@@ -32,10 +39,10 @@ public class LoadScheduleTests
         // Given
         var client = Substitute.For<IMedicationScheduleApiClient>();
         client.Get(Arg.Any<Query>()).Returns(Task.FromResult<MedicationSchedule>(new MedicationScheduleFixture().WithEnumerable([])));
-        QueryHandler sut = new LoadScheduleQueryHandlerFixture().WithClient(client);
+        var sut = new LoadScheduleQueryHandlerFixture().WithClient(client).AsInterface();
 
         // When
-        var result = await sut.Handle(Create(new UserId(), new LocalDate()));
+        var result = await sut.Handle(Create(new UserId(), new LocalDate()), CancellationToken.None);
 
         // Then
         result
@@ -53,10 +60,10 @@ public class LoadScheduleTests
         // Given
         var client = Substitute.For<IMedicationScheduleApiClient>();
         client.Get(Arg.Any<Query>()).Returns(Task.FromResult<MedicationSchedule>(new MedicationScheduleFixture().WithEnumerable([])));
-        QueryHandler sut = new LoadScheduleQueryHandlerFixture().WithClient(client);
+        var sut = new LoadScheduleQueryHandlerFixture().WithClient(client).AsInterface();
 
         // When
-        var result = await sut.Handle(Create(new UserId(), new LocalDate()));
+        var result = await sut.Handle(Create(new UserId(), new LocalDate()), CancellationToken.None);
 
         // Then
         result
@@ -67,5 +74,17 @@ public class LoadScheduleTests
            .Subject
            .Should()
            .BeOfType<MedicationSchedule>();
+    }
+
+    [Fact]
+    public async Task GivenContainer_WhenCqrsQuery_ThenReturnsResultType()
+    {
+        // Given, When
+        var result = await new ContainerFixture().AsInterface().Resolve<ICqrs>().Query(Create(new UserId(), new LocalDate()));
+
+        // Then
+        result
+           .Should()
+           .BeOfType<Result>();
     }
 }

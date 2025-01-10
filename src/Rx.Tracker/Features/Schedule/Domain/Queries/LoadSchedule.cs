@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using NodaTime;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
@@ -25,16 +26,16 @@ public static class LoadSchedule
     /// <summary>
     /// The load schedule query handler.
     /// </summary>
-    public class QueryHandler : IQueryHandler<Query, Result>
+    public class QueryHandler : QueryHandlerBase<Query, Result>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHandler"/> class.
         /// </summary>
-        /// <param name="apiClient">The api contract.</param>
+        /// <param name="apiClient">The api client.</param>
         public QueryHandler(IMedicationScheduleApiClient apiClient) => _apiClient = apiClient;
 
-        /// <inheritdoc/>
-        public async Task<Result> Handle(Query query)
+        /// <inheritdoc />
+        protected override async Task<Result> Handle(Query query, CancellationToken cancellationToken = default)
         {
             var medicationSchedule = await _apiClient.Get(query);
             return new Result(medicationSchedule);

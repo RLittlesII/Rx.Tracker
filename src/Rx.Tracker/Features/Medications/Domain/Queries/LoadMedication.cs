@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
@@ -36,7 +37,7 @@ public static class LoadMedication
     /// <summary>
     /// The add medication query handler.
     /// </summary>
-    public class QueryHandler : IQueryHandler<Query, Result>
+    public class QueryHandler : QueryHandlerBase<Query, Result>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHandler"/> class.
@@ -44,8 +45,8 @@ public static class LoadMedication
         /// <param name="client">The api contract.</param>
         public QueryHandler(IMedicineApiClient client) => _client = client;
 
-        /// <inheritdoc/>
-        public async Task<Result> Handle(Query query)
+        /// <inheritdoc />
+        protected override async Task<Result> Handle(Query query, CancellationToken cancellationToken = default)
         {
             var things = await _client.Get();
 

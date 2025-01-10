@@ -8,7 +8,7 @@ namespace Rx.Tracker.Mediation;
 /// </summary>
 /// <typeparam name="TResult">The result type.</typeparam>
 [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Generic Typed Interface")]
-public interface IRequest<TResult>;
+public interface IRequest<TResult> : MediatR.IRequest<TResult>;
 
 /// <summary>
 /// Represents a request made to the mediator.

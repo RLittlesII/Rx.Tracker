@@ -1,133 +1,143 @@
 <Project>
-  <PropertyGroup>
-    <AirframeVersion>0.11.1</AirframeVersion>
-    <MauiVersion>8.0.92</MauiVersion>
-    <MicrosoftVersion>9.0.0</MicrosoftVersion>
-    <PrismVersion>9.0.537</PrismVersion>
-    <ReactiveUIVersion>20.1.63</ReactiveUIVersion>
-    <ShinyVersion>2.7.1</ShinyVersion>
-    <SplatVersion>14.6.1</SplatVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="4.2.0" />
-    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-    <PackageVersion Include="Rocket.Surgery.Build.Metadata" Version="3.3.11" PrivateAssets="All" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.Metadata" Version="1.1.0" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.SourceLink" Version="1.2.1" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.CI" Version="1.2.1" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.GitVersion" Version="1.2.1" />
-    <PackageVersion Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" Version="1.2.1" Condition="'$(MSBuildProjectName)'!='.build'" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" PrivateAssets="all" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.9" PrivateAssets="All" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="BenchmarkDotNet" Version="0.13.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="GitVersion.Tool" Version="5.12.0" />
-    <PackageVersion Include="JetBrains.ReSharper.CommandLineTools" Version="2023.3.3" />
-    <PackageVersion Include="NuGet.CommandLine" Version="6.8.0" />
-    <PackageVersion Include="Nuke.Common" Version="8.0.0" />
-    <PackageVersion Include="ReportGenerator" Version="5.2.2" />
-    <PackageVersion Include="Rocket.Surgery.Nuke" Version="1.8.16" />
-  </ItemGroup>
-  <ItemGroup Label="Maui">
-    <PackageVersion Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageVersion Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-    <PackageVersion Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
-  </ItemGroup>
-  <ItemGroup Label="Microsoft">
-    <!--        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="3.1.10" />-->
-    <!--        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.10" />-->
-    <!--        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />-->
-    <!--        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />-->
-    <!--        <PackageVersion Include="Microsoft.Extensions.Http" Version="7.0.0" />-->
-    <!--        <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />-->
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftVersion)" />
-    <!--        <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.10" />-->
-    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
-    <PackageVersion Include="System.Net.Http.Json" Version="7.0.0" />
-    <PackageVersion Include="System.Reactive" Version="6.0.1" />
-    <PackageVersion Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
-    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-  </ItemGroup>
-  <ItemGroup Label="Prism">
-    <PackageVersion Include="Prism.Maui" Version="$(PrismVersion)" />
-    <PackageVersion Include="Prism.Maui.Rx" Version="$(PrismVersion)" />
-    <PackageVersion Include="Prism.DryIoc.Maui" Version="$(PrismVersion)" />
-  </ItemGroup>
-  <ItemGroup Label="ReactiveMarbles">
-    <PackageVersion Include="ReactiveMarbles.Command" Version="1.0.4" />
-    <PackageVersion Include="ReactiveMarbles.Mvvm" Version="1.0.95" />
-    <PackageVersion Include="ReactiveMarbles.PropertyChanged" Version="2.0.27" />
-    <PackageVersion Include="ReactiveMarbles.ObservableEvents.SourceGenerator" Version="1.2.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
-  </ItemGroup>
-  <ItemGroup Label="ReactiveUI">
-    <PackageVersion Include="ReactiveUI" Version="$(ReactiveUIVersion)" />
-    <PackageVersion Include="ReactiveUI.Fody" Version="$(ReactiveUIVersion)" />
-    <PackageVersion Include="ReactiveUI.Maui" Version="$(ReactiveUIVersion)" />
-    <PackageVersion Include="ReactiveUI.Testing" Version="$(ReactiveUIVersion)" />
-  </ItemGroup>
-  <ItemGroup Label="Rocket.Surgery">
-    <PackageVersion Include="Rocket.Surgery.Airframe.Core" Version="$(AirframeVersion)" />
-    <PackageVersion Include="Rocket.Surgery.Airframe.Forms" Version="$(AirframeVersion)" />
-    <PackageVersion Include="Rocket.Surgery.Airframe.Microsoft.Extensions.DependencyInjection" Version="$(AirframeVersion)" />
-    <PackageVersion Include="Rocket.Surgery.Airframe.Shiny" Version="$(AirframeVersion)" />
-    <PackageVersion Include="Rocket.Surgery.Reactive.Extensions" Version="11.4.2" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" Version="9.0.2" />
-    <PackageVersion Include="Rocket.Surgery.Task.Extensions" Version="11.4.2" />
-  </ItemGroup>
-  <ItemGroup Label="Serilog">
-    <PackageVersion Include="Serilog.Exceptions" Version="5.7.0" />
-    <PackageVersion Include="Serilog.Formatting.Compact" Version="1.1.0" />
-    <PackageVersion Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-    <PackageVersion Include="Serilog.Extensions.Hosting" Version="2.0.0" />
-    <PackageVersion Include="Serilog.Sinks.AppCenter.Crash" Version="1.2.1" />
-    <PackageVersion Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
-    <PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Xamarin" Version="0.2.0.64" />
-    <PackageVersion Include="Serilog.Sinks.Console" Version="3.0.1" />
-  </ItemGroup>
-  <ItemGroup Label="Splat">
-    <PackageVersion Include="Splat" Version="$(SplatVersion)" />
-    <PackageVersion Include="Splat.Serilog" Version="$(SplatVersion)" />
-    <PackageVersion Include="Splat.Microsoft.Extensions.Logging" Version="$(SplatVersion)" />
-    <PackageVersion Include="Splat.Microsoft.Extensions.DependencyInjection" Version="$(SplatVersion)" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="DynamicData" Version="9.0.4" />
-    <PackageVersion Include="Humanizer" Version="2.7.9" />
-    <PackageVersion Include="LanguageExt.Core" Version="5.0.0-beta-39" />
-    <PackageVersion Include="Nanoid" Version="3.1.0" />
-    <PackageVersion Include="NodaTime" Version="3.1.0" />
-    <PackageVersion Include="Refit" Version="8.0.0" />
-    <PackageVersion Include="Rg.Plugins.Popup" Version="2.0.0.11" />
-    <PackageVersion Include="Shiny" Version="$(ShinyVersion)" />
-    <PackageVersion Include="Shiny.Core" Version="$(ShinyVersion)" />
-    <PackageVersion Include="Shiny.Locations" Version="$(ShinyVersion)" />
-    <PackageVersion Include="Shiny.Notifications" Version="$(ShinyVersion)" />
-    <PackageVersion Include="Stateless" Version="5.16.0" />
-    <PackageVersion Include="TypeNameFormatter.Sources" Version="1.1.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.2" IncludeAssets="all" PrivateAssets="runtime;build;native;contentfiles;analyzers" />
-    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
-    <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="9.0.2" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="9.0.2" />
-    <PackageVersion Include="xunit" Version="2.9.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
-    <PackageVersion Include="XunitXml.TestLogger" Version="4.1.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <AirframeVersion>0.11.1</AirframeVersion>
+        <MauiVersion>8.0.92</MauiVersion>
+        <MicrosoftVersion>9.0.0</MicrosoftVersion>
+        <PrismVersion>9.0.537</PrismVersion>
+        <ReactiveUIVersion>20.1.63</ReactiveUIVersion>
+        <ShinyVersion>2.7.1</ShinyVersion>
+        <SplatVersion>14.6.1</SplatVersion>
+        <RocketSurgeryTestingVersion>9.0.3</RocketSurgeryTestingVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="4.2.0"/>
+        <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3"/>
+        <PackageVersion Include="Rocket.Surgery.Build.Metadata" Version="3.3.11" PrivateAssets="All"/>
+        <PackageVersion Include="Rocket.Surgery.MSBuild.Metadata" Version="1.1.0"/>
+        <PackageVersion Include="Rocket.Surgery.MSBuild.SourceLink" Version="1.2.1"/>
+        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+        <PackageVersion Include="Rocket.Surgery.MSBuild.CI" Version="1.2.1"/>
+        <PackageVersion Include="Rocket.Surgery.MSBuild.GitVersion" Version="1.2.1"/>
+        <PackageVersion Include="Rocket.Surgery.MSBuild.JetBrains.Annotations" Version="1.2.1" Condition="'$(MSBuildProjectName)'!='.build'"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556"/>
+        <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" PrivateAssets="all"/>
+        <PackageVersion Include="Roslynator.Analyzers" Version="4.12.9" PrivateAssets="All"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="BenchmarkDotNet" Version="0.13.1"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="GitVersion.Tool" Version="5.12.0"/>
+        <PackageVersion Include="JetBrains.ReSharper.CommandLineTools" Version="2023.3.3"/>
+        <PackageVersion Include="NuGet.CommandLine" Version="6.8.0"/>
+        <PackageVersion Include="Nuke.Common" Version="8.0.0"/>
+        <PackageVersion Include="ReportGenerator" Version="5.2.2"/>
+        <PackageVersion Include="Rocket.Surgery.Nuke" Version="1.8.16"/>
+    </ItemGroup>
+    <ItemGroup Label="Maui">
+        <PackageVersion Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+        <PackageVersion Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
+        <PackageVersion Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)"/>
+    </ItemGroup>
+    <ItemGroup Label="Microsoft">
+        <!--        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="3.1.10" />-->
+        <!--        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.10" />-->
+        <!--        <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />-->
+        <!--        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />-->
+        <!--        <PackageVersion Include="Microsoft.Extensions.Http" Version="7.0.0" />-->
+        <!--        <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />-->
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftVersion)"/>
+        <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftVersion)"/>
+        <!--        <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.10" />-->
+        <PackageVersion Include="System.Net.Http" Version="4.3.4"/>
+        <PackageVersion Include="System.Net.Http.Json" Version="7.0.0"/>
+        <PackageVersion Include="System.Reactive" Version="6.0.1"/>
+        <PackageVersion Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0"/>
+        <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>
+    </ItemGroup>
+    <ItemGroup Label="Prism">
+        <PackageVersion Include="Prism.Maui" Version="$(PrismVersion)"/>
+        <PackageVersion Include="Prism.Maui.Rx" Version="$(PrismVersion)"/>
+        <PackageVersion Include="Prism.DryIoc.Maui" Version="$(PrismVersion)"/>
+    </ItemGroup>
+    <ItemGroup Label="ReactiveMarbles">
+        <PackageVersion Include="ReactiveMarbles.Command" Version="1.0.4"/>
+        <PackageVersion Include="ReactiveMarbles.Mvvm" Version="1.0.95"/>
+        <PackageVersion Include="ReactiveMarbles.PropertyChanged" Version="2.0.27"/>
+        <PackageVersion Include="ReactiveMarbles.ObservableEvents.SourceGenerator" Version="1.2.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageVersion>
+    </ItemGroup>
+    <ItemGroup Label="ReactiveUI">
+        <PackageVersion Include="ReactiveUI" Version="$(ReactiveUIVersion)"/>
+        <PackageVersion Include="ReactiveUI.Fody" Version="$(ReactiveUIVersion)"/>
+        <PackageVersion Include="ReactiveUI.Maui" Version="$(ReactiveUIVersion)"/>
+        <PackageVersion Include="ReactiveUI.Testing" Version="$(ReactiveUIVersion)"/>
+    </ItemGroup>
+    <ItemGroup Label="Rocket.Surgery">
+        <PackageVersion Include="Rocket.Surgery.Airframe.Core" Version="$(AirframeVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Airframe.Forms" Version="$(AirframeVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Airframe.Microsoft.Extensions.DependencyInjection" Version="$(AirframeVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Airframe.Shiny" Version="$(AirframeVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Reactive.Extensions" Version="11.4.2"/>
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.AutoFixtures" Version="9.0.2"/>
+        <PackageVersion Include="Rocket.Surgery.Task.Extensions" Version="11.4.2"/>
+    </ItemGroup>
+    <ItemGroup Label="Serilog">
+        <PackageVersion Include="Serilog.Exceptions" Version="5.7.0"/>
+        <PackageVersion Include="Serilog.Formatting.Compact" Version="1.1.0"/>
+        <PackageVersion Include="Serilog.Enrichers.Thread" Version="3.1.0"/>
+        <PackageVersion Include="Serilog.Extensions.Hosting" Version="2.0.0"/>
+        <PackageVersion Include="Serilog.Sinks.AppCenter.Crash" Version="1.2.1"/>
+        <PackageVersion Include="Serilog.Sinks.ColoredConsole" Version="3.0.1"/>
+        <PackageVersion Include="Serilog.Sinks.File" Version="5.0.0"/>
+        <PackageVersion Include="Serilog.Sinks.Xamarin" Version="0.2.0.64"/>
+        <PackageVersion Include="Serilog.Sinks.Console" Version="3.0.1"/>
+    </ItemGroup>
+    <ItemGroup Label="Shiny">
+        <PackageVersion Include="Shiny" Version="$(ShinyVersion)"/>
+        <PackageVersion Include="Shiny.Core" Version="$(ShinyVersion)"/>
+        <PackageVersion Include="Shiny.Locations" Version="$(ShinyVersion)"/>
+        <PackageVersion Include="Shiny.Notifications" Version="$(ShinyVersion)"/>
+<!--        <PackageVersion Include="Shiny.Mediator" Version="3.0.0-beta-0008"/>-->
+<!--        <PackageVersion Include="Shiny.Mediator.Maui" Version="2.2.0-beta-0001"/>-->
+    </ItemGroup>
+    <ItemGroup Label="Splat">
+        <PackageVersion Include="Splat" Version="$(SplatVersion)"/>
+        <PackageVersion Include="Splat.Serilog" Version="$(SplatVersion)"/>
+        <PackageVersion Include="Splat.Microsoft.Extensions.Logging" Version="$(SplatVersion)"/>
+        <PackageVersion Include="Splat.Microsoft.Extensions.DependencyInjection" Version="$(SplatVersion)"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="DryIoc.dll" Version="5.4.3"/>
+        <PackageVersion Include="DynamicData" Version="9.0.4"/>
+        <PackageVersion Include="Humanizer" Version="2.7.9"/>
+        <PackageVersion Include="LanguageExt.Core" Version="5.0.0-beta-39"/>
+        <PackageVersion Include="MediatR" Version="12.4.1"/>
+        <PackageVersion Include="Nanoid" Version="3.1.0"/>
+        <PackageVersion Include="NodaTime" Version="3.1.0"/>
+        <PackageVersion Include="Refit" Version="8.0.0"/>
+        <PackageVersion Include="Rg.Plugins.Popup" Version="2.0.0.11"/>
+        <PackageVersion Include="Stateless" Version="5.16.0"/>
+        <PackageVersion Include="TypeNameFormatter.Sources" Version="1.1.1"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageVersion Include="coverlet.collector" Version="6.0.2"/>
+        <PackageVersion Include="coverlet.msbuild" Version="6.0.2" IncludeAssets="all" PrivateAssets="runtime;build;native;contentfiles;analyzers"/>
+        <PackageVersion Include="FluentAssertions" Version="7.0.0"/>
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
+        <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1"/>
+        <PackageVersion Include="NSubstitute" Version="5.3.0"/>
+        <PackageVersion Include="xunit" Version="2.9.2"/>
+        <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2"/>
+        <PackageVersion Include="XunitXml.TestLogger" Version="4.1.0"/>
+    </ItemGroup>
+    <ItemGroup Label="Rocket Surgery Testing">
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing" Version="$(RocketSurgeryTestingVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="$(RocketSurgeryTestingVersion)"/>
+        <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="$(RocketSurgeryTestingVersion)"/>
+    </ItemGroup>
 </Project>

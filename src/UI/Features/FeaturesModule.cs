@@ -1,8 +1,8 @@
 using System.Net.Http;
 using DryIoc;
+using Rx.Tracker.Container;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
-using Rx.Tracker.UI.Container;
 using Rx.Tracker.UI.Navigation;
 
 namespace Rx.Tracker.UI.Features;

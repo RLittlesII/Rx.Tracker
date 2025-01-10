@@ -1,14 +1,15 @@
 using System.Reactive.Concurrency;
-using Prism.Ioc;
+using DryIoc;
 using ReactiveMarbles.Locator;
 using ReactiveMarbles.Mvvm;
 using ReactiveUI;
+using Rx.Tracker.Container;
 
 namespace Rx.Tracker.UI.Container;
 
-public class MarblesModule : ContainerRegistryModule
+public class MarblesModule : ContainerModule
 {
-    protected override IContainerRegistry RegisterTypes(IContainerRegistry containerRegistry)
+    protected override IContainer Register(IContainer registrar)
     {
         var coreRegistration = CoreRegistrationBuilder
            .Create()
@@ -21,6 +22,8 @@ public class MarblesModule : ContainerRegistryModule
            .Current()
            .AddCoreRegistrations(() => coreRegistration);
 
-        return containerRegistry.RegisterSingleton<ICoreRegistration>(_ => coreRegistration);
+        registrar.RegisterInstance(coreRegistration);
+
+        return registrar;
     }
 }
