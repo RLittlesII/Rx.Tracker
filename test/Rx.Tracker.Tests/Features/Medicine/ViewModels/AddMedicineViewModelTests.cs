@@ -16,7 +16,7 @@ using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 
-public class AddMedicineViewModelTests
+public partial class AddMedicineViewModelTests
 {
     [Fact]
     public void WhenConstructed_ThenShouldBeInitialState()

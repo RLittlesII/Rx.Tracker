@@ -23,9 +23,14 @@ public class Routes
     public Route Splash { get; } = new(nameof(Splash), new Uri($"/{NavigationPage}/{nameof(Splash)}"));
 
     /// <summary>
-    /// Gets the splash route.
+    /// Gets the add medicine route.
     /// </summary>
-    public Route AddMedicine { get; } = new(nameof(AddMedicine), new Uri($"/{nameof(AddMedicine)}"));
+    public Route AddMedicine { get; } = new(nameof(AddMedicine), new Uri($"/{NavigationPage}/{nameof(AddMedicine)}"));
+
+    /// <summary>
+    /// Gets the schedule route.
+    /// </summary>
+    public Route Schedule { get; } = new(nameof(Schedule), new Uri($"/{NavigationPage}/{nameof(Schedule)}"));
 
     /// <summary>
     /// Gets the back route.
