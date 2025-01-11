@@ -26,7 +26,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
         : base(initialState)
     {
         Logger = loggerFactory.CreateLogger(GetType());
-        var stateChange = new Subject<TState>().DisposeWith(Garbage);
+        var stateChange = new BehaviorSubject<TState>(initialState).DisposeWith(Garbage);
         var unhandledExceptions = new Subject<string>().DisposeWith(Garbage);
 
         OnUnhandledTrigger(
@@ -43,7 +43,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
         Current =
             stateChange
                .AsObservable()
-               .LogTrace(Logger, x => x, "Current State: {State}")
+               .LogTrace(Logger, state => state, "Current State: {State}")
                .Publish()
                .RefCount();
 

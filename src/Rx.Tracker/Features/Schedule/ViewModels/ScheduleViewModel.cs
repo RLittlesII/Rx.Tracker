@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using NodaTime;
+using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
@@ -32,6 +34,7 @@ public class ScheduleViewModel : ViewModelBase
     public ScheduleViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<ScheduleStateMachine> stateMachineFactory)
         : base(navigator, cqrs, loggerFactory)
     {
+        AddMedicineCommand = RxCommand.Create(ExecuteAddMedicine);
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
         _currentState =
             _stateMachine
@@ -62,6 +65,13 @@ public class ScheduleViewModel : ViewModelBase
         ConfigureMachine(_stateMachine);
     }
 
+    private Task ExecuteAddMedicine() => _stateMachine.FireAsync(ScheduleTrigger.Add);
+
+    /// <summary>
+    /// Gets the add medicine command.
+    /// </summary>
+    public RxCommand<Unit, Unit> AddMedicineCommand { get; }
+
     /// <summary>
     /// Gets the current state of the machine.
     /// </summary>
@@ -77,14 +87,24 @@ public class ScheduleViewModel : ViewModelBase
     /// </summary>
     public ReadOnlyObservableCollection<ScheduledMedication> Schedule => _today;
 
+    /// <summary>
+    /// Gets the medication schedule.
+    /// </summary>
+    public MedicationSchedule? MedicationSchedule
+    {
+        get => _medicationSchedule;
+        private set => RaiseAndSetIfChanged(ref _medicationSchedule, value);
+    }
+
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
         try
         {
             await _stateMachine.FireAsync(ScheduleTrigger.Load);
-            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
-            MedicationSchedule = result.Schedule;
+
+            // var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
+            // MedicationSchedule = result.Schedule;
             await _stateMachine.FireAsync(ScheduleTrigger.Load);
         }
         catch (Exception exception)
@@ -104,29 +124,15 @@ public class ScheduleViewModel : ViewModelBase
 
         stateMachine
            .Configure(ScheduleState.Busy)
-           .Permit(ScheduleTrigger.Load, ScheduleState.Loaded)
-           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
-           .OnEntryAsync(_ => Task.CompletedTask);
-
-        stateMachine
-           .Configure(ScheduleState.Loaded)
            .Permit(ScheduleTrigger.Load, ScheduleState.DaySchedule)
+           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
            .OnEntryAsync(_ => Task.CompletedTask);
 
         stateMachine
            .Configure(ScheduleState.DaySchedule)
-           .Permit(ScheduleTrigger.Load, ScheduleState.Loaded)
            .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
+           .InternalTransitionAsync(ScheduleTrigger.Add, _ => Navigator.Navigate<Routes>(routes => routes.AddMedicine))
            .OnEntryAsync(_ => Task.CompletedTask);
-    }
-
-    /// <summary>
-    /// Gets the medication schedule.
-    /// </summary>
-    public MedicationSchedule? MedicationSchedule
-    {
-        get => _medicationSchedule;
-        private set => RaiseAndSetIfChanged(ref _medicationSchedule, value);
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]

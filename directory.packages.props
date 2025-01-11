@@ -138,6 +138,6 @@
   <ItemGroup Label="Rocket Surgery Testing">
     <PackageVersion Include="Rocket.Surgery.Extensions.Testing" Version="$(RocketSurgeryTestingVersion)" />
     <PackageVersion Include="Rocket.Surgery.Extensions.Testing.Fixtures" Version="$(RocketSurgeryTestingVersion)" />
-    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="$(RocketSurgeryTestingVersion)" />
+    <PackageVersion Include="Rocket.Surgery.Extensions.Testing.NSubstitute" Version="8.0.18" />
   </ItemGroup>
 </Project>

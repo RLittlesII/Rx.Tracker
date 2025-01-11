@@ -12,11 +12,11 @@ public abstract class PlatformLogger : IPlatformLogger
 
     LoggerConfiguration IPlatformLogger.ConfigureLogger(Guid sessionId) => ConfigurePlatformLogger(sessionId);
 
-    protected static bool NotExceptional(LogEvent e) => e.Exception is null;
-
-    protected static bool Exceptional(LogEvent e) => !NotExceptional(e);
-
     protected abstract void WriteToConsoleConditional(LoggerSinkConfiguration config, string consoleMessage);
+
+    private static bool NotExceptional(LogEvent e) => e.Exception is null;
+
+    private static bool Exceptional(LogEvent e) => !NotExceptional(e);
 
     private LoggerConfiguration ConfigurePlatformLogger(Guid sessionId) => LoggerConfiguration ??= new LoggerConfiguration()
        .MinimumLevel.Verbose()
@@ -28,8 +28,8 @@ public abstract class PlatformLogger : IPlatformLogger
        .WriteTo.Conditional(Exceptional, c => WriteToConsoleConditional(c, ConsoleExceptionTemplate))
        .WriteTo.Conditional(NotExceptional, c => WriteToConsoleConditional(c, OutputTemplate));
 
-    protected const string OutputTemplate = "[{Level:u3}]" + Tab + "[{ThreadName}-{ThreadId}]" + Tab + "{SourceContext}-{Message:l}";
-    protected const string ConsoleExceptionTemplate = OutputTemplate + Exception;
+    private const string OutputTemplate = "[{Level:u3}]" + Tab + "[{ThreadName}-{ThreadId}]" + Tab + "{SourceContext}-{Message:l}";
+    private const string ConsoleExceptionTemplate = OutputTemplate + Exception;
     private const string Tab = "\t";
     private const string Exception = "{NewLine:l}{Exception:l}";
     private static LoggerConfiguration? LoggerConfiguration;
