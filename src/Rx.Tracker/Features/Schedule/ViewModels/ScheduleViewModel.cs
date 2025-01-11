@@ -39,7 +39,6 @@ public class ScheduleViewModel : ViewModelBase
         _currentState =
             _stateMachine
                .Current
-               .LogTrace(Logger, "State: {State}")
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleState.Initial)
                .DisposeWith(Garbage);
 
