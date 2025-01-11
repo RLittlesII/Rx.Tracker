@@ -48,6 +48,7 @@
 
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Maui.Markup" />
+        <PackageReference Include="DryIoc.dll" />
         <PackageReference Include="Microsoft.Maui.Controls" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" />
         <PackageReference Include="Microsoft.Maui.Essentials" />
@@ -58,6 +59,11 @@
         <PackageReference Include="ReactiveMarbles.Mvvm" />
         <PackageReference Include="ReactiveUI.Maui" />
         <PackageReference Include="Rocket.Surgery.Airframe.Core" />
+        <PackageReference Include="Serilog.Enrichers.Thread" />
+        <PackageReference Include="Serilog.Exceptions" />
+        <PackageReference Include="Serilog.Extensions.Hosting"/>
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.Xamarin" />
     </ItemGroup>
 
     <ItemGroup>

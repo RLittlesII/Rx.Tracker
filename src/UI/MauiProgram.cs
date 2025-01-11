@@ -32,11 +32,12 @@ namespace Rx.Tracker.UI;
 
 public static class MauiProgram
 {
-    public static MauiApp CreateMauiApp() => MauiApp.CreateBuilder()
+    public static MauiApp CreateMauiApp(IPlatformRegistrations platformRegistrations) => MauiApp.CreateBuilder()
        .UseMauiApp<App>()
        .UseMauiCommunityToolkitMarkup()
        .UseAirframe(ContainerRegistry.GetContainer(), BuildAirframe())
        .UsePrism((IContainerExtension)ContainerRegistry, ConfigurePrism())
+       .UseSerilog(ContainerRegistry.GetContainer(), platformRegistrations.Logger.ConfigureLogger(Guid.NewGuid()).CreateLogger())
        .ConfigureFonts(FontDelegate)
        .Build();
 
