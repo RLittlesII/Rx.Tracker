@@ -43,7 +43,6 @@ public class AddMedicineViewModel : ViewModelBase
         _currentState =
             _stateMachine
                .Current
-               .LogTrace(Logger, "State: {State}")
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
                .DisposeWith(Garbage);
 

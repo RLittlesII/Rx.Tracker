@@ -13,9 +13,13 @@ public class FeaturesModule : ContainerModule
     protected override IContainer Register(IContainer registrar)
     {
         registrar.Register<HttpClient>(reuse: Reuse.Singleton);
-        registrar.Register<ICqrs, Cqrs>();
         registrar.Register<INavigator, Navigator>();
-        registrar.RegisterMany([typeof(IMediator).GetAssembly(), typeof(ICqrs).GetAssembly()], Registrator.Interfaces);
+        registrar.RegisterMany(
+            [
+                typeof(IMediator).GetAssembly(),
+                typeof(ICqrs).GetAssembly()
+            ],
+            Registrator.Interfaces);
         return registrar;
     }
 }

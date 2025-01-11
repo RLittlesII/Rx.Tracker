@@ -54,7 +54,7 @@ public class LoadMedicationTests
     public async Task GivenContainer_WhenCqrsQuery_ThenReturnsResultType()
     {
         // Given, When
-        var result = await new ContainerFixture().WithMocks().AsInterface().Resolve<ICqrs>().Query(LoadMedication.Create());
+        var result = await new ContainerFixture().AsInterface().Resolve<ICqrs>().Query(LoadMedication.Create());
 
         // Then
         result
