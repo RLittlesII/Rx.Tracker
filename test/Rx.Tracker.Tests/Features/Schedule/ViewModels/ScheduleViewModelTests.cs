@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Rx.Tracker.Tests.Features.Schedule.ViewModels;
 
-public class ScheduleViewModelTests
+public partial class ScheduleViewModelTests
 {
     [Fact]
     public void WhenConstructed_ThenCurrentStateShouldBeInitial()
@@ -164,3 +164,4 @@ public class ScheduleViewModelTests
         sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime == now);
     }
 }
+

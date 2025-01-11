@@ -9,6 +9,7 @@ using Prism.Container.DryIoc;
 using Prism.Ioc;
 using Prism.Navigation;
 using Rocket.Surgery.Airframe.Exceptions;
+using Rx.Tracker.Container;
 using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Container;
 using Rx.Tracker.UI.Exceptions.Handlers;
@@ -47,8 +48,7 @@ public static class MauiProgram
        .OnInitialized(Initialize)
        .RegisterTypes(RegisterTypes);
 
-    private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>()
-       .Navigate<Routes>(routes => routes.AddMedicine);
+    private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>().Navigate<Routes>(routes => routes.AddMedicine);
 
     private static void FontDelegate(IFontCollection fonts) => fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular")
        .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
@@ -56,12 +56,14 @@ public static class MauiProgram
     private static void Initialize(IContainerProvider containerProvider) => containerProvider.GetContainer();
 
     private static void RegisterTypes(IContainerRegistry registrar) => registrar
-       .ContainerRegistryModule<MainModule>()
-       .ContainerRegistryModule<MedicationModule>()
-       .ContainerRegistryModule<ScheduleModule>()
+       .RegisterModule<MainModule>()
+       .RegisterModule<MedicationModule>()
+       .RegisterModule<ScheduleModule>()
        .GetContainer()
        .ContainerModule<FeaturesModule>()
-       .ContainerModule<MarblesModule>();
+       .ContainerModule<MarblesModule>()
+       .ContainerModule<Tracker.Features.Schedule.Container.ScheduleModule>()
+       .ContainerModule<Tracker.Features.Medications.Container.AddMedicineModule>();
 
     private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension();
 }

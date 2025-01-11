@@ -1,8 +1,11 @@
+using DryIoc;
 using FluentAssertions;
 using LanguageExt;
 using NSubstitute;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Commands;
+using Rx.Tracker.Mediation;
+using Rx.Tracker.Tests.Container;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System.Threading.Tasks;
 
@@ -39,5 +42,20 @@ public class AddMedicationToScheduleTests
         result
            .Should()
            .Be(Unit.Default);
+    }
+
+    [Fact]
+    public async Task GivenCqrs_WhenExecute_ThenDoesNotThrow()
+    {
+        // Given
+        var container = new ContainerFixture().WithMocks().AsInterface();
+
+        // When
+        var result = await Record.ExceptionAsync(() => container.Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new ScheduledMedicationFixture())));
+
+        // Then
+        result
+           .Should()
+           .BeNull();
     }
 }

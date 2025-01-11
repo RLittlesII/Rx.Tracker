@@ -1,5 +1,6 @@
 using System.Net.Http;
 using DryIoc;
+using MediatR;
 using Rx.Tracker.Container;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
@@ -13,8 +14,8 @@ public class FeaturesModule : ContainerModule
     {
         registrar.Register<HttpClient>(reuse: Reuse.Singleton);
         registrar.Register<ICqrs, Cqrs>();
-        registrar.Register<INavigator, Navigator>(reuse: Reuse.Scoped);
-
+        registrar.Register<INavigator, Navigator>();
+        registrar.RegisterMany([typeof(IMediator).GetAssembly(), typeof(ICqrs).GetAssembly()], Registrator.Interfaces);
         return registrar;
     }
 }

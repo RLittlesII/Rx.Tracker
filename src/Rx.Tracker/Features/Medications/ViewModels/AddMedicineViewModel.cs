@@ -154,7 +154,7 @@ public class AddMedicineViewModel : ViewModelBase
 
             var result = await cqrs.Query(LoadMedication.Create());
 
-            Names = new ObservableCollection<MedicationId>(result.Medications.Select(x => x.Id));
+            Names = new ObservableCollection<MedicationId>(result.Medications.Select(medication => medication.Id));
             Dosages = new ObservableCollection<Dosage>(result.Medications.Dosages);
 
             await _stateMachine.FireAsync(AddMedicineTrigger.Load);

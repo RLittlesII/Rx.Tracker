@@ -1,9 +1,7 @@
 using DryIoc;
 using FluentAssertions;
-using MediatR;
 using NodaTime;
 using NSubstitute;
-using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation;
