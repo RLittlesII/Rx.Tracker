@@ -1,8 +1,11 @@
 using DryIoc;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
+using Rx.Tracker.Container;
 using Rx.Tracker.Mediation;
 using System;
 
@@ -12,18 +15,13 @@ public sealed class ContainerFixture : ITestFixtureBuilder
 {
     public static implicit operator DryIoc.Container(ContainerFixture fixture) => fixture.Build();
 
-    public ContainerFixture WithRegistration(Action<DryIoc.Container> bootstrap) => this.With(ref _bootstrap, bootstrap);
+    public ContainerFixture WithRegistration(Action<DryIoc.IContainer> bootstrap) => this.With(ref _bootstrap, bootstrap);
     public ContainerFixture WithMocks() => this.With(ref _useContainerMocks, true);
     public IContainer AsInterface() => Build();
 
     private DryIoc.Container Build()
     {
-        var container = new DryIoc.Container(
-            Rules.Default.WithAutoConcreteTypeResolution()
-               .WithoutThrowOnRegisteringDisposableTransient()
-               .With(Made.Of(FactoryMethod.ConstructorWithResolvableArguments))
-            // .WithDefaultIfAlreadyRegistered(IfAlreadyRegistered.Replace)
-        );
+        IContainer container = new DryIoc.Container(TrackerContainer.Rules);
         if (_useContainerMocks)
         {
             container = container
@@ -37,10 +35,11 @@ public sealed class ContainerFixture : ITestFixtureBuilder
         _bootstrap(container);
 
         container.RegisterMany([typeof(IMediator).GetAssembly(), typeof(ICqrs).GetAssembly()], Registrator.Interfaces);
+        container.Register<ILoggerFactory, NullLoggerFactory>();
 
-        return container;
+        return (DryIoc.Container)container;
     }
 
-    private Action<DryIoc.Container> _bootstrap = _ => { };
+    private Action<IContainer> _bootstrap = _ => { };
     private bool _useContainerMocks;
 }

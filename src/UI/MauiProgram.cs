@@ -49,7 +49,7 @@ public static class MauiProgram
        .OnInitialized(Initialize)
        .RegisterTypes(RegisterTypes);
 
-    private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>().Navigate<Routes>(routes => routes.AddMedicine);
+    private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>().Navigate<Routes>(routes => routes.Schedule);
 
     private static void FontDelegate(IFontCollection fonts) => fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular")
        .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
@@ -66,5 +66,5 @@ public static class MauiProgram
        .ContainerModule<Tracker.Features.Schedule.Container.ScheduleModule>()
        .ContainerModule<Tracker.Features.Medications.Container.AddMedicineModule>();
 
-    private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension();
+    private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension(TrackerContainer.Rules);
 }

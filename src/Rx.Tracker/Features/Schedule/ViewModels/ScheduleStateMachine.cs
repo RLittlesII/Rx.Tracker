@@ -12,9 +12,10 @@ public class ScheduleStateMachine : ObservableStateMachine<ScheduleState, Schedu
     /// <summary>
     /// Initializes a new instance of the <see cref="ScheduleStateMachine"/> class.
     /// </summary>
+    /// <param name="initialState">The initial state.</param>
     /// <param name="loggerFactory">The logger factory.</param>
-    public ScheduleStateMachine(ILoggerFactory loggerFactory)
-        : base(loggerFactory, ScheduleState.Initial)
+    public ScheduleStateMachine(ScheduleState initialState, ILoggerFactory loggerFactory)
+        : base(loggerFactory, initialState)
     {
     }
 
@@ -72,6 +73,11 @@ public class ScheduleStateMachine : ObservableStateMachine<ScheduleState, Schedu
         /// <summary>
         /// Failure trigger.
         /// </summary>
-        Failure
+        Failure,
+
+        /// <summary>
+        /// Add a medication.
+        /// </summary>
+        Add
     }
 }

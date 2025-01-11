@@ -66,7 +66,7 @@ public class AddMedicineViewModel : ViewModelBase
         ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Schedule.Domain.Entities.Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
+        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,

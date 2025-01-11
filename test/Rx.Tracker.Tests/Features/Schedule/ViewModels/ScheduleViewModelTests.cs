@@ -39,7 +39,7 @@ public partial class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenCurrentStateShouldBeLoaded()
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenCurrentStateShouldBeDaySchedule()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
@@ -50,7 +50,7 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.Loaded);
+        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.DaySchedule);
     }
 
     [Fact]
@@ -162,6 +162,34 @@ public partial class ScheduleViewModelTests
 
         // Then
         sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime == now);
+    }
+}
+
+public partial class  ScheduleViewModelTests
+{
+    [Fact]
+    public async Task Given_WhenAddMedication_ThenShouldReturnUnit()
+    {
+        // Given
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(() => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule));
+
+        // When
+        var result = await sut.AddMedicineCommand.Execute(Unit.Default);
+
+        // Then
+        result.Should().Be(Unit.Default);
+    }
+    [Fact]
+    public async Task Given_WhenAddMedication_ThenShouldBeInDayScheduleState()
+    {
+        // Given
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(() => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule));
+
+        // When
+        await sut.AddMedicineCommand.Execute(Unit.Default);
+
+        // Then
+        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.DaySchedule);
     }
 }
 

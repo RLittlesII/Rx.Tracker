@@ -1,4 +1,5 @@
 using DryIoc;
+using Microsoft.Extensions.Logging;
 using Rx.Tracker.Container;
 using Rx.Tracker.Features.Schedule.Data.Api;
 using Rx.Tracker.Features.Schedule.Domain;
@@ -12,8 +13,10 @@ public class ScheduleModule : ContainerModule
     /// <inheritdoc/>
     protected override IContainer Register(IContainer registrar)
     {
-        registrar.Register<ScheduleStateMachine>();
-        registrar.Register<IMedicationScheduleApiClient, MedicationScheduleClient>();
+        registrar.RegisterDelegate<ScheduleStateMachine>(
+            resolver => new ScheduleStateMachine(
+                ScheduleStateMachine.ScheduleState.Initial,
+                resolver.Resolve<ILoggerFactory>()));
 
         return registrar;
     }
