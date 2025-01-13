@@ -102,8 +102,8 @@ public class ScheduleViewModel : ViewModelBase
         {
             await _stateMachine.FireAsync(ScheduleTrigger.Load);
 
-            // var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
-            // MedicationSchedule = result.Schedule;
+            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
+            MedicationSchedule = result.Schedule;
             await _stateMachine.FireAsync(ScheduleTrigger.Load);
         }
         catch (Exception exception)
