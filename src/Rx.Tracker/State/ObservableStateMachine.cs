@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ReactiveMarbles.Extensions;
 using Rx.Tracker.Extensions;
 using Stateless;
 

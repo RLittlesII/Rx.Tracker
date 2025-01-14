@@ -11,11 +11,13 @@ using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
+using ReactiveUI;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
+using Rx.Tracker.Interactions;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
@@ -39,6 +41,18 @@ public class AddMedicineViewModel : ViewModelBase
     {
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
         AddCommand = RxCommand.Create<ScheduledMedication?>(ExecuteAdd, _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
+
+        // TODO: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
+        // BackCommand = RxCommand.Create(() => navigator.Back(1));
+        BackCommand = RxCommand.Create(() => navigator.Dismiss());
+
+        FailedInteraction = new Interaction<ToastMessage, Unit>();
+
+        BackCommand
+           .Where(state => state != NavigationState.Succeeded)
+           .LogTrace(Logger, state => state, "Navigation State: {State}")
+           .Select(async _ => await _stateMachine.FireAsync(AddMedicineTrigger.Failure))
+           .Subscribe();
 
         _currentState =
             _stateMachine
@@ -79,6 +93,11 @@ public class AddMedicineViewModel : ViewModelBase
             await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
         }
     }
+
+    /// <summary>
+    /// Gets the failed interaction.
+    /// </summary>
+    public Interaction<ToastMessage, Unit> FailedInteraction { get; }
 
     /// <summary>
     /// Gets the add command.
@@ -144,6 +163,11 @@ public class AddMedicineViewModel : ViewModelBase
     /// </summary>
     public AddMedicineState CurrentState => _currentState.Value;
 
+    /// <summary>
+    /// Gets the back command.
+    /// </summary>
+    public RxCommand<Unit, NavigationState> BackCommand { get; }
+
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
@@ -181,6 +205,7 @@ public class AddMedicineViewModel : ViewModelBase
 
         _stateMachine
            .Configure(AddMedicineState.Loaded)
+           .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
            .Permit(AddMedicineTrigger.Validated, AddMedicineState.Valid)
            .OnEntryAsync(_ => Task.CompletedTask);
 
@@ -190,8 +215,9 @@ public class AddMedicineViewModel : ViewModelBase
 
         _stateMachine
            .Configure(AddMedicineState.Failed)
+           .PermitReentry(AddMedicineTrigger.Failure)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntryAsync(async transition => await FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")));
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]

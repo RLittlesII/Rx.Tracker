@@ -14,9 +14,7 @@ public class Navigator : INavigator
         _globalExceptionHandler = coreRegistration.ExceptionHandler;
     }
 
-    public Task<NavigationState> Navigate(Func<Routes, Uri> routes)
-        => _navigationService.NavigateAsync(routes.Invoke(Routes.Instance)).ContinueWith(HandleFailedNavigationResult);
-
+    /// <inheritdoc />
     public Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new()
     {
@@ -24,10 +22,22 @@ public class Navigator : INavigator
         return _navigationService.NavigateAsync(invoke).ContinueWith(HandleFailedNavigationResult);
     }
 
+    /// <inheritdoc />
+    public Task<NavigationState> Modal<TRoute>(Func<TRoute, Uri> routes)
+        where TRoute : new()
+    {
+        var invoke = routes.Invoke(new TRoute());
+        return _navigationService.NavigateAsync(invoke, (KnownNavigationParameters.UseModalNavigation, true)).ContinueWith(HandleFailedNavigationResult);
+    }
+
     public Task<NavigationState> Back(uint backwards) => _navigationService.GoBackAsync().ContinueWith(HandleFailedNavigationResult);
 
     public Task<NavigationState> Back<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new() => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public Task<NavigationState> Dismiss() =>
+        _navigationService.GoBackAsync((KnownNavigationParameters.UseModalNavigation, true)).ContinueWith(HandleFailedNavigationResult);
 
     private NavigationState HandleFailedNavigationResult(Task<INavigationResult> navigationResult)
     {

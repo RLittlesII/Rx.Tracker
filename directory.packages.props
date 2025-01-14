@@ -10,6 +10,7 @@
     <RocketSurgeryTestingVersion>9.0.3</RocketSurgeryTestingVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.Maui" Version="9.1.1" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="4.2.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
     <PackageVersion Include="Rocket.Surgery.Build.Metadata" Version="3.3.11" PrivateAssets="All" />
@@ -73,7 +74,7 @@
   </ItemGroup>
   <ItemGroup Label="ReactiveUI">
     <PackageVersion Include="ReactiveUI" Version="$(ReactiveUIVersion)" />
-    <PackageVersion Include="ReactiveUI.Fody" Version="$(ReactiveUIVersion)" />
+<!--    <PackageVersion Include="ReactiveUI.Fody" Version="$(ReactiveUIVersion)" />-->
     <PackageVersion Include="ReactiveUI.Maui" Version="$(ReactiveUIVersion)" />
     <PackageVersion Include="ReactiveUI.Testing" Version="$(ReactiveUIVersion)" />
   </ItemGroup>

@@ -18,6 +18,15 @@ public interface INavigator
         where TRoute : new();
 
     /// <summary>
+    /// Presents a modal to the uri from the specified route.
+    /// </summary>
+    /// <param name="routes">The routes.</param>
+    /// <typeparam name="TRoute">The router type.</typeparam>
+    /// <returns>a navigation result.</returns>
+    Task<NavigationState> Modal<TRoute>(Func<TRoute, Uri> routes)
+        where TRoute : new();
+
+    /// <summary>
     /// Goes back to a specific uri from the specified route.
     /// </summary>
     /// <param name="backwards">The number of backward navigations.</param>
@@ -32,4 +41,10 @@ public interface INavigator
     /// <returns>a navigation result.</returns>
     Task<NavigationState> Back<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new();
+
+    /// <summary>
+    /// Dismiss the modal.
+    /// </summary>
+    /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+    Task<NavigationState> Dismiss();
 }

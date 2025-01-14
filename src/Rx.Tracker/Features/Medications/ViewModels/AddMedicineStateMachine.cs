@@ -14,9 +14,7 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
     /// </summary>
     /// <param name="loggerFactory">The logger factory.</param>
     public AddMedicineStateMachine(ILoggerFactory loggerFactory)
-        : base(loggerFactory, AddMedicineState.Initial)
-    {
-    }
+        : base(loggerFactory, AddMedicineState.Initial) => RetainSynchronizationContext = true;
 
     /// <summary>
     /// The available state.

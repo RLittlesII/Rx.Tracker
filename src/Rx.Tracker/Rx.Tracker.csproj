@@ -13,6 +13,7 @@
         <PackageReference Include="NodaTime"/>
         <PackageReference Include="ReactiveMarbles.Command"/>
         <PackageReference Include="ReactiveMarbles.Mvvm"/>
+        <PackageReference Include="ReactiveUI"/>
         <PackageReference Include="Refit"/>
         <PackageReference Include="Stateless"/>
     </ItemGroup>
