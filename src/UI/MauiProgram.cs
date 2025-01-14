@@ -1,13 +1,18 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Markup;
+using DryIoc;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using Prism;
 using Prism.Container.DryIoc;
 using Prism.Ioc;
 using Prism.Navigation;
+using ReactiveMarbles.Locator;
+using ReactiveMarbles.Mvvm;
+using ReactiveUI;
 using Rocket.Surgery.Airframe.Exceptions;
 using Rx.Tracker.Container;
 using Rx.Tracker.Navigation;
@@ -49,12 +54,30 @@ public static class MauiProgram
        .OnInitialized(Initialize)
        .RegisterTypes(RegisterTypes);
 
-    private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService) => containerProvider.Resolve<INavigator>().Navigate<Routes>(routes => routes.Schedule);
+    private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService)
+        => containerProvider.CreateScope().Resolve<INavigator>().Navigate<Routes>(routes => routes.Schedule);
 
     private static void FontDelegate(IFontCollection fonts) => fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular")
        .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 
-    private static void Initialize(IContainerProvider containerProvider) => containerProvider.GetContainer();
+    private static void Initialize(IContainerProvider containerProvider)
+    {
+        var container = containerProvider.GetContainer();
+        var exceptionHandler = container.Resolve<IObserver<Exception>>();
+
+        var coreRegistration = CoreRegistrationBuilder
+           .Create()
+           .WithMainThreadScheduler(RxApp.MainThreadScheduler)
+           .WithTaskPoolScheduler(TaskPoolScheduler.Default)
+           .WithExceptionHandler(exceptionHandler)
+           .Build();
+
+        ServiceLocator
+           .Current()
+           .AddCoreRegistrations(() => coreRegistration);
+
+        container.RegisterInstance(coreRegistration);
+    }
 
     private static void RegisterTypes(IContainerRegistry registrar) => registrar
        .RegisterModule<MainModule>()

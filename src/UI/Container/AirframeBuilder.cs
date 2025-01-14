@@ -30,7 +30,7 @@ public class AirframeBuilder
     public AirframeBuilder AddGlobalExceptionHandler<TGlobalExceptionHandler>(Action<ExceptionHandlerRegistrar> register)
         where TGlobalExceptionHandler : IObserver<Exception>
     {
-        _container.RegisterMany<TGlobalExceptionHandler>(serviceTypeCondition: type => type.IsInterface);
+        _container.Register<IObserver<Exception>, TGlobalExceptionHandler>(Reuse.Singleton);
         register.Invoke(new ExceptionHandlerRegistrar(_container));
         _container.RegisterInstance<IScheduler>(RxApp.MainThreadScheduler, ifAlreadyRegistered: IfAlreadyRegistered.Replace);
         return this;
@@ -49,7 +49,7 @@ public class AirframeBuilder
 
         public ExceptionHandlerRegistrar AddHandler<THandler>()
             where THandler : IUnhandledExceptionHandler => AddHandler<THandler>(
-            registrator => registrator.Register<IUnhandledExceptionHandler, THandler>(
+            registrar => registrar.Register<IUnhandledExceptionHandler, THandler>(
                 Reuse.Transient,
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation));
 
