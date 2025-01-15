@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NodaTime.Extensions;
@@ -51,7 +52,7 @@ public class AddMedicineViewModel : ViewModelBase
         BackCommand
            .Where(state => state != NavigationState.Succeeded)
            .LogTrace(Logger, state => state, "Navigation State: {State}")
-           .Select(async _ => await _stateMachine.FireAsync(AddMedicineTrigger.Failure))
+           .Select(_ => _stateMachine.FireAsync(AddMedicineTrigger.Failure).ConfigureAwait(true))
            .Subscribe();
 
         _currentState =
@@ -216,8 +217,11 @@ public class AddMedicineViewModel : ViewModelBase
         _stateMachine
            .Configure(AddMedicineState.Failed)
            .PermitReentry(AddMedicineTrigger.Failure)
-           .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
-           .OnEntryAsync(async transition => await FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")));
+           .OnEntry(
+                transition =>
+                {
+                    FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe().DisposeWith(Garbage);
+                });
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]

@@ -13,7 +13,7 @@
             <add:AddMedicineStateConverter x:Key="AddMedicineStateConverter" />
             <add:DosageTypeConverter x:Key="DosageTypeConverter" />
         </StackLayout.Resources>
-        <Label Text="{x:Binding CurrentState}" />
+        <Label Text="{x:Binding CurrentState}" HorizontalOptions="Center" />
         <Label Text="Choose a Medication" />
 
         <Picker x:Name="Medications"

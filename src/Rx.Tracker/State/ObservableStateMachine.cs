@@ -24,6 +24,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
     protected ObservableStateMachine(ILoggerFactory loggerFactory, TState initialState)
         : base(initialState)
     {
+        RetainSynchronizationContext = true;
         Logger = loggerFactory.CreateLogger(GetType());
         var stateChange = new BehaviorSubject<TState>(initialState).DisposeWith(Garbage);
         var unhandledExceptions = new Subject<string>().DisposeWith(Garbage);
