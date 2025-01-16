@@ -220,7 +220,7 @@ public class AddMedicineViewModel : ViewModelBase
            .OnEntry(
                 transition =>
                 {
-                    FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe().DisposeWith(Garbage);
+                    using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
                 });
     }
 

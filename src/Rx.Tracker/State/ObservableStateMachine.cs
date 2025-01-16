@@ -33,7 +33,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
             (state, trigger) =>
                 unhandledExceptions.OnNext($"{trigger} is not configured for {state}"));
 
-        OnTransitionCompletedAsync(
+        OnTransitionedAsync(
             transition =>
             {
                 stateChange.OnNext(transition.Destination);
