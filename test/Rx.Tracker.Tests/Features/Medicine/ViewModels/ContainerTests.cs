@@ -21,7 +21,7 @@ public partial class AddMedicineViewModelTests
                     bootstrap.Register<AddMedicineViewModel>();
                     bootstrap.RegisterInstance(Substitute.For<ILoggerFactory>());
                     bootstrap.RegisterInstance(Substitute.For<INavigator>());
-                    bootstrap.ContainerModule<AddMedicineModule>();
+                    bootstrap.RegisterModule<AddMedicineModule>();
                 }
             )
            .AsInterface()

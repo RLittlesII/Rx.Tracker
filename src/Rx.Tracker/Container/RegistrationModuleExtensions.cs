@@ -2,6 +2,9 @@ using DryIoc;
 
 namespace Rx.Tracker.Container;
 
+/// <summary>
+/// Registration module extensions.
+/// </summary>
 public static class RegistrationModuleExtensions
 {
     /// <summary>
@@ -10,6 +13,6 @@ public static class RegistrationModuleExtensions
     /// <param name="container">The container.</param>
     /// <typeparam name="TModule">The module type.</typeparam>
     /// <returns>The registered container.</returns>
-    public static IContainer ContainerModule<TModule>(this IContainer container)
+    public static IContainer RegisterModule<TModule>(this IContainer container)
         where TModule : IRegistrationModule<IContainer>, new() => new TModule().Register(container);
 }

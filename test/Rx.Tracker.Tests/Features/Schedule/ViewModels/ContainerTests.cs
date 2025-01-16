@@ -21,7 +21,7 @@ public partial class ScheduleViewModelTests
                     bootstrap.Register<ScheduleViewModel>();
                     bootstrap.RegisterInstance(Substitute.For<ILoggerFactory>());
                     bootstrap.RegisterInstance(Substitute.For<INavigator>());
-                    bootstrap.ContainerModule<ScheduleModule>();
+                    bootstrap.RegisterModule<ScheduleModule>();
                 }
             )
            .AsInterface()
