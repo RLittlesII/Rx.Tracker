@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using DryIoc;
 using Microsoft.Maui.Controls.Hosting;
@@ -38,12 +39,13 @@ namespace Rx.Tracker.UI;
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp(IPlatformRegistrations platformRegistrations) => MauiApp.CreateBuilder()
-       .UseMauiApp<App>()
-       .UseMauiCommunityToolkitMarkup()
        .UseAirframe(ContainerRegistry.GetContainer(), BuildAirframe())
+       .ConfigureFonts(FontDelegate)
+       .UseMauiApp<App>()
+       .UseMauiCommunityToolkit()
+       .UseMauiCommunityToolkitMarkup()
        .UsePrism((IContainerExtension)ContainerRegistry, ConfigurePrism())
        .UseSerilog(ContainerRegistry.GetContainer(), platformRegistrations.Logger.ConfigureLogger(Guid.NewGuid()).CreateLogger())
-       .ConfigureFonts(FontDelegate)
        .Build();
 
     private static Action<AirframeBuilder> BuildAirframe() => builder
@@ -51,16 +53,16 @@ public static class MauiProgram
 
     private static Action<PrismAppBuilder> ConfigurePrism() => configuration => configuration
        .CreateWindow(CreateWindow)
-       .OnInitialized(Initialize)
+       .OnInitialized(InitializeMarbles)
        .RegisterTypes(RegisterTypes);
 
     private static Task CreateWindow(IContainerProvider containerProvider, INavigationService navigationService)
-        => containerProvider.CreateScope().Resolve<INavigator>().Navigate<Routes>(routes => routes.Schedule);
+        => containerProvider.Resolve<INavigator>().Navigate<Routes>(routes => routes.Schedule);
 
     private static void FontDelegate(IFontCollection fonts) => fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular")
        .AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 
-    private static void Initialize(IContainerProvider containerProvider)
+    private static void InitializeMarbles(IContainerProvider containerProvider)
     {
         var container = containerProvider.GetContainer();
         var exceptionHandler = container.Resolve<IObserver<Exception>>();

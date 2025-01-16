@@ -6,7 +6,6 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
-using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Mediation;

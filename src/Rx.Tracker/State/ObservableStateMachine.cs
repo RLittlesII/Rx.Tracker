@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ReactiveMarbles.Extensions;
 using Rx.Tracker.Extensions;
 using Stateless;
 
@@ -25,6 +24,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
     protected ObservableStateMachine(ILoggerFactory loggerFactory, TState initialState)
         : base(initialState)
     {
+        RetainSynchronizationContext = true;
         Logger = loggerFactory.CreateLogger(GetType());
         var stateChange = new BehaviorSubject<TState>(initialState).DisposeWith(Garbage);
         var unhandledExceptions = new Subject<string>().DisposeWith(Garbage);
@@ -33,7 +33,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
             (state, trigger) =>
                 unhandledExceptions.OnNext($"{trigger} is not configured for {state}"));
 
-        OnTransitionCompletedAsync(
+        OnTransitionedAsync(
             transition =>
             {
                 stateChange.OnNext(transition.Destination);

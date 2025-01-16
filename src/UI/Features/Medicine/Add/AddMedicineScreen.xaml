@@ -8,26 +8,25 @@
                        x:Class="Rx.Tracker.UI.Features.Medicine.Add.AddMedicineScreen"
                        x:TypeArguments="viewModels:AddMedicineViewModel"
                        x:DataType="viewModels:AddMedicineViewModel">
-    <components:ScreenBase.Content>
-        <StackLayout>
-            <StackLayout.Resources>
-                <add:AddMedicineStateConverter x:Key="AddMedicineStateConverter" />
-                <add:DosageTypeConverter x:Key="DosageTypeConverter" />
-            </StackLayout.Resources>
-            <Label Text="{x:Binding CurrentState}" />
-            <Label Text="Choose a Medication" />
+    <StackLayout>
+        <StackLayout.Resources>
+            <add:AddMedicineStateConverter x:Key="AddMedicineStateConverter" />
+            <add:DosageTypeConverter x:Key="DosageTypeConverter" />
+        </StackLayout.Resources>
+        <Label Text="{x:Binding CurrentState}" HorizontalOptions="Center" />
+        <Label Text="Choose a Medication" />
 
-            <Picker x:Name="Medications"
-                    ItemsSource="{Binding Names}"
-                    SelectedItem="{Binding SelectedName}"
-                    IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
-            <Picker x:Name="Dosage"
-                    ItemsSource="{Binding Dosages, Converter={x:StaticResource DosageTypeConverter}}"
-                    SelectedItem="{Binding SelectedDosage}"
-                    IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
-            <RadioButton x:Name="Recurrence" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
-            <TimePicker x:Name="Time" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
-        </StackLayout>
+        <Picker x:Name="Medications"
+                ItemsSource="{Binding Names}"
+                SelectedItem="{Binding SelectedName}"
+                IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+        <Picker x:Name="Dosage"
+                ItemsSource="{Binding Dosages, Converter={x:StaticResource DosageTypeConverter}}"
+                SelectedItem="{Binding SelectedDosage}"
+                IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+        <RadioButton x:Name="Recurrence" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+        <TimePicker x:Name="Time" IsVisible="{Binding Converter={x:StaticResource AddMedicineStateConverter}}" />
+        <Button Text="Cancel" Command="{Binding BackCommand}" />
+    </StackLayout>
 
-    </components:ScreenBase.Content>
 </components:ScreenBase>

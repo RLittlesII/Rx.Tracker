@@ -130,7 +130,7 @@ public class ScheduleViewModel : ViewModelBase
         stateMachine
            .Configure(ScheduleState.DaySchedule)
            .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
-           .InternalTransitionAsync(ScheduleTrigger.Add, _ => Navigator.Navigate<Routes>(routes => routes.AddMedicine))
+           .InternalTransitionAsync(ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
            .OnEntryAsync(_ => Task.CompletedTask);
     }
 

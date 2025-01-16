@@ -71,6 +71,7 @@ public partial class AddMedicineViewModelTests
         var cqrs = Substitute.For<ICqrs>();
         cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult<LoadMedication.Result>(null!));
         AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+        using var _ = sut.FailedInteraction.RegisterHandler(interaction => interaction.SetOutput(Unit.Default));
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
