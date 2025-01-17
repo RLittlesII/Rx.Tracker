@@ -86,10 +86,10 @@ public static class MauiProgram
        .RegisterModule<MedicationModule>()
        .RegisterModule<ScheduleModule>()
        .GetContainer()
-       .ContainerModule<FeaturesModule>()
-       .ContainerModule<MarblesModule>()
-       .ContainerModule<Tracker.Features.Schedule.Container.ScheduleModule>()
-       .ContainerModule<Tracker.Features.Medications.Container.AddMedicineModule>();
+       .RegisterModule<FeaturesModule>()
+       .RegisterModule<MarblesModule>()
+       .RegisterModule<Tracker.Features.Schedule.Container.ScheduleModule>()
+       .RegisterModule<Tracker.Features.Medications.Container.AddMedicineModule>();
 
     private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension(TrackerContainer.Rules);
 }

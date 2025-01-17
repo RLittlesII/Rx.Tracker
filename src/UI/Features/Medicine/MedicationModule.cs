@@ -9,5 +9,5 @@ namespace Rx.Tracker.UI.Features.Medicine;
 public class MedicationModule : ContainerRegistryModule
 {
     protected override IContainerRegistry RegisterTypes(IContainerRegistry containerRegistry) => containerRegistry
-       .RegisterForNavigation<AddMedicineScreen, AddMedicineViewModel>(Routes.Instance.AddMedicine.Name);
+       .RegisterForNavigation<AddMedicineModal, AddMedicineViewModel>(Routes.Instance.AddMedicine.Name);
 }

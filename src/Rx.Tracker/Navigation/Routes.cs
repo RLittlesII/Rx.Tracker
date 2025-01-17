@@ -25,12 +25,12 @@ public class Routes
     /// <summary>
     /// Gets the add medicine route.
     /// </summary>
-    public Route AddMedicine { get; } = new(nameof(AddMedicine), new Uri($"/{NavigationPage}/{nameof(AddMedicine)}"));
+    public Route AddMedicine { get; } = new(nameof(AddMedicine), new Uri($"/{nameof(AddMedicine)}", UriKind.Relative));
 
     /// <summary>
     /// Gets the schedule route.
     /// </summary>
-    public Route Schedule { get; } = new(nameof(Schedule), new Uri($"/{NavigationPage}/{nameof(Schedule)}"));
+    public Route Schedule { get; } = new(nameof(Schedule), new Uri($"/{NavigationPage}/{nameof(Schedule)}", UriKind.Absolute));
 
     /// <summary>
     /// Gets the back route.
