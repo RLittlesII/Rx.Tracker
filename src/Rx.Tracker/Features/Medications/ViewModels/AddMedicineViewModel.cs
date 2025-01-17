@@ -180,7 +180,7 @@ public class AddMedicineViewModel : ViewModelBase
             Names = new ObservableCollection<MedicationId>(result.Medications.Select(medication => medication.Id));
             Dosages = new ObservableCollection<Dosage>(result.Medications.Dosages);
 
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            await Task.Delay(TimeSpan.FromSeconds(4));
             await _stateMachine.FireAsync(AddMedicineTrigger.Load);
         }
         catch (Exception exception)

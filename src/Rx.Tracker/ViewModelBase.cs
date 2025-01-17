@@ -32,7 +32,7 @@ public abstract class ViewModelBase : RxDisposableObject
         _initialize = new AsyncSubject<Unit>().DisposeWith(Garbage);
         _onNavigatedTo = new Subject<IArguments>().DisposeWith(Garbage);
         _onNavigatedFrom = new Subject<IArguments>().DisposeWith(Garbage);
-        Initialized = _initialize.AsObservable().LogTrace(Logger, "Initializing").Delay(TimeSpan.FromSeconds(3)).Publish().RefCount();
+        Initialized = _initialize.AsObservable().LogTrace(Logger, "Initializing").Publish().RefCount();
         NavigatedTo = _onNavigatedTo.AsObservable().LogTrace(Logger, "NavigatedTo").Publish().RefCount();
         NavigatedFrom = _onNavigatedFrom.AsObservable().LogTrace(Logger, "NavigatedFrom").Publish().RefCount();
         InitializeCommand = RxCommand.Create(() => ExecuteInitialize(cqrs)).DisposeWith(Garbage);
