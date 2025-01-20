@@ -57,7 +57,7 @@ public interface IArguments : IEnumerable<KeyValuePair<string, object>>
     /// if the key is found; otherwise, the default value for the type of the value parameter.
     /// </param>
     /// <returns>true if the <see cref="IArguments"/> contains a parameter with the specified key; otherwise, false.</returns>
-    bool TryGetValue<T>(string key, out T value);
+    bool TryGetValue<T>(string key, out T? value);
 
     /// <summary>
     /// Gets the parameter associated with the specified key (legacy).

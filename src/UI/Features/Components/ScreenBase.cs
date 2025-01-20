@@ -3,6 +3,8 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Prism.Navigation;
 using ReactiveUI.Maui;
+using Rx.Tracker.Navigation;
+using Rx.Tracker.UI.Navigation;
 
 namespace Rx.Tracker.UI.Features.Components;
 
@@ -10,11 +12,15 @@ namespace Rx.Tracker.UI.Features.Components;
 /// Represents a base screen with implementations for lifecycle methods.
 /// </summary>
 /// <typeparam name="T">The View Model Type.</typeparam>
-public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync
+public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync, INavigatedAware
     where T : ViewModelBase
 {
     /// <inheritdoc/>
     Task IInitializeAsync.InitializeAsync(INavigationParameters parameters) => InitializeAsync(parameters);
+
+    void INavigatedAware.OnNavigatedFrom(INavigationParameters parameters) => OnNavigatedFrom(parameters);
+
+    void INavigatedAware.OnNavigatedTo(INavigationParameters parameters) => OnNavigatedTo(parameters);
 
     /// <summary>
     /// Initialize the instance.
@@ -27,6 +33,20 @@ public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync
     {
         await Initialize(parameters);
 
-        using var disposable = ((T)BindingContext).InitializeCommand.Execute(Unit.Default).Subscribe();
+        using var disposable = ViewModel?.InitializeCommand.Execute(Unit.Default).Subscribe();
+    }
+
+    private void OnNavigatedFrom(INavigationParameters parameters)
+    {
+        INavigated? navigatedFrom = ViewModel;
+
+        navigatedFrom?.OnNavigatedFrom(new NavigatorArguments(parameters));
+    }
+
+    private void OnNavigatedTo(INavigationParameters parameters)
+    {
+        INavigated? navigatedTo = ViewModel;
+
+        navigatedTo?.OnNavigatedTo(new NavigatorArguments(parameters));
     }
 }

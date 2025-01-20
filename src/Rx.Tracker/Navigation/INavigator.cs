@@ -18,6 +18,16 @@ public interface INavigator
         where TRoute : new();
 
     /// <summary>
+    /// Navigates to the uri from the specified route.
+    /// </summary>
+    /// <param name="routes">The routes.</param>
+    /// <param name="arguments">The arguments.</param>
+    /// <typeparam name="TRoute">The router type.</typeparam>
+    /// <returns>a navigation result.</returns>
+    Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes, Action<IArguments> arguments)
+        where TRoute : new();
+
+    /// <summary>
     /// Presents a modal to the uri from the specified route.
     /// </summary>
     /// <param name="routes">The routes.</param>
@@ -47,4 +57,11 @@ public interface INavigator
     /// </summary>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
     Task<NavigationState> Dismiss();
+
+    /// <summary>
+    /// Dismiss the modal.
+    /// </summary>
+    /// <param name="arguments">The arguments.</param>
+    /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+    Task<NavigationState> Dismiss(Action<IArguments> arguments);
 }
