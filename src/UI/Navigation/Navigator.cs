@@ -18,8 +18,17 @@ public class Navigator : INavigator
     public Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new()
     {
-        var invoke = routes.Invoke(new TRoute());
-        return _navigationService.NavigateAsync(invoke).ContinueWith(HandleFailedNavigationResult);
+        var uri = routes.Invoke(new TRoute());
+        return _navigationService.NavigateAsync(uri).ContinueWith(HandleFailedNavigationResult);
+    }
+
+    public Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes, Action<IArguments> arguments)
+        where TRoute : new()
+    {
+        var args = new NavigatorArguments();
+        arguments.Invoke(args);
+        var uri = routes.Invoke(new TRoute());
+        return _navigationService.NavigateAsync(uri, ToParameters(args)).ContinueWith(HandleFailedNavigationResult);
     }
 
     /// <inheritdoc />
@@ -36,8 +45,27 @@ public class Navigator : INavigator
         where TRoute : new() => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public Task<NavigationState> Dismiss() =>
-        _navigationService.GoBackAsync((KnownNavigationParameters.UseModalNavigation, true)).ContinueWith(HandleFailedNavigationResult);
+    public Task<NavigationState> Dismiss()
+        => _navigationService.GoBackAsync().ContinueWith(HandleFailedNavigationResult);
+
+    /// <inheritdoc />
+    public Task<NavigationState> Dismiss(Action<IArguments> arguments)
+    {
+        var args = new NavigatorArguments();
+        arguments.Invoke(args);
+        return _navigationService.GoBackAsync(ToParameters(args)).ContinueWith(HandleFailedNavigationResult);
+    }
+
+    private static NavigationParameters ToParameters(IArguments arguments)
+    {
+        var parameters = new NavigationParameters();
+        foreach (var argument in arguments)
+        {
+            parameters.Add(argument.Key, argument.Value);
+        }
+
+        return parameters;
+    }
 
     private NavigationState HandleFailedNavigationResult(Task<INavigationResult> navigationResult)
     {

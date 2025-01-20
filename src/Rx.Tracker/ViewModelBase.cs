@@ -16,7 +16,7 @@ namespace Rx.Tracker;
 /// <summary>
 /// A base view model.
 /// </summary>
-public abstract class ViewModelBase : RxDisposableObject
+public abstract class ViewModelBase : RxDisposableObject, INavigated
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewModelBase"/> class.
@@ -94,6 +94,12 @@ public abstract class ViewModelBase : RxDisposableObject
     /// </summary>
     protected ILogger Logger { get; }
 
+    /// <inheritdoc/>
+    void INavigated.OnNavigatedTo(IArguments arguments) => _onNavigatedTo.OnNext(arguments);
+
+    /// <inheritdoc/>
+    void INavigated.OnNavigatedFrom(IArguments arguments) => _onNavigatedFrom.OnNext(arguments);
+
     private Task ExecuteInitialize(ICqrs cqrs) => Initialize(cqrs).ContinueWith(
         _ =>
         {
@@ -106,10 +112,6 @@ public abstract class ViewModelBase : RxDisposableObject
     //     _initialize.OnNext(arguments);
     //     _initialize.OnCompleted();
     // }
-    //
-    // void INavigated.OnNavigatedTo(IArguments arguments) => _onNavigatedTo.OnNext(arguments);
-    //
-    // void INavigated.OnNavigatedFrom(IArguments arguments) => _onNavigatedFrom.OnNext(arguments);
     //
     // void IDestructible.Destroy() => Dispose(true);
 #pragma warning disable CA2213
