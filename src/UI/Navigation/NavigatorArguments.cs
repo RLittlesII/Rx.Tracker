@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Prism.Navigation;
+using Rx.Tracker.Navigation;
 
 namespace Rx.Tracker.UI.Navigation;
 
