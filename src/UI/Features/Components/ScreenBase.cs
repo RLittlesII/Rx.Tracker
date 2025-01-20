@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using Prism.Navigation;
 using ReactiveUI.Maui;
+using Rx.Tracker.Features;
 using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Navigation;
 

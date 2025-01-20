@@ -11,7 +11,7 @@ using Rx.Tracker.Extensions;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 
-namespace Rx.Tracker;
+namespace Rx.Tracker.Features;
 
 /// <summary>
 /// A base view model.
@@ -29,10 +29,8 @@ public abstract class ViewModelBase : RxDisposableObject, INavigated
         Navigator = navigator;
         Mediator = cqrs;
         Logger = loggerFactory.CreateLogger(GetType());
-        _initialize = new AsyncSubject<Unit>().DisposeWith(Garbage);
         _onNavigatedTo = new Subject<IArguments>().DisposeWith(Garbage);
         _onNavigatedFrom = new Subject<IArguments>().DisposeWith(Garbage);
-        Initialized = _initialize.AsObservable().LogTrace(Logger, "Initializing").Publish().RefCount();
         NavigatedTo = _onNavigatedTo.AsObservable().LogTrace(Logger, "NavigatedTo").Publish().RefCount();
         NavigatedFrom = _onNavigatedFrom.AsObservable().LogTrace(Logger, "NavigatedFrom").Publish().RefCount();
         InitializeCommand = RxCommand.Create(() => ExecuteInitialize(cqrs)).DisposeWith(Garbage);
@@ -52,11 +50,6 @@ public abstract class ViewModelBase : RxDisposableObject, INavigated
     /// Gets the <see cref="ICqrs"/>.
     /// </summary>
     protected ICqrs Mediator { get; }
-
-    /// <summary>
-    /// Gets a notification when the view model has been initialized.
-    /// </summary>
-    protected IObservable<Unit> Initialized { get; }
 
     /// <summary>
     /// Gets a notification of <see cref="IArguments"/> when the view model is navigated to.
@@ -100,22 +93,10 @@ public abstract class ViewModelBase : RxDisposableObject, INavigated
     /// <inheritdoc/>
     void INavigated.OnNavigatedFrom(IArguments arguments) => _onNavigatedFrom.OnNext(arguments);
 
-    private Task ExecuteInitialize(ICqrs cqrs) => Initialize(cqrs).ContinueWith(
-        _ =>
-        {
-            _initialize.OnNext(Unit.Default);
-            _initialize.OnCompleted();
-        });
+    private Task ExecuteInitialize(ICqrs cqrs) => Initialize(cqrs);
 
-    // void IInitialize.OnInitialize(IArguments arguments)
-    // {
-    //     _initialize.OnNext(arguments);
-    //     _initialize.OnCompleted();
-    // }
-    //
     // void IDestructible.Destroy() => Dispose(true);
 #pragma warning disable CA2213
-    private readonly AsyncSubject<Unit> _initialize;
     private readonly Subject<IArguments> _onNavigatedTo;
     private readonly Subject<IArguments> _onNavigatedFrom;
 #pragma warning restore CA2213

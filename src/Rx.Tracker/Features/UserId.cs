@@ -1,4 +1,4 @@
-namespace Rx.Tracker;
+namespace Rx.Tracker.Features;
 
 /// <inheritdoc />
 public record UserId : Id

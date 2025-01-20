@@ -1,7 +1,7 @@
 using LanguageExt;
 using NanoidDotNet;
 
-namespace Rx.Tracker;
+namespace Rx.Tracker.Features;
 
 /// <inheritdoc />
 public record Id : Identity<string>
