@@ -30,6 +30,11 @@ public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync, 
     void IDestructible.Destroy() => TearDown();
 
     /// <summary>
+    /// Gets the garbage.
+    /// </summary>
+    protected CompositeDisposable Garbage { get; } = new();
+
+    /// <summary>
     /// Initialize the instance.
     /// </summary>
     /// <param name="parameters">The navigation parameters.</param>

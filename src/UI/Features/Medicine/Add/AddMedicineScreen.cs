@@ -14,9 +14,9 @@ using Rx.Tracker.UI.Features.Components;
 
 namespace Rx.Tracker.UI.Features.Medicine.Add;
 
-public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
+public class AddMedicineScreen : ScreenBase<AddMedicineViewModel>
 {
-    public AddMedicineModal()
+    public AddMedicineScreen()
     {
         Content = new Grid
             {
