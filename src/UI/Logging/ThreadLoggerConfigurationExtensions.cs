@@ -26,10 +26,10 @@ public static class ThreadLoggerConfigurationExtensions
     /// <returns>Configuration object allowing method chaining.</returns>
     public static LoggerConfiguration WithNamedThread(this LoggerEnrichmentConfiguration enrichmentConfiguration)
     {
-        Thread.CurrentThread.Name = NamedThreadEnricher.MainThreadName;
+        Thread.CurrentThread.Name = NamedThreadEnrichment.MainThreadName;
 
         return enrichmentConfiguration != null
-            ? enrichmentConfiguration.With<NamedThreadEnricher>()
+            ? enrichmentConfiguration.With<NamedThreadEnrichment>()
             : throw new ArgumentNullException(nameof(enrichmentConfiguration));
     }
 }

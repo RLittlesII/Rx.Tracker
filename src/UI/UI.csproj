@@ -61,6 +61,7 @@
         <PackageReference Include="ReactiveUI" />
         <PackageReference Include="ReactiveUI.Maui" />
         <PackageReference Include="Rocket.Surgery.Airframe.Core" />
+        <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.Enrichers.Thread" />
         <PackageReference Include="Serilog.Exceptions" />
         <PackageReference Include="Serilog.Extensions.Hosting"/>
