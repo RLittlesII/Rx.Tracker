@@ -1,4 +1,5 @@
 using System;
+using Rx.Tracker.Extensions;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
@@ -25,6 +26,7 @@ public abstract class PlatformLogger : IPlatformLogger
        .Enrich.WithThreadId()
        .Enrich.FromLogContext()
        .Enrich.WithExceptionDetails()
+       .Restructure()
        .WriteTo.Conditional(Exceptional, c => WriteToConsoleConditional(c, ConsoleExceptionTemplate))
        .WriteTo.Conditional(NotExceptional, c => WriteToConsoleConditional(c, OutputTemplate));
 

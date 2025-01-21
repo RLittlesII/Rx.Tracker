@@ -12,6 +12,7 @@ using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
 using ReactiveUI;
+using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Entities;
@@ -185,7 +186,7 @@ public class AddMedicineViewModel : ViewModelBase
         }
         catch (Exception exception)
         {
-            Logger.LogError(exception, string.Empty);
+            Logger.LogError(exception, InitializationException.MessageTemplate);
             await _stateMachine.FireAsync(AddMedicineTrigger.Failure);
         }
     }

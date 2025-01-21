@@ -5,7 +5,7 @@ using Serilog.Events;
 
 namespace Rx.Tracker.UI.Logging;
 
-public sealed class NamedThreadEnricher : ILogEventEnricher
+public sealed class NamedThreadEnrichment : ILogEventEnricher
 {
     /// <summary>Enrich the log event.</summary>
     /// <param name="logEvent">The log event to enrich.</param>

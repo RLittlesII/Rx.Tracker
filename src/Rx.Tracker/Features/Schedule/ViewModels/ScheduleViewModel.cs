@@ -12,11 +12,13 @@ using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
+using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
+using Stateless;
 using static Rx.Tracker.Features.Schedule.ViewModels.ScheduleStateMachine;
 
 namespace Rx.Tracker.Features.Schedule.ViewModels;
@@ -108,7 +110,7 @@ public class ScheduleViewModel : ViewModelBase
         }
         catch (Exception exception)
         {
-            Logger.LogError(exception, string.Empty);
+            Logger.LogError(exception, InitializationException.MessageTemplate);
             await _stateMachine.FireAsync(ScheduleTrigger.Failure);
         }
     }
@@ -119,19 +121,21 @@ public class ScheduleViewModel : ViewModelBase
            .Configure(ScheduleState.Initial)
            .Permit(ScheduleTrigger.Load, ScheduleState.Busy)
            .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
 
         stateMachine
            .Configure(ScheduleState.Busy)
            .Permit(ScheduleTrigger.Load, ScheduleState.DaySchedule)
            .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
 
         stateMachine
            .Configure(ScheduleState.DaySchedule)
            .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
            .InternalTransitionAsync(ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
+
+        void LogEntry(StateMachine<ScheduleState, ScheduleTrigger>.Transition transition) => Logger.LogDebug("State Machine Transition: {@Transition}", transition);
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
