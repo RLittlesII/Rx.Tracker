@@ -71,17 +71,19 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                     new Button()
                        .Text(nameof(Column.Cancel))
-                       .Padding(new Thickness(12))
+                       .Margin(new Thickness(12, 18))
                        .Row(Row.Buttons)
                        .Column(Column.Cancel)
+                       .Height(48)
                        .Width(128)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState)
                        .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.BackCommand),
                     new Button()
                        .Text(nameof(Column.Save))
-                       .Padding(new Thickness(12))
+                       .Margin(new Thickness(12, 18))
                        .Row(Row.Buttons)
                        .Column(Column.Save)
+                       .Height(48)
                        .Width(128)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState)
                        .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.BackCommand),
