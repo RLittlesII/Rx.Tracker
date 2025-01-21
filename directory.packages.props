@@ -120,6 +120,7 @@
         <PackageVersion Include="MediatR" Version="12.4.1"/>
         <PackageVersion Include="Nanoid" Version="3.1.0"/>
         <PackageVersion Include="NodaTime" Version="3.1.0"/>
+        <PackageVersion Include="Plugin.Maui.Calendar" Version="1.2.5"/>
         <PackageVersion Include="Plugin.Maui.CalendarStore" Version="2.0.1"/>
         <PackageVersion Include="Refit" Version="8.0.0"/>
         <PackageVersion Include="Riok.Mapperly" Version="4.1.1" ExcludeAssets="runtime" PrivateAssets="all"/>

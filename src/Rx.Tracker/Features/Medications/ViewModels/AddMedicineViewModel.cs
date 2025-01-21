@@ -22,6 +22,7 @@ using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Interactions;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
+using Stateless;
 using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Features.Medications.ViewModels;
@@ -229,25 +230,23 @@ public class AddMedicineViewModel : ViewModelBase
            .Configure(AddMedicineState.Initial)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Busy)
            .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
 
         _stateMachine
            .Configure(AddMedicineState.Busy)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Loaded)
            .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
-           .Permit(AddMedicineTrigger.Complete, AddMedicineState.Completed)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
 
         _stateMachine
            .Configure(AddMedicineState.Loaded)
            .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
            .Permit(AddMedicineTrigger.Validated, AddMedicineState.Valid)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
 
         _stateMachine
            .Configure(AddMedicineState.Valid)
-           .Permit(AddMedicineTrigger.Save, AddMedicineState.Busy)
-           .OnEntryAsync(_ => Task.CompletedTask);
+           .OnEntry(LogEntry);
 
         _stateMachine
            .Configure(AddMedicineState.Failed)
@@ -258,9 +257,18 @@ public class AddMedicineViewModel : ViewModelBase
                     using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
                 });
 
-        _stateMachine
-           .Configure(AddMedicineState.Completed)
-           .OnEntryAsync(_ => ExecuteBack());
+        _stateMachine.Configure(AddMedicineState.Completed)
+           .OnEntryAsync(
+                async _ =>
+                {
+                    // using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe(); 
+                    await ExecuteBack();
+                })
+                })
+           .OnEntry(LogEntry);
+
+        void LogEntry(StateMachine<AddMedicineState, AddMedicineTrigger>.Transition transition)
+            => Logger.LogDebug("State Machine Transition: {@Transition}", transition);
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
