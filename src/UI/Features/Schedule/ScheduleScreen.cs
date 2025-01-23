@@ -18,8 +18,12 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
             {
                 CalendarLayout = WeekLayout.Week,
                 FirstDayOfWeek = DayOfWeek.Sunday,
-                ShowYearPicker = false
+                ShowYearPicker = false,
+
+                // EventTemplate = new DataTemplate(() => new ScheduleItem())
             }
+
+            // .Bind(Calendar.EventsProperty, static (ScheduleViewModel viewModel) => viewModel.Schedule)
            .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState);
         Content = new VerticalStackLayout
         {
@@ -27,18 +31,36 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
             {
                 new Label()
                    .CenterHorizontal()
+                   .Top()
                    .Bind(Label.TextProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: state => state.ToString())
                    .Bind(Label.TextColorProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: ScheduleStateColorConvert),
                 _calendar,
+                new CollectionView
+                    {
+                        HeaderTemplate = new DataTemplate(() => new Label().Text("Header")),
+                        ItemTemplate = new DataTemplate(() => new ScheduleItem())
+                    }
+                   .Bind(ItemsView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.Schedule),
                 new Button()
                    .Text("Add Medication")
-                   .Center()
+                   .Bottom()
                    .Bind(Button.CommandProperty, (ScheduleViewModel viewModel) => viewModel.AddMedicineCommand)
                    .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
+                new ActivityIndicator()
+                   .Center()
+                   .Bind(
+                        ActivityIndicator.ColorProperty,
+                        static (ScheduleViewModel viewModel) => viewModel.CurrentState,
+                        convert: ScheduleStateColorConvert)
+                   .Bind(ActivityIndicator.IsRunningProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsInBusyState),
             }
         };
 
+        bool IsInBusyState(ScheduleStateMachine.ScheduleState state) => IsInState(state, ScheduleStateMachine.ScheduleState.Busy);
         bool IsNotInBusyState(ScheduleStateMachine.ScheduleState state) => IsNotInState(state, ScheduleStateMachine.ScheduleState.Busy);
+
+        bool IsInState(ScheduleStateMachine.ScheduleState state, params ScheduleStateMachine.ScheduleState[] states)
+            => states.Any(scheduleState => scheduleState == state);
 
         bool IsNotInState(ScheduleStateMachine.ScheduleState state, params ScheduleStateMachine.ScheduleState[] states)
             => states.Any(scheduleState => scheduleState != state);
