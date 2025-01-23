@@ -54,62 +54,6 @@ public partial class ScheduleViewModelTests
     }
 
     [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenWeekShouldNotBeNull()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
-            Task.FromResult(
-                new LoadSchedule.Result(
-                    new MedicationScheduleFixture().WithEnumerable(
-                        [
-                            new ScheduledMedicationFixture(),
-                        ]
-                    )
-                )
-            )
-        );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        await sut.InitializeCommand.Execute(Unit.Default);
-
-        // Then
-        sut.Week.Should().NotBeNullOrEmpty();
-    }
-
-
-    [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenWeekShouldStartWithSunday()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        var sunday = new DateTimeOffset(new DateTime(2025, 01, 05), TimeSpan.Zero).ToOffsetDateTime();
-        var monday = sunday.Plus(Duration.FromDays(1));
-        var tuesday = monday.Plus(Duration.FromDays(1));
-        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
-            Task.FromResult(
-                new LoadSchedule.Result(
-                    new MedicationScheduleFixture().WithEnumerable(
-                        [
-                            new ScheduledMedicationFixture().WithScheduledTime(tuesday),
-                            new ScheduledMedicationFixture().WithScheduledTime(monday),
-                            new ScheduledMedicationFixture().WithScheduledTime(sunday),
-                        ]
-                    ).WithToday(sunday.Date)
-                )
-            )
-        );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        await sut.InitializeCommand.Execute(Unit.Default);
-
-        // Then
-        sut.Week.Should().StartWith(sunday.LocalDateTime.Date);
-    }
-
-    [Fact]
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldNotBeNull()
     {
         // Given

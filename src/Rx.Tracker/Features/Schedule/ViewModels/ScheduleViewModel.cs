@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
@@ -7,7 +6,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
-using NodaTime;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
@@ -44,22 +42,13 @@ public class ScheduleViewModel : ViewModelBase
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleState.Initial)
                .DisposeWith(Garbage);
 
-        var medicationSchedule =
-            this.WhenChanged(viewModel => viewModel.MedicationSchedule)
-               .WhereIsNotNull()
-               .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
-               .Select(schedule => schedule!.Connect().RefCount())
-               .Switch();
-
-        medicationSchedule
+        this.WhenChanged(viewModel => viewModel.MedicationSchedule)
+           .WhereIsNotNull()
+           .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
+           .SelectMany(schedule => schedule!.Connect().LogTrace(Logger, "Ref"))
+           .LogTrace(Logger, "Preparing to Filter")
            .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.ToLocalDate())
-           .Bind(out _today)
-           .Subscribe()
-           .DisposeWith(Garbage);
-
-        medicationSchedule
-           .DistinctValues(x => x.ScheduledTime.Date)
-           .SortAndBind(out _week, Comparer<LocalDate>.Default)
+           .Bind(out _schedule)
            .Subscribe()
            .DisposeWith(Garbage);
 
@@ -79,14 +68,9 @@ public class ScheduleViewModel : ViewModelBase
     public ScheduleState CurrentState => _currentState.Value;
 
     /// <summary>
-    /// Gets the days in the week.
-    /// </summary>
-    public ReadOnlyObservableCollection<LocalDate> Week => _week;
-
-    /// <summary>
     /// Gets scheduled medications.
     /// </summary>
-    public ReadOnlyObservableCollection<ScheduledMedication> Schedule => _today;
+    public ReadOnlyObservableCollection<ScheduledMedication> Schedule => _schedule;
 
     /// <summary>
     /// Gets the medication schedule.
@@ -135,7 +119,8 @@ public class ScheduleViewModel : ViewModelBase
            .InternalTransitionAsync(ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
            .OnEntry(LogEntry);
 
-        void LogEntry(StateMachine<ScheduleState, ScheduleTrigger>.Transition transition) => Logger.LogDebug("State Machine Transition: {@Transition}", transition);
+        void LogEntry(StateMachine<ScheduleState, ScheduleTrigger>.Transition transition)
+            => Logger.LogDebug("State Machine Transition: {@Transition}", transition);
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
@@ -144,9 +129,7 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<ScheduledMedication> _today;
-
-    private readonly ReadOnlyObservableCollection<LocalDate> _week;
+    private readonly ReadOnlyObservableCollection<ScheduledMedication> _schedule;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
