@@ -14,18 +14,7 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
 {
     public ScheduleScreen()
     {
-        _calendar = new Calendar // NOTE: [rlittlesii: January 20, 2025] Cannot inline dispose with because control doesn't implement IDisposable.
-            {
-                CalendarLayout = WeekLayout.Week,
-                FirstDayOfWeek = DayOfWeek.Sunday,
-                ShowYearPicker = false,
-
-                // EventTemplate = new DataTemplate(() => new ScheduleItem())
-            }
-
-            // .Bind(Calendar.EventsProperty, static (ScheduleViewModel viewModel) => viewModel.Schedule)
-           .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState);
-        Content = new VerticalStackLayout
+        Content = new StackLayout()
         {
             Children =
             {
@@ -34,16 +23,24 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                    .Top()
                    .Bind(Label.TextProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: state => state.ToString())
                    .Bind(Label.TextColorProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: ScheduleStateColorConvert),
-                _calendar,
-                new CollectionView
+                new Calendar // NOTE: [rlittlesii: January 20, 2025] Cannot inline dispose with because control doesn't implement IDisposable.
+                    {
+                        CalendarLayout = WeekLayout.Week,
+                        FirstDayOfWeek = DayOfWeek.Sunday,
+                        ShowYearPicker = false,
+                    }
+                   .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
+                new ListView
                     {
                         HeaderTemplate = new DataTemplate(() => new Label().Text("Header")),
                         ItemTemplate = new DataTemplate(() => new ScheduleItem())
                     }
-                   .Bind(ItemsView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.Schedule),
+                   .Bind(ItemsView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.Today),
                 new Button()
                    .Text("Add Medication")
                    .Bottom()
+                   .Margin(0, 12)
+                   .Height(56)
                    .Bind(Button.CommandProperty, (ScheduleViewModel viewModel) => viewModel.AddMedicineCommand)
                    .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                 new ActivityIndicator()
@@ -75,8 +72,4 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
             var _                                          => throw new ArgumentOutOfRangeException(nameof(state), state, null)
         };
     }
-
-    protected override void Destroy() => _calendar.Dispose();
-
-    private readonly Calendar _calendar;
 }

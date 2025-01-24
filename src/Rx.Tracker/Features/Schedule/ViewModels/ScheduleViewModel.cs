@@ -17,7 +17,6 @@ using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using Stateless;
-using static Rx.Tracker.Features.Schedule.ViewModels.ScheduleStateMachine;
 
 namespace Rx.Tracker.Features.Schedule.ViewModels;
 
@@ -39,23 +38,35 @@ public class ScheduleViewModel : ViewModelBase
         _currentState =
             _stateMachine
                .Current
-               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleState.Initial)
+               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleStateMachine.ScheduleState.Initial)
                .DisposeWith(Garbage);
 
-        this.WhenChanged(viewModel => viewModel.MedicationSchedule)
+        var medicationScheduleChanged = this.WhenChanged(viewModel => viewModel.MedicationSchedule)
            .WhereIsNotNull()
            .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
            .SelectMany(schedule => schedule!.Connect().LogTrace(Logger, "Ref"))
            .LogTrace(Logger, "Preparing to Filter")
-           .Filter(scheduledMedication => scheduledMedication.ScheduledTime.Date == DateTimeOffset.UtcNow.ToLocalDate())
-           .Bind(out _schedule)
-           .Subscribe()
+           .Publish()
+           .RefCount();
+
+        medicationScheduleChanged
+           .Group(group => group.ScheduledTime)
+           .Transform(x => new DaySchedule(x))
+           .Bind(out _schedule, resetThreshold: 1)
+           .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
+           .DisposeWith(Garbage);
+
+        medicationScheduleChanged
+           .Filter(group => group.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
+           .LogTrace(Logger, "Filtered")
+           .Bind(out _daySchedule, resetThreshold: 1)
+           .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
         ConfigureMachine(_stateMachine);
     }
 
-    private Task ExecuteAddMedicine() => _stateMachine.FireAsync(ScheduleTrigger.Add);
+    private Task ExecuteAddMedicine() => _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Add);
 
     /// <summary>
     /// Gets the add medicine command.
@@ -65,12 +76,17 @@ public class ScheduleViewModel : ViewModelBase
     /// <summary>
     /// Gets the current state of the machine.
     /// </summary>
-    public ScheduleState CurrentState => _currentState.Value;
+    public ScheduleStateMachine.ScheduleState CurrentState => _currentState.Value;
 
     /// <summary>
     /// Gets scheduled medications.
     /// </summary>
-    public ReadOnlyObservableCollection<ScheduledMedication> Schedule => _schedule;
+    public ReadOnlyObservableCollection<DaySchedule> Schedule => _schedule;
+
+    /// <summary>
+    /// Gets today's schedule.
+    /// </summary>
+    public ReadOnlyObservableCollection<ScheduledMedication> Today => _daySchedule;
 
     /// <summary>
     /// Gets the medication schedule.
@@ -86,40 +102,40 @@ public class ScheduleViewModel : ViewModelBase
     {
         try
         {
-            await _stateMachine.FireAsync(ScheduleTrigger.Load);
+            await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
 
             var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
             MedicationSchedule = result.Schedule;
-            await _stateMachine.FireAsync(ScheduleTrigger.Load);
+            await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
         }
         catch (Exception exception)
         {
             Logger.LogError(exception, InitializationException.MessageTemplate);
-            await _stateMachine.FireAsync(ScheduleTrigger.Failure);
+            await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Failure);
         }
     }
 
     private void ConfigureMachine(ScheduleStateMachine stateMachine)
     {
         stateMachine
-           .Configure(ScheduleState.Initial)
-           .Permit(ScheduleTrigger.Load, ScheduleState.Busy)
-           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
+           .Configure(ScheduleStateMachine.ScheduleState.Initial)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Load, ScheduleStateMachine.ScheduleState.Busy)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Failure, ScheduleStateMachine.ScheduleState.Failed)
            .OnEntry(LogEntry);
 
         stateMachine
-           .Configure(ScheduleState.Busy)
-           .Permit(ScheduleTrigger.Load, ScheduleState.DaySchedule)
-           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
+           .Configure(ScheduleStateMachine.ScheduleState.Busy)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Load, ScheduleStateMachine.ScheduleState.DaySchedule)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Failure, ScheduleStateMachine.ScheduleState.Failed)
            .OnEntry(LogEntry);
 
         stateMachine
-           .Configure(ScheduleState.DaySchedule)
-           .Permit(ScheduleTrigger.Failure, ScheduleState.Failed)
-           .InternalTransitionAsync(ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
+           .Configure(ScheduleStateMachine.ScheduleState.DaySchedule)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Failure, ScheduleStateMachine.ScheduleState.Failed)
+           .InternalTransitionAsync(ScheduleStateMachine.ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
            .OnEntry(LogEntry);
 
-        void LogEntry(StateMachine<ScheduleState, ScheduleTrigger>.Transition transition)
+        void LogEntry(StateMachine<ScheduleStateMachine.ScheduleState, ScheduleStateMachine.ScheduleTrigger>.Transition transition)
             => Logger.LogDebug("State Machine Transition: {@Transition}", transition);
     }
 
@@ -127,9 +143,11 @@ public class ScheduleViewModel : ViewModelBase
     private readonly ScheduleStateMachine _stateMachine;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
-    private readonly IValueBinder<ScheduleState> _currentState;
+    private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<ScheduledMedication> _schedule;
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
+
+    private readonly ReadOnlyObservableCollection<ScheduledMedication> _daySchedule;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
