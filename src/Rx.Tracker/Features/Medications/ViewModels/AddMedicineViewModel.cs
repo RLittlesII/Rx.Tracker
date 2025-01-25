@@ -43,7 +43,7 @@ public class AddMedicineViewModel : ViewModelBase
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
         AddCommand = RxCommand.Create<ScheduledMedication?>(ExecuteAdd, _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
 
-        // TODO: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
+        // NOTE: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
         // BackCommand = RxCommand.Create(() => navigator.Back(1));
         BackCommand = RxCommand.Create(() => navigator.Dismiss());
 

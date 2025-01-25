@@ -6,7 +6,7 @@ namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 [AutoFixture(typeof(AddMedicineViewModel))]
 internal sealed partial class AddMedicineViewModelFixture
 {
-    internal AddMedicineViewModelFixture() => this._stateMachineFactory = () => new AddMedicineStateMachineFixture();
+    internal AddMedicineViewModelFixture() => _stateMachineFactory = () => new AddMedicineStateMachineFixture();
 
     public AddMedicineViewModelFixture WithFactory(AddMedicineStateMachine stateMachine) => this.With(ref _stateMachineFactory, () => stateMachine);
 }
