@@ -1,6 +1,5 @@
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
-using Rx.Tracker.Features.Schedule.Domain.Entities;
 
 namespace Rx.Tracker.UI.Features.Schedule;
 
@@ -11,7 +10,9 @@ public class ScheduleItem : ContentView
         Children =
         {
             new Label()
-               .Bind(Label.TextProperty, (ScheduledMedication medication) => medication.Medication.Id)
+               .Text("Item")
+
+            // .Bind(Label.TextProperty, (ScheduledMedication medication) => medication.Medication.Id)
         }
     };
 }
