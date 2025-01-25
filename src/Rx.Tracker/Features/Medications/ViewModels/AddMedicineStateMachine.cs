@@ -46,7 +46,12 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         /// <summary>
         /// The input is valid state.
         /// </summary>
-        Valid
+        Valid,
+
+        /// <summary>
+        /// The completed state.
+        /// </summary>
+        Complete
     }
 
     /// <summary>

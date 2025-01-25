@@ -50,6 +50,7 @@ public class AddMedicineViewModel : ViewModelBase
 
         FailedInteraction = new Interaction<ToastMessage, Unit>();
 
+        // NOTE: [rlittlesii: January 25, 2025] If this approach catches on, abstract it to the base
         BackCommand
            .Where(state => state != NavigationState.Succeeded)
            .LogTrace(Logger, state => state, "Navigation State: {State}")
@@ -213,6 +214,8 @@ public class AddMedicineViewModel : ViewModelBase
 
         _stateMachine
            .Configure(AddMedicineState.Valid)
+           .Permit(AddMedicineTrigger.Save, AddMedicineState.Complete)
+           .Permit(AddMedicineTrigger.Save, AddMedicineState.Failed)
            .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
