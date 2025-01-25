@@ -51,7 +51,7 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         /// <summary>
         /// The completed state.
         /// </summary>
-        Complete
+        Completed
     }
 
     /// <summary>
@@ -73,6 +73,11 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         /// Validated trigger.
         /// </summary>
         Validated,
+
+        /// <summary>
+        /// Complete trigger.
+        /// </summary>
+        Complete,
 
         /// <summary>
         /// Failure trigger.

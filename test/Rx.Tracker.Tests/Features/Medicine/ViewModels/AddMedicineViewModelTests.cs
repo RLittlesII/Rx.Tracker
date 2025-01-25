@@ -12,6 +12,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 
@@ -104,6 +105,6 @@ public partial class AddMedicineViewModelTests
         // Then
         result
            .Should()
-           .BeOfType<Unit>();
+           .Be(AddMedicineTrigger.Complete);
     }
 }

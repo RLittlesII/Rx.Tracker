@@ -2,12 +2,12 @@ using FluentAssertions;
 using NodaTime.Extensions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
+using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -97,7 +97,7 @@ public partial class AddMedicineViewModelTests
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
         sut.SelectedName = "Name";
-        sut.SelectedDosage =  new DosageFixture();
+        sut.SelectedDosage = new DosageFixture();
         sut.SelectedRecurrence = Recurrence.Daily;
         sut.SelectedTime = DateTimeOffset.Now.ToOffsetDateTime();
 
@@ -106,5 +106,28 @@ public partial class AddMedicineViewModelTests
            .CurrentState
            .Should()
            .Be(AddMedicineState.Valid);
+    }
+
+    [Fact]
+    public async Task GivenInValidState_WhenSave_ThenShouldBeInitialState()
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+        await sut.InitializeCommand.Execute(Unit.Default);
+        sut.SelectedName = "Name";
+        sut.SelectedDosage = new DosageFixture();
+        sut.SelectedRecurrence = Recurrence.Daily;
+        sut.SelectedTime = DateTimeOffset.Now.ToOffsetDateTime();
+
+        // When
+        await sut.AddCommand.Execute(new ScheduledMedicationFixture());
+
+        // Then
+        sut
+           .CurrentState
+           .Should()
+           .Be(AddMedicineState.Busy);
     }
 }
