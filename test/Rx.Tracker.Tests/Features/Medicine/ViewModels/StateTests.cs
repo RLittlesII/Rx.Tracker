@@ -130,4 +130,29 @@ public partial class AddMedicineViewModelTests
            .Should()
            .Be(AddMedicineState.Busy);
     }
+
+    [Fact]
+    public async Task GivenScheduledMedication_WhenAdd_ThenShouldBeInCompletedState()
+    {
+        // Given
+
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
+        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
+        using var _ = sut.FailedInteraction.RegisterHandler(interaction => interaction.SetOutput(Unit.Default));
+        await sut.InitializeCommand.Execute(Unit.Default);
+        sut.SelectedName = "Name";
+        sut.SelectedDosage = new DosageFixture();
+        sut.SelectedRecurrence = Recurrence.Daily;
+        sut.SelectedTime = DateTimeOffset.Now.ToOffsetDateTime();
+
+        // When
+        using var disposable = sut.AddCommand.Execute(new ScheduledMedicationFixture()).Subscribe();
+
+        // Then
+        sut
+           .CurrentState
+           .Should()
+           .Be(AddMedicineState.Completed);
+    }
 }

@@ -51,9 +51,11 @@ public class AddMedicineViewModel : ViewModelBase
         BackCommand = RxCommand.Create(ExecuteBack);
 
         FailedInteraction = new Interaction<ToastMessage, Unit>();
+        CompletedInteraction = new Interaction<ToastMessage, Unit>();
 
         AddCommand
-           .Select(trigger => _stateMachine.FireAsync(trigger))
+           .Do(_ => { })
+           .Select(trigger => _stateMachine.FireAsync(trigger).ConfigureAwait(true))
            .Subscribe();
 
         // NOTE: [rlittlesii: January 25, 2025] If this approach catches on, abstract it to the base
@@ -106,6 +108,11 @@ public class AddMedicineViewModel : ViewModelBase
             return AddMedicineTrigger.Complete;
         }
     }
+
+    /// <summary>
+    /// Gets the completed interaction.
+    /// </summary>
+    public Interaction<ToastMessage, Unit> CompletedInteraction { get; }
 
     /// <summary>
     /// Gets the failed interaction.
@@ -240,10 +247,12 @@ public class AddMedicineViewModel : ViewModelBase
                 });
 
         _stateMachine.Configure(AddMedicineState.Completed)
-           .OnEntryAsync(async _ =>
-            {
-                await ExecuteBack();
-            });
+           .OnEntryAsync(
+                async _ =>
+                {
+                    using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe();
+                    await ExecuteBack();
+                });
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
