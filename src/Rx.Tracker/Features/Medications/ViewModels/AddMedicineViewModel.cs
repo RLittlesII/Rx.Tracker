@@ -6,6 +6,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NodaTime;
 using NodaTime.Extensions;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
@@ -71,7 +72,7 @@ public class AddMedicineViewModel : ViewModelBase
            .Where(ArePropertiesValid)
 
             // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
-           .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue.ToOffsetDateTime()))
+           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue.ToOffsetDateTime()))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
@@ -80,7 +81,7 @@ public class AddMedicineViewModel : ViewModelBase
         ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
+        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, OffsetDateTime? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,
@@ -135,7 +136,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets or sets the selected time.
     /// </summary>
-    public DateTimeOffset? SelectedTime
+    public OffsetDateTime? SelectedTime
     {
         get => _selectedTime;
         set => RaiseAndSetIfChanged(ref _selectedTime, value);
@@ -233,7 +234,7 @@ public class AddMedicineViewModel : ViewModelBase
     private string? _selectedName;
     private Dosage? _selectedDosage;
     private Recurrence? _selectedRecurrence;
-    private DateTimeOffset? _selectedTime;
+    private OffsetDateTime? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
     private ObservableCollection<MedicationId> _names = [];
 }

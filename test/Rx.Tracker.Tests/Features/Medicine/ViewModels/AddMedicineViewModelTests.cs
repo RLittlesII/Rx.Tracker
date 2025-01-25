@@ -1,4 +1,5 @@
 using FluentAssertions;
+using NodaTime.Extensions;
 using NSubstitute;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Queries;
@@ -48,7 +49,7 @@ public partial class AddMedicineViewModelTests
             sut.SelectedDosage = new DosageFixture();
             sut.SelectedName = "Ibuprofen";
             sut.SelectedRecurrence = Recurrence.TwiceDaily;
-            sut.SelectedTime = DateTimeOffset.UtcNow;
+            sut.SelectedTime = DateTimeOffset.UtcNow.ToOffsetDateTime();
         }
 
         // Then
