@@ -23,6 +23,7 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                    .Top()
                    .Bind(Label.TextProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: state => state.ToString())
                    .Bind(Label.TextColorProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: ScheduleStateColorConvert),
+
                 new Calendar // NOTE: [rlittlesii: January 20, 2025] Cannot inline dispose with because control doesn't implement IDisposable.
                     {
                         CalendarLayout = WeekLayout.Week,
@@ -32,14 +33,14 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                    .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                 new ListView
                     {
-                        HeaderTemplate = new DataTemplate(() => new Label().Text("Header")),
                         ItemTemplate = new DataTemplate(() => new ScheduleItem())
                     }
-                   .Bind(ItemsView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.Today),
+                   .Bind(ItemsView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.Today)
+                   .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                 new Button()
                    .Text("Add Medication")
                    .Bottom()
-                   .Margin(0, 12)
+                   .Margin(12)
                    .Height(56)
                    .Bind(Button.CommandProperty, (ScheduleViewModel viewModel) => viewModel.AddMedicineCommand)
                    .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
