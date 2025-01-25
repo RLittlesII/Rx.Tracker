@@ -48,7 +48,7 @@ public class AddMedicineViewModel : ViewModelBase
 
         // NOTE: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
         // BackCommand = RxCommand.Create(() => navigator.Back(1));
-        BackCommand = RxCommand.Create(() => navigator.Dismiss());
+        BackCommand = RxCommand.Create(ExecuteBack);
 
         FailedInteraction = new Interaction<ToastMessage, Unit>();
 
@@ -202,6 +202,8 @@ public class AddMedicineViewModel : ViewModelBase
         }
     }
 
+    private Task<NavigationState> ExecuteBack() => Navigator.Dismiss();
+
     private void ConfigureMachine()
     {
         _stateMachine
@@ -236,6 +238,12 @@ public class AddMedicineViewModel : ViewModelBase
                 {
                     using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
                 });
+
+        _stateMachine.Configure(AddMedicineState.Completed)
+           .OnEntryAsync(async _ =>
+            {
+                await ExecuteBack();
+            });
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
