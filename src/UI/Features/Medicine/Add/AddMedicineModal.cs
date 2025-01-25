@@ -84,7 +84,7 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
                        .Column(Column.Save)
                        .Width(128)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState)
-                       .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.BackCommand),
+                       .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.AddCommand),
                     new ActivityIndicator()
                        .Center()
                        .Bind(
