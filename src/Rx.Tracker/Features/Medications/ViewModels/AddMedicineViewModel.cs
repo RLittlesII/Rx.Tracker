@@ -92,11 +92,12 @@ public class AddMedicineViewModel : ViewModelBase
         ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((MedicationId? Name, Dosage? Dosage, Recurrence? Recurrence, TimeSpan Time) tuple) => tuple is
+        static bool ArePropertiesValid((MedicationId? Name, Dosage? Dosage, Recurrence? Recurrence, TimeSpan? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,
-            Recurrence: not null
+            Recurrence: not null,
+            Time: not null
         };
 
         async Task<AddMedicineTrigger> ExecuteAdd(ScheduledMedication? scheduledMedication)
@@ -155,7 +156,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets or sets the selected time.
     /// </summary>
-    public TimeSpan SelectedTime
+    public TimeSpan? SelectedTime
     {
         get => _selectedTime;
         set => RaiseAndSetIfChanged(ref _selectedTime, value);
@@ -270,7 +271,7 @@ public class AddMedicineViewModel : ViewModelBase
     private MedicationId? _selectedName;
     private Dosage? _selectedDosage;
     private Recurrence? _selectedRecurrence;
-    private TimeSpan _selectedTime;
+    private TimeSpan? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
     private ObservableCollection<MedicationId> _names = [];
 }

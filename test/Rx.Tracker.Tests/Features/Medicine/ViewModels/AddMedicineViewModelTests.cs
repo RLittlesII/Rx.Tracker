@@ -50,7 +50,7 @@ public partial class AddMedicineViewModelTests
             sut.SelectedDosage = new DosageFixture();
             sut.SelectedName = "Ibuprofen";
             sut.SelectedRecurrence = Recurrence.TwiceDaily;
-            sut.SelectedTime = DateTimeOffset.UtcNow.ToOffsetDateTime();
+            sut.SelectedTime = TimeSpan.Zero;
         }
 
         // Then
