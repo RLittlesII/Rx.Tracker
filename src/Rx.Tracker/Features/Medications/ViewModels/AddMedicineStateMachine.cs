@@ -16,6 +16,7 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
     public AddMedicineStateMachine(ILoggerFactory loggerFactory)
         : base(loggerFactory, AddMedicineState.Initial)
     {
+        // TODO: [rlittlesii: January 26, 2025] Source generate methods for firing triggers.
     }
 
     /// <summary>
