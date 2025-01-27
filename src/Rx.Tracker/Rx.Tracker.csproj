@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -15,6 +15,7 @@
         <PackageReference Include="ReactiveMarbles.Mvvm"/>
         <PackageReference Include="ReactiveUI"/>
         <PackageReference Include="Refit"/>
+        <PackageReference Include="Riok.Mapperly"/>
         <PackageReference Include="Serilog" />
         <PackageReference Include="Stateless"/>
     </ItemGroup>
