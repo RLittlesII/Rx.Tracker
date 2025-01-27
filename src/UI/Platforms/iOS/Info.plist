@@ -28,5 +28,10 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+    <key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+    <string>This app needs your permission to write events to your calendars. This includes creating events, but not reading, modifying or deleting events.</string>
+
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>This app needs your permission to fully manage events on your calendars. This includes reading, writing, modifying and deleting events.</string>
 </dict>
 </plist>

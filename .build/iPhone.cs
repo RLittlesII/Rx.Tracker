@@ -1,6 +1,6 @@
 using Nuke.Common;
 
-partial class Tracker 
+partial class Tracker
 {
     Target iPhoneRelease => definition => definition
        .OnlyWhenStatic(() => Configuration == Configuration.Release)
