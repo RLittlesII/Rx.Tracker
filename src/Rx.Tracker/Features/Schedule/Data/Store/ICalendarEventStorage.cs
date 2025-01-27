@@ -9,13 +9,6 @@ namespace Rx.Tracker.Features.Schedule.Data.Store;
 public interface ICalendarEventStorage
 {
     /// <summary>
-    /// Retrieves events from a specific calendar or all calendars from the device.
-    /// </summary>
-    /// <param name="calendarId">The calendar identifier to retrieve events for. If not provided, events will be retrieved for all calendars on the device.</param>
-    /// <returns>A list of events from the calendars on the device.</returns>
-    Task<IEnumerable<CalendarEventDto>> Read(CalendarId calendarId);
-
-    /// <summary>
     /// Creates a new event with the provided information in the specified calendar.
     /// </summary>
     /// <param name="calendarId">The unique identifier of the calendar to add the newly created event to.</param>
@@ -43,6 +36,13 @@ public interface ICalendarEventStorage
     /// <param name="calendarEvent">The event object with the details to save to the calendar specified in this object.</param>
     /// <returns>The unique identifier of the newly created event.</returns>
     Task<CalendarEventId> Create(CalendarEventDto calendarEvent);
+
+    /// <summary>
+    /// Retrieves events from a specific calendar or all calendars from the device.
+    /// </summary>
+    /// <param name="calendarId">The calendar identifier to retrieve events for. If not provided, events will be retrieved for all calendars on the device.</param>
+    /// <returns>A list of events from the calendars on the device.</returns>
+    Task<IEnumerable<CalendarEventDto>> Read(CalendarId calendarId);
 
     /// <summary>
     /// Updates an existing event with the provided information.
