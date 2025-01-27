@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
@@ -7,7 +6,6 @@ using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
-using NodaTime;
 using Prism.Navigation;
 using ReactiveMarbles.Extensions;
 using ReactiveUI;

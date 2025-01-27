@@ -7,7 +7,6 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using NodaTime;
 using NodaTime.Extensions;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
