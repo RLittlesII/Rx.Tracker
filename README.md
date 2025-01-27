@@ -25,6 +25,7 @@ receive reminders, and explicitly acknowledge the time it was taken.
 - [DryIoc](https://github.com/dadhi/DryIoc)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
 - [Language Extensions](https://github.com/louthy/language-ext)
+- [mapperly](https://github.com/riok/mapperly)
 - [MediatR](https://github.com/jbogard/MediatR)
 - [Nanoid](https://github.com/codeyu/nanoid-net)
 - [Noda Time](https://github.com/nodatime/nodatime)
