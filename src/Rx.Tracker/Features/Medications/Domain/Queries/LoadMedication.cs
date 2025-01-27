@@ -48,9 +48,9 @@ public static class LoadMedication
         /// <inheritdoc />
         protected override async Task<Result> Handle(Query query, CancellationToken cancellationToken = default)
         {
-            var things = await _client.Get();
+            var medications = await _client.Get();
 
-            return new Result(things);
+            return new Result(medications); // TODO: [rlittlesii: January 26, 2025] source generate result extension methods .ContinueWith(task => new Result(task.Result)).
         }
 
         private readonly IMedicineApiClient _client;

@@ -20,4 +20,7 @@ public record MedicationId : Id
     }
 
     public static implicit operator MedicationId(string value) => new(value);
+
+    /// <inheritdoc/>
+    public override string ToString() => Value;
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -78,6 +79,7 @@ public class AddMedicineViewModel : ViewModelBase
                 static viewModel => viewModel.SelectedRecurrence,
                 static viewModel => viewModel.SelectedTime,
                 static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
+           .LogTrace(Logger, state => state, "State: {State}")
            .Where(ArePropertiesValid)
 
             // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
@@ -90,12 +92,11 @@ public class AddMedicineViewModel : ViewModelBase
         ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, OffsetDateTime? Time) tuple) => tuple is
+        static bool ArePropertiesValid((MedicationId? Name, Dosage? Dosage, Recurrence? Recurrence, TimeSpan Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,
-            Recurrence: not null,
-            Time: not null
+            Recurrence: not null
         };
 
         async Task<AddMedicineTrigger> ExecuteAdd(ScheduledMedication? scheduledMedication)
@@ -127,7 +128,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets or sets the selected name.
     /// </summary>
-    public string? SelectedName
+    public MedicationId? SelectedName
     {
         get => _selectedName;
         set => RaiseAndSetIfChanged(ref _selectedName, value);
@@ -154,7 +155,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets or sets the selected time.
     /// </summary>
-    public OffsetDateTime? SelectedTime
+    public TimeSpan SelectedTime
     {
         get => _selectedTime;
         set => RaiseAndSetIfChanged(ref _selectedTime, value);
@@ -177,6 +178,11 @@ public class AddMedicineViewModel : ViewModelBase
         get => _names;
         set => RaiseAndSetIfChanged(ref _names, value);
     }
+
+    /// <summary>
+    /// Gets the recurrences.
+    /// </summary>
+    public List<Recurrence> Recurrences { get; } = Enum.GetValues<Recurrence>().ToList();
 
     /// <summary>
     /// Gets the current state of the machine.
@@ -261,10 +267,10 @@ public class AddMedicineViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<AddMedicineState> _currentState;
 
-    private string? _selectedName;
+    private MedicationId? _selectedName;
     private Dosage? _selectedDosage;
     private Recurrence? _selectedRecurrence;
-    private OffsetDateTime? _selectedTime;
+    private TimeSpan _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
     private ObservableCollection<MedicationId> _names = [];
 }
