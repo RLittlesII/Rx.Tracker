@@ -29,7 +29,7 @@ public interface ICalendarStorage
     /// <param name="name">The name.</param>
     /// <param name="color">The color .</param>
     /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
-    Task Update(CalendarId id, string name, Color color);
+    Task Update(CalendarId id, string name, int color);
 
     /// <summary>
     /// Deletes a calendar, specified by its unique ID, from the device.

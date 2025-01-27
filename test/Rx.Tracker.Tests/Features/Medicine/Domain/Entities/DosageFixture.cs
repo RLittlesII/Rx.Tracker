@@ -7,5 +7,5 @@ internal class DosageFixture : ITestFixtureBuilder
 {
     public static implicit operator Dosage(DosageFixture fixture) => fixture.Build();
 
-    private Dosage Build() => new Dosage(DosageType.Chewable, 100, DosageWeight.Milligrams);
+    private Dosage Build() => new(100, DosageType.Chewable, DosageWeight.Milligrams);
 }

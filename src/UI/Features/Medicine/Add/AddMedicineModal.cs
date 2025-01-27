@@ -38,14 +38,14 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
                 {
                     new Label()
                        .Row(Row.CurrentState)
-                       .ColumnSpan(3)
+                       .ColumnSpan(ColumnSpan)
                        .CenterHorizontal()
                        .Bind(Label.TextProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: state => state.ToString())
                        .Bind(Label.TextColorProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: MedicineStateColorConvert),
                     new Label()
                        .Text("Choose a Medication")
                        .Row(Row.Title)
-                       .ColumnSpan(3)
+                       .ColumnSpan(ColumnSpan)
                        .CenterHorizontal()
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                     new Picker().Bind(
@@ -54,20 +54,31 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
                             static (viewModel, text) => viewModel.SelectedName = text)
                        .Bind(Picker.ItemsSourceProperty, (AddMedicineViewModel viewModel) => viewModel.Names)
                        .Row(Row.Medications)
-                       .ColumnSpan(3)
+                       .ColumnSpan(ColumnSpan)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
-
-                    // new Picker()
-                    //    .Bind(Picker.ItemsSourceProperty, (AddMedicineViewModel viewModel) => viewModel.Dosages)
-                    //    .Row(Row.Dosage)
-                    //    .ColumnSpan(3),
-                    // new RadioButton()
-                    //    .Bind(Picker.ItemsSourceProperty, (AddMedicineViewModel viewModel) => viewModel.Dosages)
-                    //    .Row(Row.Dosage)
-                    //    .ColumnSpan(3),
+                    new Picker().Bind(
+                            Picker.SelectedItemProperty,
+                            static (AddMedicineViewModel viewModel) => viewModel.SelectedDosage,
+                            static (viewModel, dosage) => viewModel.SelectedDosage = dosage)
+                       .Bind(Picker.ItemsSourceProperty, (AddMedicineViewModel viewModel) => viewModel.Dosages)
+                       .Row(Row.Dosage)
+                       .ColumnSpan(ColumnSpan)
+                       .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
+                    new Picker().Bind(
+                            Picker.SelectedItemProperty,
+                            static (AddMedicineViewModel viewModel) => viewModel.SelectedRecurrence,
+                            static (viewModel, recurrence) => viewModel.SelectedRecurrence = recurrence)
+                       .Bind(Picker.ItemsSourceProperty, (AddMedicineViewModel viewModel) => viewModel.Recurrences)
+                       .Row(Row.Recurrence)
+                       .ColumnSpan(ColumnSpan)
+                       .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                     new TimePicker()
                        .Row(Row.Time)
-                       .ColumnSpan(3)
+                       .ColumnSpan(ColumnSpan)
+                       .Bind(
+                            TimePicker.TimeProperty,
+                            static (AddMedicineViewModel viewModel) => viewModel.SelectedTime,
+                            static (viewModel, selectedTime) => viewModel.SelectedTime = selectedTime)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                     new Button()
                        .Text(nameof(Column.Cancel))
@@ -84,7 +95,7 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
                        .Column(Column.Save)
                        .Width(128)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState)
-                       .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.BackCommand),
+                       .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.AddCommand),
                     new ActivityIndicator()
                        .Center()
                        .Bind(
@@ -140,4 +151,6 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
         Spacer,
         Save
     }
+
+    private const int ColumnSpan = 3;
 }

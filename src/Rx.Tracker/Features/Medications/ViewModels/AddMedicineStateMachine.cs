@@ -16,6 +16,7 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
     public AddMedicineStateMachine(ILoggerFactory loggerFactory)
         : base(loggerFactory, AddMedicineState.Initial)
     {
+        // TODO: [rlittlesii: January 26, 2025] Source generate methods for firing triggers.
     }
 
     /// <summary>
@@ -46,7 +47,12 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         /// <summary>
         /// The input is valid state.
         /// </summary>
-        Valid
+        Valid,
+
+        /// <summary>
+        /// The completed state.
+        /// </summary>
+        Completed
     }
 
     /// <summary>
@@ -68,6 +74,11 @@ public class AddMedicineStateMachine : ObservableStateMachine<AddMedicineState, 
         /// Validated trigger.
         /// </summary>
         Validated,
+
+        /// <summary>
+        /// Complete trigger.
+        /// </summary>
+        Complete,
 
         /// <summary>
         /// Failure trigger.

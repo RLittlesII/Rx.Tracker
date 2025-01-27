@@ -11,5 +11,16 @@ namespace Rx.Tracker.Features.Medications.Data.Api;
 public class MedicineApiClient : IMedicineApiClient
 {
     /// <inheritdoc/>
-    public Task<IReadOnlyCollection<Medication>> Get() => Task.FromResult<IReadOnlyCollection<Medication>>([]);
+    public Task<IReadOnlyCollection<Medication>> Get() => Task.FromResult<IReadOnlyCollection<Medication>>(
+    [
+        new Medication(
+            new MedicationId("Ibuprofen"),
+            [Dosage.Milligrams(100), Dosage.Milligrams(300), Dosage.Milligrams(500)]),
+        new Medication(
+            new MedicationId("Advil"),
+            [Dosage.Milligrams(100), Dosage.Milligrams(300), Dosage.Milligrams(500)]),
+        new Medication(
+            new MedicationId("Alieve"),
+            [Dosage.Milligrams(100), Dosage.Milligrams(300), Dosage.Milligrams(500)]),
+    ]);
 }

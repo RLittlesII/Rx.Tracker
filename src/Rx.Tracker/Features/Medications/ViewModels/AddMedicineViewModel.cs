@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -41,14 +42,23 @@ public class AddMedicineViewModel : ViewModelBase
         : base(navigator, cqrs, loggerFactory)
     {
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
-        AddCommand = RxCommand.Create<ScheduledMedication?>(ExecuteAdd, _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
+        AddCommand = RxCommand.Create<ScheduledMedication?, AddMedicineTrigger>(
+            ExecuteAdd,
+            _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
 
-        // TODO: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
+        // NOTE: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
         // BackCommand = RxCommand.Create(() => navigator.Back(1));
-        BackCommand = RxCommand.Create(() => navigator.Dismiss());
+        BackCommand = RxCommand.Create(ExecuteBack);
 
         FailedInteraction = new Interaction<ToastMessage, Unit>();
+        CompletedInteraction = new Interaction<ToastMessage, Unit>();
 
+        AddCommand
+           .Do(_ => { })
+           .Select(trigger => _stateMachine.FireAsync(trigger).ConfigureAwait(true))
+           .Subscribe();
+
+        // NOTE: [rlittlesii: January 25, 2025] If this approach catches on, abstract it to the base
         BackCommand
            .Where(state => state != NavigationState.Succeeded)
            .LogTrace(Logger, state => state, "Navigation State: {State}")
@@ -68,10 +78,11 @@ public class AddMedicineViewModel : ViewModelBase
                 static viewModel => viewModel.SelectedRecurrence,
                 static viewModel => viewModel.SelectedTime,
                 static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
+           .LogTrace(Logger, state => state, "State: {State}")
            .Where(ArePropertiesValid)
 
             // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
-           .Select(static _ => new ScheduledMedication(MealRequirements.After, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue.ToOffsetDateTime()))
+           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue.ToOffsetDateTime()))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
@@ -80,7 +91,7 @@ public class AddMedicineViewModel : ViewModelBase
         ConfigureMachine();
 
         // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((string? Name, Dosage? Dosage, Recurrence? Recurrence, DateTimeOffset? Time) tuple) => tuple is
+        static bool ArePropertiesValid((MedicationId? Name, Dosage? Dosage, Recurrence? Recurrence, TimeSpan? Time) tuple) => tuple is
         {
             Name: not null,
             Dosage: not null,
@@ -88,12 +99,21 @@ public class AddMedicineViewModel : ViewModelBase
             Time: not null
         };
 
-        async Task ExecuteAdd(ScheduledMedication? scheduledMedication)
+        async Task<AddMedicineTrigger> ExecuteAdd(ScheduledMedication? scheduledMedication)
         {
             ArgumentNullException.ThrowIfNull(scheduledMedication);
-            await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication));
+
+            await _stateMachine.FireAsync(AddMedicineTrigger.Save);
+            await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication)); // TODO: [rlittlesii: January 25, 2025] Timeout?
+
+            return AddMedicineTrigger.Complete;
         }
     }
+
+    /// <summary>
+    /// Gets the completed interaction.
+    /// </summary>
+    public Interaction<ToastMessage, Unit> CompletedInteraction { get; }
 
     /// <summary>
     /// Gets the failed interaction.
@@ -103,12 +123,12 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets the add command.
     /// </summary>
-    public RxCommand<ScheduledMedication?, Unit> AddCommand { get; }
+    public RxCommand<ScheduledMedication?, AddMedicineTrigger> AddCommand { get; }
 
     /// <summary>
     /// Gets or sets the selected name.
     /// </summary>
-    public string? SelectedName
+    public MedicationId? SelectedName
     {
         get => _selectedName;
         set => RaiseAndSetIfChanged(ref _selectedName, value);
@@ -135,7 +155,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets or sets the selected time.
     /// </summary>
-    public DateTimeOffset? SelectedTime
+    public TimeSpan? SelectedTime
     {
         get => _selectedTime;
         set => RaiseAndSetIfChanged(ref _selectedTime, value);
@@ -160,6 +180,11 @@ public class AddMedicineViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// Gets the recurrences.
+    /// </summary>
+    public List<Recurrence> Recurrences { get; } = Enum.GetValues<Recurrence>().ToList();
+
+    /// <summary>
     /// Gets the current state of the machine.
     /// </summary>
     public AddMedicineState CurrentState => _currentState.Value;
@@ -181,7 +206,6 @@ public class AddMedicineViewModel : ViewModelBase
             Names = new ObservableCollection<MedicationId>(result.Medications.Select(medication => medication.Id));
             Dosages = new ObservableCollection<Dosage>(result.Medications.Dosages);
 
-            await Task.Delay(TimeSpan.FromSeconds(4));
             await _stateMachine.FireAsync(AddMedicineTrigger.Load);
         }
         catch (Exception exception)
@@ -190,6 +214,8 @@ public class AddMedicineViewModel : ViewModelBase
             await _stateMachine.FireAsync(AddMedicineTrigger.Failure);
         }
     }
+
+    private Task<NavigationState> ExecuteBack() => Navigator.Dismiss();
 
     private void ConfigureMachine()
     {
@@ -203,6 +229,7 @@ public class AddMedicineViewModel : ViewModelBase
            .Configure(AddMedicineState.Busy)
            .Permit(AddMedicineTrigger.Load, AddMedicineState.Loaded)
            .Permit(AddMedicineTrigger.Failure, AddMedicineState.Failed)
+           .Permit(AddMedicineTrigger.Complete, AddMedicineState.Completed)
            .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
@@ -213,6 +240,7 @@ public class AddMedicineViewModel : ViewModelBase
 
         _stateMachine
            .Configure(AddMedicineState.Valid)
+           .Permit(AddMedicineTrigger.Save, AddMedicineState.Busy)
            .OnEntryAsync(_ => Task.CompletedTask);
 
         _stateMachine
@@ -223,6 +251,14 @@ public class AddMedicineViewModel : ViewModelBase
                 {
                     using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
                 });
+
+        _stateMachine.Configure(AddMedicineState.Completed)
+           .OnEntryAsync(
+                async _ =>
+                {
+                    using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe();
+                    await ExecuteBack();
+                });
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
@@ -231,10 +267,10 @@ public class AddMedicineViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<AddMedicineState> _currentState;
 
-    private string? _selectedName;
+    private MedicationId? _selectedName;
     private Dosage? _selectedDosage;
     private Recurrence? _selectedRecurrence;
-    private DateTimeOffset? _selectedTime;
+    private TimeSpan? _selectedTime;
     private ObservableCollection<Dosage> _dosages = [];
     private ObservableCollection<MedicationId> _names = [];
 }

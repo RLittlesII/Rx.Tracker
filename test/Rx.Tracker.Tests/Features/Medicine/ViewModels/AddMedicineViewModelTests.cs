@@ -1,6 +1,5 @@
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Features.Medications.Domain.Queries;
 using Rx.Tracker.Features.Medications.ViewModels;
@@ -19,19 +18,6 @@ namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 public partial class AddMedicineViewModelTests
 {
     [Fact]
-    public void WhenConstructed_ThenShouldBeInitialState()
-    {
-        // Given
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture();
-
-        // When, Then
-        sut
-           .CurrentState
-           .Should()
-           .Be(AddMedicineState.Initial);
-    }
-
-    [Fact]
     public async Task GivenCqrs_WhenInitialize_ThenShouldHaveDosages()
     {
         // Given
@@ -44,61 +30,6 @@ public partial class AddMedicineViewModelTests
 
         // Then
         sut.Dosages.Should().NotBeEmpty();
-    }
-
-    [Fact]
-    public async Task GivenCqrs_WhenInitialize_ThenShouldBeInLoaded()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult(LoadMedication.Create([new MedicationFixture()])));
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        await sut.InitializeCommand.Execute(Unit.Default);
-
-        // Then
-        sut
-           .CurrentState
-           .Should()
-           .Be(AddMedicineState.Loaded);
-    }
-
-    [Fact]
-    public async Task GivenQueryReturnsNull_WhenInitialize_ThenShouldBeInFailed()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadMedication.Query>()).Returns(Task.FromResult<LoadMedication.Result>(null!));
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
-        using var _ = sut.FailedInteraction.RegisterHandler(interaction => interaction.SetOutput(Unit.Default));
-
-        // When
-        await sut.InitializeCommand.Execute(Unit.Default);
-
-        // Then
-        sut
-           .CurrentState
-           .Should()
-           .Be(AddMedicineState.Failed);
-    }
-
-    [Fact]
-    public async Task GivenQueryThrows_WhenInitialize_ThenShouldBeInFailed()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadMedication.Query>()).ThrowsAsync(new Exception());
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        _ = await Record.ExceptionAsync(async () => await sut.InitializeCommand.Execute(Unit.Default));
-
-        // Then
-        sut
-           .CurrentState
-           .Should()
-           .Be(AddMedicineState.Failed);
     }
 
     [Fact]
@@ -118,7 +49,7 @@ public partial class AddMedicineViewModelTests
             sut.SelectedDosage = new DosageFixture();
             sut.SelectedName = "Ibuprofen";
             sut.SelectedRecurrence = Recurrence.TwiceDaily;
-            sut.SelectedTime = DateTimeOffset.UtcNow;
+            sut.SelectedTime = TimeSpan.Zero;
         }
 
         // Then
@@ -173,6 +104,6 @@ public partial class AddMedicineViewModelTests
         // Then
         result
            .Should()
-           .BeOfType<Unit>();
+           .Be(AddMedicineTrigger.Complete);
     }
 }
