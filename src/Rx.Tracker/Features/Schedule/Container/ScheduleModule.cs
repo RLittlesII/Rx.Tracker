@@ -1,6 +1,9 @@
 using DryIoc;
 using Microsoft.Extensions.Logging;
 using Rx.Tracker.Container;
+using Rx.Tracker.Features.Schedule.Data.Api;
+using Rx.Tracker.Features.Schedule.Data.Store;
+using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.ViewModels;
 
 namespace Rx.Tracker.Features.Schedule.Container;
@@ -15,6 +18,9 @@ public class ScheduleModule : ContainerModule
             resolver => new ScheduleStateMachine(
                 ScheduleStateMachine.ScheduleState.Initial,
                 resolver.Resolve<ILoggerFactory>()));
+
+        registrar.Register<IMedicationScheduleApiClient, MedicationScheduleClient>();
+        registrar.Register<IMedicationScheduleApiContract, LocalMedicationScheduleStore>();
 
         return registrar;
     }

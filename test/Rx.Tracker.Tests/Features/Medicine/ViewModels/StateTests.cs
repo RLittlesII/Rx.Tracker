@@ -1,5 +1,4 @@
 using FluentAssertions;
-using NodaTime.Extensions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Rx.Tracker.Features.Medications.Domain.Queries;

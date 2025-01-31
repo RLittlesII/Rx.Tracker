@@ -9,7 +9,8 @@ namespace Rx.Tracker.Features.Schedule.Data.Dto;
 /// </summary>
 public record ScheduledMedicineDto(
     Id Id,
+    MedicineDto Medication,
     MealRequirements MealRequirement,
     Recurrence Recurrence,
     OffsetDateTime ScheduledTime,
-    OffsetDateTime? TakenTime) : MedicineDto(Id);
+    OffsetDateTime? TakenTime);

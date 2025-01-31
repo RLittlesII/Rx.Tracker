@@ -2,6 +2,7 @@ using DryIoc;
 using FluentAssertions;
 using LanguageExt;
 using NSubstitute;
+using Rx.Tracker.Features;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Mediation;
@@ -20,7 +21,7 @@ public class AddMedicationToScheduleTests
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(() => sut.Handle(AddMedicationToSchedule.Create(new ScheduledMedicationFixture())));
+        var result = await Record.ExceptionAsync(() => sut.Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture())));
 
         // Then
         result
@@ -36,7 +37,7 @@ public class AddMedicationToScheduleTests
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture().WithReminders(reminders);
 
         // When
-        var result = await sut.Handle(AddMedicationToSchedule.Create(new ScheduledMedicationFixture()));
+        var result = await sut.Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()));
 
         // Then
         result
@@ -51,7 +52,7 @@ public class AddMedicationToScheduleTests
         var container = new ContainerFixture().WithMocks().AsInterface();
 
         // When
-        var result = await Record.ExceptionAsync(() => container.Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new ScheduledMedicationFixture())));
+        var result = await Record.ExceptionAsync(() => container.Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture())));
 
         // Then
         result

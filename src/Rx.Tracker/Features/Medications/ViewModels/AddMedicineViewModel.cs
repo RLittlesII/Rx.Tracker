@@ -72,7 +72,7 @@ public class AddMedicineViewModel : ViewModelBase
                .DisposeWith(Garbage);
 
         // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
-        this.WhenChanged(
+        _medication = this.WhenChanged(
                 static viewModel => viewModel.SelectedName,
                 static viewModel => viewModel.SelectedDosage,
                 static viewModel => viewModel.SelectedRecurrence,
@@ -86,7 +86,8 @@ public class AddMedicineViewModel : ViewModelBase
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
-           .Subscribe();
+           .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(Medication)), () => null!)
+           .DisposeWith(Garbage);
 
         ConfigureMachine();
 
@@ -104,7 +105,7 @@ public class AddMedicineViewModel : ViewModelBase
             ArgumentNullException.ThrowIfNull(scheduledMedication);
 
             await _stateMachine.FireAsync(AddMedicineTrigger.Save);
-            await cqrs.Execute(AddMedicationToSchedule.Create(scheduledMedication)); // TODO: [rlittlesii: January 25, 2025] Timeout?
+            await cqrs.Execute(AddMedicationToSchedule.Create(new UserId(), scheduledMedication)); // TODO: [rlittlesii: January 25, 2025] Timeout?
 
             return AddMedicineTrigger.Complete;
         }
@@ -194,6 +195,11 @@ public class AddMedicineViewModel : ViewModelBase
     /// </summary>
     public RxCommand<Unit, NavigationState> BackCommand { get; }
 
+    /// <summary>
+    /// Gets the valid scheduled medication.
+    /// </summary>
+    public ScheduledMedication Medication => _medication.Value;
+
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
@@ -252,13 +258,9 @@ public class AddMedicineViewModel : ViewModelBase
                     using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
                 });
 
-        _stateMachine.Configure(AddMedicineState.Completed)
-           .OnEntryAsync(
-                async _ =>
-                {
-                    using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe();
-                    await ExecuteBack();
-                });
+        _stateMachine
+           .Configure(AddMedicineState.Completed)
+           .OnEntryAsync(_ => ExecuteBack());
     }
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
@@ -266,6 +268,9 @@ public class AddMedicineViewModel : ViewModelBase
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<AddMedicineState> _currentState;
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
+    private readonly IValueBinder<ScheduledMedication> _medication;
 
     private MedicationId? _selectedName;
     private Dosage? _selectedDosage;

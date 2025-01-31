@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
@@ -70,7 +69,7 @@ public static class MauiProgram
         var coreRegistration = CoreRegistrationBuilder
            .Create()
            .WithMainThreadScheduler(RxApp.MainThreadScheduler)
-           .WithTaskPoolScheduler(TaskPoolScheduler.Default)
+           .WithTaskPoolScheduler(RxApp.TaskpoolScheduler)
            .WithExceptionHandler(exceptionHandler)
            .Build();
 

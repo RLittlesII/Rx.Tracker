@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Data.Dto;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
