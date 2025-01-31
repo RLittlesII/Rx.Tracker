@@ -19,8 +19,8 @@ public class ScheduleModule : ContainerModule
                 ScheduleStateMachine.ScheduleState.Initial,
                 resolver.Resolve<ILoggerFactory>()));
 
-        registrar.Register<IMedicationScheduleApiClient, MedicationScheduleClient>();
-        registrar.Register<IMedicationScheduleApiContract, LocalMedicationScheduleStore>();
+        registrar.Register<IMedicationScheduleApiClient, MedicationScheduleClient>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
+        registrar.Register<IMedicationScheduleApiContract, LocalMedicationScheduleStore>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
 
         return registrar;
     }

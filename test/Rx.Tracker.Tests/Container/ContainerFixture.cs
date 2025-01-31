@@ -7,7 +7,12 @@ using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Rx.Tracker.Container;
 using Rx.Tracker.Mediation;
+using Rx.Tracker.Mediation.Commands;
+using Rx.Tracker.Mediation.Queries;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Rx.Tracker.Tests.Container;
 
@@ -15,7 +20,7 @@ public sealed class ContainerFixture : ITestFixtureBuilder
 {
     public static implicit operator DryIoc.Container(ContainerFixture fixture) => fixture.Build();
 
-    public ContainerFixture WithRegistration(Action<DryIoc.IContainer> bootstrap) => this.With(ref _bootstrap, bootstrap);
+    public ContainerFixture WithRegistration(Action<IContainer> bootstrap) => this.With(ref _bootstrap, bootstrap);
     public ContainerFixture WithMocks() => this.With(ref _useContainerMocks, true);
     public IContainer AsInterface() => Build();
 
@@ -34,7 +39,9 @@ public sealed class ContainerFixture : ITestFixtureBuilder
 
         _bootstrap(container);
 
-        container.RegisterMany([typeof(IMediator).GetAssembly(), typeof(ICqrs).GetAssembly()], Registrator.Interfaces);
+        container.RegisterMany([typeof(IMediator).GetAssembly()], Registrator.Interfaces);
+        container.RegisterMany([typeof(ICqrs).GetAssembly()] , Registrator.Interfaces);
+
         container.Register<ILoggerFactory, NullLoggerFactory>();
 
         return (DryIoc.Container)container;

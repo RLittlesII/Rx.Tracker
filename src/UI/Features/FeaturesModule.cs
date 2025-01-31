@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using DryIoc;
 using MediatR;
@@ -16,10 +18,10 @@ public class FeaturesModule : ContainerModule
         registrar.Register<INavigator, Navigator>();
         registrar.RegisterMany(
             [
-                typeof(IMediator).GetAssembly(),
-                typeof(ICqrs).GetAssembly()
+                typeof(IMediator).GetAssembly()
             ],
             Registrator.Interfaces);
+        registrar.RegisterMany([typeof(ICqrs).GetAssembly()], Registrator.Interfaces, ifAlreadyRegistered: IfAlreadyRegistered.Replace);
         return registrar;
     }
 }

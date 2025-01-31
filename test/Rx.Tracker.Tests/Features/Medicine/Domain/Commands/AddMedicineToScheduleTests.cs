@@ -6,6 +6,7 @@ using Rx.Tracker.Features;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Commands;
 using Rx.Tracker.Mediation;
+using Rx.Tracker.Mediation.Commands;
 using Rx.Tracker.Tests.Container;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ public class AddMedicationToScheduleTests
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(() => sut.Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture())));
+        var result = await Record.ExceptionAsync(() => sut.As<ICommandHandler<AddMedicationToSchedule.Command>>().Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture())));
 
         // Then
         result
@@ -37,7 +38,7 @@ public class AddMedicationToScheduleTests
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture().WithReminders(reminders);
 
         // When
-        var result = await sut.Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()));
+        var result = await sut.As<ICommandHandler<AddMedicationToSchedule.Command>>().Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()));
 
         // Then
         result

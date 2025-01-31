@@ -18,7 +18,7 @@ public interface IMedicationScheduleApiContract
     /// <param name="userId">The user id.</param>
     /// <param name="command">The command.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    [Post("/schedule/{id}/add")]
+    // [Post("/schedule/{id}/add")]
     Task Create([AliasAs("id")] UserId userId, [Body] AddMedicationToSchedule.Command command);
 
     /// <summary>
@@ -27,6 +27,6 @@ public interface IMedicationScheduleApiContract
     /// <param name="userId">The userId.</param>
     /// <param name="query">The query.</param>
     /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
-    [Get("/schedule/{id}")]
+    // [Get("/schedule/{id}")]
     Task<IEnumerable<ScheduledMedicineDto>> Read([AliasAs("id")] UserId userId, [Query] LoadSchedule.Query query);
 }
