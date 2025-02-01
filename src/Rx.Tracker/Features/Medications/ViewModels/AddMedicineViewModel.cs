@@ -251,6 +251,7 @@ public class AddMedicineViewModel : ViewModelBase
         _stateMachine
            .Configure(AddMedicineState.Failed)
            .PermitReentry(AddMedicineTrigger.Failure)
+           .OnEntry(LogEntry)
            .OnEntry(
                 transition =>
                 {
@@ -258,14 +259,13 @@ public class AddMedicineViewModel : ViewModelBase
                 });
 
         _stateMachine.Configure(AddMedicineState.Completed)
+           .OnEntry(LogEntry)
            .OnEntryAsync(
                 async _ =>
                 {
                     // using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe(); 
                     await ExecuteBack();
-                })
-                })
-           .OnEntry(LogEntry);
+                });
 
         void LogEntry(StateMachine<AddMedicineState, AddMedicineTrigger>.Transition transition)
             => Logger.LogDebug("State Machine Transition: {@Transition}", transition);

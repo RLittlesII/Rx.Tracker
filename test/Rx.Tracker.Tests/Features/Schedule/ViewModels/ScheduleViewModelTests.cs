@@ -105,7 +105,7 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime == now);
+        sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.Day == now);
     }
 }
 
