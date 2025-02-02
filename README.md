@@ -5,12 +5,13 @@ receive reminders, and explicitly acknowledge the time it was taken.
 
 ### Builds
 
-| Build        | Status                                                                                                                                                                              |
-|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Build        | Status                                                                                                                                                                                |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Pull Request | [![pull-request](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/pull-request.yml/badge.svg)](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/pull-request.yml) |
-| Integration  | [![integration](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml/badge.svg)](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml)  |
+| Integration  | [![integration](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml/badge.svg)](https://github.com/RLittlesII/Rx.Tracker/actions/workflows/integration.yml)    |
 
 ## Features
+
 - [Medications](src/Rx.Tracker/Features/Medications/README.md)
 - [Schedule](src/Rx.Tracker/Features/Schedule/README.md)
 
@@ -19,6 +20,17 @@ receive reminders, and explicitly acknowledge the time it was taken.
 - [Mediator](src/Rx.Tracker/Mediation/README.md)
 - [Navigation](src/Rx.Tracker/Navigation/README.md)
 - [State](src/Rx.Tracker/State/README.md)
+
+### Future Enhancements
+
+- [ ] State Machine should own its own configuration
+    - Likely take providing delegates
+- [ ] State's and Triggers should be standardized where they make sense
+    - Do not force square pegs in round holes!
+- [ ] Tests that can test individual guards, by using Stateless ability define guards as functions
+- [ ] Pass Parameters to initialization
+- [ ] Snap Shot Testing State Transitions
+- [ ] States mapping to Control Template or Visual State Manager
 
 ### OSS Projects
 
@@ -38,3 +50,5 @@ receive reminders, and explicitly acknowledge the time it was taken.
 - [ReactiveUI](https://github.com/reactiveui/ReactiveUI)
 - [Reactive Marbles](https://github.com/reactivemarbles)
 - [xUnit](https://github.com/xunit/xunit)
+
+
