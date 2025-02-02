@@ -18,15 +18,3 @@ public static partial class CalendarMapper
 
     private static Color FromArgb(int color) => Color.FromInt(color);
 }
-
-// [Mapper]
-// public static partial class CalendarEventMapper
-// {
-//     public static partial CalendarEventDto Map(CalendarEvent request);
-//
-//     public static partial CalendarEvent Map(CalendarEventDto request);
-//
-//     private static int ToArgb(Color color) => color.ToInt();
-//
-//     private static Color FromArgb(int color) => Color.FromInt(color);
-// }

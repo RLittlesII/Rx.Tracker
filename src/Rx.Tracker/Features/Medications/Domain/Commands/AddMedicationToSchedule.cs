@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using LanguageExt;
+using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
 
@@ -14,33 +15,40 @@ public static class AddMedicationToSchedule
     /// Add medicine command.
     /// </summary>
     /// <param name="ScheduledMedication">The scheduled medication.</param>
-    public record Command(ScheduledMedication ScheduledMedication) : ICommand;
+    public record Command(UserId User, ScheduledMedication ScheduledMedication) : ICommand;
 
     /// <summary>
     /// The add medicine command handler.
     /// </summary>
-    public class CommandHandler : ICommandHandler<Command>
+    public class CommandHandler : CommandHandlerBase<Command>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandHandler"/> class.
         /// </summary>
         /// <param name="reminders">The reminders.</param>
-        public CommandHandler(IReminders reminders) => _reminders = reminders;
+        /// <param name="client">The client.</param>
+        public CommandHandler(IReminders reminders, IMedicationScheduleApiClient client)
+        {
+            _reminders = reminders;
+            _client = client;
+        }
 
         /// <inheritdoc />
-        public async Task<Unit> Handle(Command command) =>
+        protected override async Task<Unit> Handle(Command command) =>
 
             // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
-            await _reminders.Create(command.ScheduledMedication.Id, command.ScheduledMedication.Medication, command.ScheduledMedication.ScheduledTime, command.ScheduledMedication.MealRequirement);
+            await _client.Add(command).ContinueWith(_ => Unit.Default);
 
         private readonly IReminders _reminders;
+        private readonly IMedicationScheduleApiClient _client;
     }
 
     /// <summary>
     /// Creates a <see cref="Command"/>.
     /// </summary>
+    /// <param name="userId">The user id.</param>
     /// <param name="medication">The medication.</param>
     /// <returns>The command.</returns>
-    public static Command Create(ScheduledMedication medication) => new(medication);
+    public static Command Create(UserId userId, ScheduledMedication medication) => new(userId, medication);
 }

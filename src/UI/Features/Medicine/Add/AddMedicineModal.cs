@@ -97,7 +97,8 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
                        .Height(48)
                        .Width(128)
                        .Bind(IsVisibleProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState)
-                       .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.AddCommand),
+                       .Bind(Button.CommandProperty, (AddMedicineViewModel viewModel) => viewModel.AddCommand)
+                       .Bind(Button.CommandParameterProperty, (AddMedicineViewModel viewModel) => viewModel.Medication),
                     new ActivityIndicator()
                        .Center()
                        .Bind(
@@ -130,8 +131,13 @@ public class AddMedicineModal : ScreenBase<AddMedicineViewModel>
     {
         this.WhenActivated(
             disposable =>
-                this.BindInteraction(ViewModel, model => model.FailedInteraction, context => Toast.Make(context.Input.Message, ToastDuration.Long).Show())
-                   .DisposeWith(disposable));
+            {
+                this.BindInteraction(ViewModel, model => model.CompletedInteraction, async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
+                   .DisposeWith(disposable);
+
+                this.BindInteraction(ViewModel, model => model.FailedInteraction, async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
+                   .DisposeWith(disposable);
+            });
 
         return Task.CompletedTask;
     }
