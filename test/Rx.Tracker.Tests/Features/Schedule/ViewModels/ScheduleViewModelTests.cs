@@ -83,7 +83,7 @@ public partial class ScheduleViewModelTests
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate()
     {
         // Given
-        var now = DateTimeOffset.UtcNow.ToOffsetDateTime();
+        var now = DateTimeOffset.Now.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
@@ -91,8 +91,8 @@ public partial class ScheduleViewModelTests
                     new MedicationScheduleFixture().WithEnumerable(
                         [
                             new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
                         ]
                     ).WithToday(now.Date)
@@ -105,7 +105,7 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.Day == now);
+        sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.Day.Date == now.Date);
     }
 }
 
