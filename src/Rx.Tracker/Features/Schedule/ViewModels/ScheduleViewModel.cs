@@ -45,28 +45,30 @@ public class ScheduleViewModel : ViewModelBase
 
         var medicationScheduleChanged =
             this.WhenChanged(viewModel => viewModel.MedicationSchedule)
-               .Do(_ => { })
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
+               .Filter(x => x.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
                .LogTrace(Logger, "Preparing to Filter");
 
-        // medicationScheduleChanged
-        //    .Group(group => group.ScheduledTime)
-        //    .Transform(x => new DaySchedule(x))
-        //    .Bind(out _schedule, resetThreshold: 1)
-        //    .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
-        //    .DisposeWith(Garbage);
         medicationScheduleChanged
-           .LogTrace(Logger, "Filtered")
-           .Bind(out _todaySchedule, options: new BindingOptions(1))
+           .Group(group => group.ScheduledTime)
+           .Transform(x => new DaySchedule(x))
+           .Bind(out _schedule, options: _eagerBinding)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
-        // NavigatedTo
-        //    .Skip(1)
-        //    .Select(_ => Initialize(Mediator))
-        //    .Subscribe();
+        medicationScheduleChanged
+           .LogTrace(Logger, "Filtered")
+           .Bind(out _todaySchedule, options: _eagerBinding)
+           .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
+           .DisposeWith(Garbage);
+
+        NavigatedTo
+           .Skip(1)
+           .Select(_ => Initialize(Mediator))
+           .Subscribe();
+
         ConfigureMachine(_stateMachine);
     }
 
@@ -150,9 +152,11 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule = new ReadOnlyObservableCollection<DaySchedule>([]);
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _todaySchedule;
+
+    private readonly BindingOptions _eagerBinding = new(1);
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
