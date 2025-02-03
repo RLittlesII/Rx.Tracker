@@ -147,8 +147,8 @@ public partial class ScheduleViewModelTests
                     new MedicationScheduleFixture().WithEnumerable(
                         [
                             new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(8))),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
                         ]
                     ).WithToday(now.Date)
