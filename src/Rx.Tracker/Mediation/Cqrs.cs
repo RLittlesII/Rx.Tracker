@@ -19,7 +19,7 @@ public sealed class Cqrs : ICqrs
 
     /// <inheritdoc cref="ICommander"/>
     public Task Execute<TCommand>(TCommand command)
-        where TCommand : ICommand => Task.CompletedTask;
+        where TCommand : ICommand => _mediator.Send(command);
 
     /// <inheritdoc cref="Notifications.IPublisher"/>
     public Task Publish<TNotification>(TNotification notification)
