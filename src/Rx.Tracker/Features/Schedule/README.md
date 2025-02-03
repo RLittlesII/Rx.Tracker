@@ -9,6 +9,6 @@
         - Within 30 minutes => Red
     - [ ] Count Down Timer to next medicine?
     - [ ] Tap Cards to Edit
-    - [ ] Tap to add medicine
+    - [X] Tap to add medicine
     - [ ] Medication Cards
       - [ ] Long Press Take
