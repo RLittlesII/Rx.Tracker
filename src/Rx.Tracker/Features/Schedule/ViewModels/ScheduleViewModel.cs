@@ -49,7 +49,9 @@ public class ScheduleViewModel : ViewModelBase
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
                .Filter(x => x.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
-               .LogTrace(Logger, "Preparing to Filter");
+               .LogTrace(Logger, "Preparing to Filter")
+               .Publish()
+               .RefCount();
 
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
