@@ -35,7 +35,7 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                     {
                         ItemTemplate = new DataTemplate(() => new ScheduleItem())
                     }
-                   .Bind(ItemsView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.Today)
+                   .Bind(ListView.ItemsSourceProperty, static (ScheduleViewModel viewModel) => viewModel.TodaySchedule)
                    .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                 new Button()
                    .Text("Add Medication")
