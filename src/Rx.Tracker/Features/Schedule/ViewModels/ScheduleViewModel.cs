@@ -6,14 +6,13 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
-using NodaTime.Extensions;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
+using ReactiveUI;
 using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
-using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
@@ -74,6 +73,11 @@ public class ScheduleViewModel : ViewModelBase
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
+        // medicationScheduleChanged
+        //    .CountChanged()
+        //    .LogTrace(Logger, x => x.Count, "Current Count: {@Count}")
+        //    .Subscribe()
+        //    .DisposeWith(Garbage);
         NavigatedTo
            .Skip(1)
            .Select(_ => Initialize(Mediator))
