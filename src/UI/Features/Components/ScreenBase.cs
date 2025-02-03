@@ -69,6 +69,7 @@ public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync, 
     private void TearDown()
     {
         Garbage.Dispose();
+        ViewModel?.Dispose();
         Destroy();
     }
 }
