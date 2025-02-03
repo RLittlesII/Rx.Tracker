@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
-using LanguageExt;
 using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
+using System.Reactive;
+using System.Threading;
 
 namespace Rx.Tracker.Features.Medications.Domain.Commands;
 
@@ -34,11 +35,11 @@ public static class AddMedicationToSchedule
         }
 
         /// <inheritdoc />
-        protected override async Task<Unit> Handle(Command command) =>
+        protected override async Task<Unit> Handle(Command command, CancellationToken cancellationToken = default) =>
 
             // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
-            await _client.Add(command).ContinueWith(_ => Unit.Default);
+            await _client.Add(command).ContinueWith(_ => Unit.Default, cancellationToken);
 
         private readonly IReminders _reminders;
         private readonly IMedicationScheduleApiClient _client;
