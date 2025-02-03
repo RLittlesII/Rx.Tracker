@@ -7,6 +7,7 @@ using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -106,6 +107,45 @@ public partial class ScheduleViewModelTests
 
         // Then
         sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.Day.Date == now.Date);
+    }
+
+    [Fact]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldHaveMedications()
+    {
+        // Given
+        const string ibuprofen = "Ibuprofen";
+        var now = DateTimeOffset.Now.ToOffsetDateTime();
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
+            Task.FromResult(
+                new LoadSchedule.Result(
+                    new MedicationScheduleFixture().WithEnumerable(
+                        [
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now),
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(2))),
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(4))),
+                            new ScheduledMedicationFixture().WithScheduledTime(now),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
+                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
+                        ]
+                    ).WithToday(now.Date)
+                )
+            )
+        );
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+
+        // When
+        await sut.InitializeCommand.Execute(Unit.Default);
+
+        // Then
+        sut.Schedule
+           .SelectMany(daySchedule => daySchedule.Medication)
+           .Should()
+           .HaveCount(6)
+           .And
+           .Subject
+           .Should()
+           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
     }
 }
 

@@ -10,6 +10,9 @@ using ReactiveMarbles.Extensions;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Entities;
 
+/// <summary>
+/// Represents the schedule of medication for a given date.
+/// </summary>
 public class DaySchedule : DisposableObject, IReadOnlyDictionary<IsoDayOfWeek, IReadOnlyList<ScheduledMedication>>
 {
     /// <summary>
@@ -26,9 +29,15 @@ public class DaySchedule : DisposableObject, IReadOnlyDictionary<IsoDayOfWeek, I
            .DisposeWith(Garbage);
     }
 
-    public IReadOnlyList<ScheduledMedication> Medication { get; set; } = [];
+    /// <summary>
+    /// Gets the <see cref="ScheduledMedication"/> for the day.
+    /// </summary>
+    public IReadOnlyList<ScheduledMedication> Medication { get; private set; } = [];
 
-    public OffsetDateTime Day { get; set; }
+    /// <summary>
+    /// Gets the <see cref="OffsetDateTime"/> for the schedule.
+    /// </summary>
+    public OffsetDateTime Day { get; }
 
     /// <inheritdoc/>
     public IEnumerator<KeyValuePair<IsoDayOfWeek, IReadOnlyList<ScheduledMedication>>> GetEnumerator() => _week.GetEnumerator();
