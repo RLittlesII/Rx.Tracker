@@ -3,9 +3,9 @@ using Microsoft.Maui.Controls;
 
 namespace Rx.Tracker.UI.Features.Schedule;
 
-public class ScheduleItem : ContentView
+public class ScheduleItem : ViewCell
 {
-    public ScheduleItem() => Content = new StackLayout
+    public ScheduleItem() => View = new StackLayout
     {
         Children =
         {

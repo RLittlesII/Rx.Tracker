@@ -48,7 +48,7 @@ public class ScheduleViewModel : ViewModelBase
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
-               .Filter(x => x.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
+               .Filter(x => x.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate(), false)
                .LogTrace(Logger, "Preparing to Filter")
                .Publish()
                .RefCount();
@@ -112,7 +112,7 @@ public class ScheduleViewModel : ViewModelBase
         {
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
 
-            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
+            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), DateTimeOffset.Now.ToLocalDate()));
             MedicationSchedule = result.Schedule;
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
         }
