@@ -92,15 +92,7 @@ public class ScheduleViewModel : ViewModelBase
     /// <summary>
     /// Gets today's schedule.
     /// </summary>
-    public ReadOnlyObservableCollection<ScheduledMedication> TodaySchedule { get; } = new ReadOnlyObservableCollection<ScheduledMedication>(
-        new ObservableCollection<ScheduledMedication>(
-        [
-            new ScheduledMedication(
-                MealRequirements.None,
-                new Medication(),
-                Recurrence.Weekly,
-                DateTimeOffset.Now.ToOffsetDateTime())
-        ]));
+    public ReadOnlyObservableCollection<ScheduledMedication> TodaySchedule => _todaySchedule;
 
     /// <summary>
     /// Gets the medication schedule.
@@ -145,6 +137,7 @@ public class ScheduleViewModel : ViewModelBase
 
         stateMachine
            .Configure(ScheduleStateMachine.ScheduleState.DaySchedule)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Load, ScheduleStateMachine.ScheduleState.Busy)
            .Permit(ScheduleStateMachine.ScheduleTrigger.Failure, ScheduleStateMachine.ScheduleState.Failed)
            .InternalTransitionAsync(ScheduleStateMachine.ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
            .OnEntry(LogEntry);
@@ -159,7 +152,7 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule = new ReadOnlyObservableCollection<DaySchedule>([]);
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _todaySchedule;
 
