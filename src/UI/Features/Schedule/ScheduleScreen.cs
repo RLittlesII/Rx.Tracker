@@ -23,7 +23,6 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                    .Top()
                    .Bind(Label.TextProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: state => state.ToString())
                    .Bind(Label.TextColorProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: ScheduleStateColorConvert),
-
                 new Calendar // NOTE: [rlittlesii: January 20, 2025] Cannot inline dispose with because control doesn't implement IDisposable.
                     {
                         CalendarLayout = WeekLayout.Week,

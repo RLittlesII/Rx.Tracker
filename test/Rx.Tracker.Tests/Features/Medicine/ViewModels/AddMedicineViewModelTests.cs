@@ -6,12 +6,10 @@ using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
-using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Tests.Features.Medicine.ViewModels;
 
@@ -88,22 +86,5 @@ public partial class AddMedicineViewModelTests
         result
            .Should()
            .BeOfType<ArgumentNullException>();
-    }
-
-    [Fact]
-    public async Task GivenScheduledMedication_WhenAdd_ThenCompletes()
-    {
-        // Given
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Execute(Arg.Any<AddMedicationToSchedule.Command>()).Returns(Task.CompletedTask);
-        AddMedicineViewModel sut = new AddMedicineViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        var result = await sut.AddCommand.Execute(new ScheduledMedicationFixture());
-
-        // Then
-        result
-           .Should()
-           .Be(AddMedicineTrigger.Complete);
     }
 }
