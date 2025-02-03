@@ -147,6 +147,7 @@ public class ScheduleViewModel : ViewModelBase
 
         stateMachine
            .Configure(ScheduleStateMachine.ScheduleState.DaySchedule)
+           .Permit(ScheduleStateMachine.ScheduleTrigger.Load, ScheduleStateMachine.ScheduleState.Busy)
            .Permit(ScheduleStateMachine.ScheduleTrigger.Failure, ScheduleStateMachine.ScheduleState.Failed)
            .InternalTransitionAsync(ScheduleStateMachine.ScheduleTrigger.Add, _ => Navigator.Modal<Routes>(routes => routes.AddMedicine))
            .OnEntry(LogEntry);
@@ -161,7 +162,7 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule = new ReadOnlyObservableCollection<DaySchedule>([]);
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _scheduledMedications;
 
