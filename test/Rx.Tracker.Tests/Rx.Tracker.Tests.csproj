@@ -42,6 +42,9 @@
       <Compile Update="Features\Medicine\ViewModels\StateTests.cs">
         <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
       </Compile>
+      <Compile Update="Features\Schedule\ViewModels\StateTests.cs">
+        <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
