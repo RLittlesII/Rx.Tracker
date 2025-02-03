@@ -7,12 +7,7 @@ using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Rx.Tracker.Container;
 using Rx.Tracker.Mediation;
-using Rx.Tracker.Mediation.Commands;
-using Rx.Tracker.Mediation.Queries;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Rx.Tracker.Tests.Container;
 
