@@ -14,7 +14,7 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
 {
     public ScheduleScreen()
     {
-        Content = new StackLayout()
+        Content = new StackLayout
         {
             Children =
             {
