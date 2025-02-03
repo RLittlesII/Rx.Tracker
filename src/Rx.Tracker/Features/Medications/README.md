@@ -1,9 +1,9 @@
 # Medications
 
 - Add Medication To Schedule
-    - [ ] Lookup medication by name
+    - [X] Lookup medication by name
         - Get All Medications
-    - [ ] Provide
+    - [X] Provide
         - Dosage
             - Weight
             - Amount
