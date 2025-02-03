@@ -125,7 +125,7 @@ public class ScheduleViewModel : ViewModelBase
         {
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
 
-            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
+            var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), DateTimeOffset.Now.ToLocalDate()));
             MedicationSchedule = result.Schedule;
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
         }
