@@ -54,7 +54,6 @@ public class ScheduleViewModel : ViewModelBase
 
         var medicationScheduleChanged =
             this.WhenChanged(viewModel => viewModel.MedicationSchedule)
-               .Do(_ => { })
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
@@ -62,12 +61,6 @@ public class ScheduleViewModel : ViewModelBase
                .Filter(medication => medication.ScheduledTime.Date == today)
                .RefCount();
 
-        // medicationScheduleChanged
-        //    .Group(group => group.ScheduledTime)
-        //    .Transform(x => new DaySchedule(x))
-        //    .Bind(out _schedule, resetThreshold: 1)
-        //    .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
-        //    .DisposeWith(Garbage);
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
            .Transform(x => new DaySchedule(x))
@@ -174,9 +167,11 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule = new ReadOnlyObservableCollection<DaySchedule>([]);
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _scheduledMedications;
+
+    private readonly BindingOptions _eagerBinding = new(1);
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
