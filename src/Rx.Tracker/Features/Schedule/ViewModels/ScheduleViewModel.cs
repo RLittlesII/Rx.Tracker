@@ -6,12 +6,14 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
+using NodaTime.Extensions;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
 using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
+using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
@@ -59,9 +61,13 @@ public class ScheduleViewModel : ViewModelBase
         medicationScheduleChanged
            .Filter(group => group.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
            .LogTrace(Logger, "Filtered")
-           .Bind(out _daySchedule, resetThreshold: 1)
+           .Bind(out _todaySchedule, resetThreshold: 1)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
+
+        NavigatedTo
+           .Select(_ => Initialize(Mediator))
+           .Subscribe();
 
         ConfigureMachine(_stateMachine);
     }
@@ -86,7 +92,15 @@ public class ScheduleViewModel : ViewModelBase
     /// <summary>
     /// Gets today's schedule.
     /// </summary>
-    public ReadOnlyObservableCollection<ScheduledMedication> Today => _daySchedule;
+    public ReadOnlyObservableCollection<ScheduledMedication> TodaySchedule { get; } = new ReadOnlyObservableCollection<ScheduledMedication>(
+        new ObservableCollection<ScheduledMedication>(
+        [
+            new ScheduledMedication(
+                MealRequirements.None,
+                new Medication(),
+                Recurrence.Weekly,
+                DateTimeOffset.Now.ToOffsetDateTime())
+        ]));
 
     /// <summary>
     /// Gets the medication schedule.
@@ -145,9 +159,9 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule = new ReadOnlyObservableCollection<DaySchedule>([]);
 
-    private readonly ReadOnlyObservableCollection<ScheduledMedication> _daySchedule;
+    private readonly ReadOnlyObservableCollection<ScheduledMedication> _todaySchedule;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
