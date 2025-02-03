@@ -6,14 +6,13 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
-using NodaTime.Extensions;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
+using ReactiveUI;
 using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
-using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
@@ -43,13 +42,13 @@ public class ScheduleViewModel : ViewModelBase
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleStateMachine.ScheduleState.Initial)
                .DisposeWith(Garbage);
 
-        var medicationScheduleChanged = this.WhenChanged(viewModel => viewModel.MedicationSchedule)
-           .WhereIsNotNull()
-           .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
-           .SelectMany(schedule => schedule!.Connect().LogTrace(Logger, "Ref"))
-           .LogTrace(Logger, "Preparing to Filter")
-           .Publish()
-           .RefCount();
+        var medicationScheduleChanged =
+            this.WhenChanged(viewModel => viewModel.MedicationSchedule)
+               .WhereIsNotNull()
+               .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
+               .Select(schedule => schedule!.Connect().LogTrace(Logger, "Ref"))
+               .Switch()
+               .LogTrace(Logger, "Preparing to Filter");
 
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
@@ -59,12 +58,16 @@ public class ScheduleViewModel : ViewModelBase
            .DisposeWith(Garbage);
 
         medicationScheduleChanged
-           .Filter(group => group.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
            .LogTrace(Logger, "Filtered")
            .Bind(out _todaySchedule, resetThreshold: 1)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
+        // medicationScheduleChanged
+        //    .CountChanged()
+        //    .LogTrace(Logger, x => x.Count, "Current Count: {@Count}")
+        //    .Subscribe()
+        //    .DisposeWith(Garbage);
         NavigatedTo
            .Select(_ => Initialize(Mediator))
            .Subscribe();
