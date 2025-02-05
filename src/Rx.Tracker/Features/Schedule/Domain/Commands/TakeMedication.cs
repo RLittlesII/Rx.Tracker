@@ -5,8 +5,6 @@ using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
-using System.Reactive;
-using System.Threading;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Commands;
 
