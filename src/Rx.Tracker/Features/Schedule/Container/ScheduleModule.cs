@@ -20,7 +20,7 @@ public class ScheduleModule : ContainerModule
                 resolver.Resolve<ILoggerFactory>()));
 
         registrar.Register<IMedicationScheduleApiClient, MedicationScheduleClient>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
-        registrar.Register<IMedicationScheduleApiContract, LocalMedicationScheduleStore>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
+        registrar.Register<IMedicationScheduleApiContract, LocalMedicationScheduleStore>(Reuse.Singleton, ifAlreadyRegistered: IfAlreadyRegistered.Replace);
 
         return registrar;
     }

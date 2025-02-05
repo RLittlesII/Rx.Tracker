@@ -35,7 +35,7 @@ public sealed class ContainerFixture : ITestFixtureBuilder
         _bootstrap(container);
 
         container.RegisterMany([typeof(IMediator).GetAssembly()], Registrator.Interfaces);
-        container.RegisterMany([typeof(ICqrs).GetAssembly()] , Registrator.Interfaces);
+        container.RegisterMany([typeof(ICqrs).GetAssembly()] , Registrator.Interfaces, ifAlreadyRegistered: IfAlreadyRegistered.Replace);
 
         container.Register<ILoggerFactory, NullLoggerFactory>();
 
