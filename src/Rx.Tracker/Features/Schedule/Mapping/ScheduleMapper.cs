@@ -1,4 +1,5 @@
 using Riok.Mapperly.Abstractions;
+using Rx.Tracker.Features.Medications.Mapping;
 using Rx.Tracker.Features.Schedule.Data.Dto;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 
@@ -8,6 +9,8 @@ namespace Rx.Tracker.Features.Schedule.Mapping;
 /// Represents a mapper for <see cref="ScheduledMedication"/>.
 /// </summary>
 [Mapper]
+[UseStaticMapper(typeof(MedicineMapper))]
+[UseStaticMapper(typeof(MedicationIdMapper))]
 public static partial class ScheduleMapper
 {
     [MapperIgnoreSource(nameof(ScheduledMedication.Changing))]

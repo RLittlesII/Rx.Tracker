@@ -82,9 +82,9 @@ public class AddMedicineViewModel : ViewModelBase
            .Where(ArePropertiesValid)
 
             // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
-           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.Now.ToOffsetDateTime()))
+           .Select(static tuple => new ScheduledMedication(MealRequirements.None, new Medication(tuple.name, [tuple.dosage]), tuple.recurrence ?? Recurrence.Daily, DateTimeOffset.Now.ToOffsetDateTime()))
            .WhereIsNotNull()
-           .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
+           .LogTrace(Logger, static medication => medication, "Scheduled: {@ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
            .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(Medication)), () => null!)
            .DisposeWith(Garbage);

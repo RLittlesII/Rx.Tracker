@@ -11,7 +11,6 @@ using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
 using ReactiveMarbles.PropertyChanged;
-using ReactiveUI;
 using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
