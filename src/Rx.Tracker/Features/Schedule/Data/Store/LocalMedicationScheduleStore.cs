@@ -14,19 +14,16 @@ public class LocalMedicationScheduleStore : IMedicationScheduleApiContract
     /// <inheritdoc/>
     public Task Create(UserId userId, AddMedicationToSchedule.Command command)
     {
-        if (_schedules.TryGetValue(userId, out var medications))
-        {
-            medications = [];
-            _schedules.Add(userId, medications);
-        }
-
-        medications?.Add(ScheduleMapper.Map(command.ScheduledMedication));
+        _schedules.Add(ScheduleMapper.Map(command.ScheduledMedication));
         return Task.CompletedTask;
     }
 
     /// <inheritdoc/>
-    public Task<IEnumerable<ScheduledMedicineDto>> Read(UserId userId, LoadSchedule.Query query) =>
-        Task.FromResult(_schedules.TryGetValue(userId, out var dtos) ? dtos.AsEnumerable() : []);
+    public Task<IEnumerable<ScheduledMedicineDto>> Read(UserId userId, LoadSchedule.Query query)
+    {
+        var scheduledMedicineDtos = _schedules.AsEnumerable();
+        return Task.FromResult(scheduledMedicineDtos);
+    }
 
-    private readonly Dictionary<UserId, List<ScheduledMedicineDto>> _schedules = new();
+    private readonly List<ScheduledMedicineDto> _schedules = new();
 }
