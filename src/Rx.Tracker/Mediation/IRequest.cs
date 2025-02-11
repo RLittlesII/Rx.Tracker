@@ -13,4 +13,4 @@ public interface IRequest<TResult> : MediatR.IRequest<TResult>;
 /// <summary>
 /// Represents a request made to the mediator.
 /// </summary>
-public interface IRequest : IRequest<Unit>;
+public interface IRequest : IRequest<Unit>, MediatR.IRequest;
