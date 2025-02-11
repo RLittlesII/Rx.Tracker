@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <AirframeVersion>0.11.1</AirframeVersion>
-        <MauiVersion>8.0.92</MauiVersion>
+        <MauiVersion>8.0.100</MauiVersion>
         <MicrosoftVersion>9.0.0</MicrosoftVersion>
         <PrismVersion>9.0.537</PrismVersion>
         <ReactiveUIVersion>20.1.63</ReactiveUIVersion>

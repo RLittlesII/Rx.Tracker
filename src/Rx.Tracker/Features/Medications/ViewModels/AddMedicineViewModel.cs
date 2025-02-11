@@ -261,9 +261,8 @@ public class AddMedicineViewModel : ViewModelBase
            .OnEntryAsync(
                 async _ =>
                 {
-                    // using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe(); 
+                    // using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe();
                     await ExecuteBack();
-                })
                 })
            .OnEntry(LogEntry);
 
