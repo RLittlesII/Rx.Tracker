@@ -1,9 +1,9 @@
+using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
-using System.Reactive;
-using System.Threading;
 
 namespace Rx.Tracker.Features.Medications.Domain.Commands;
 

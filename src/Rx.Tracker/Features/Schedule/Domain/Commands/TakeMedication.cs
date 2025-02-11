@@ -1,10 +1,10 @@
+using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
-using System.Reactive;
-using System.Threading;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Commands;
 
@@ -22,7 +22,7 @@ public static class TakeMedication
     /// <summary>
     /// The take medicine command handler.
     /// </summary>
-    public class CommandHandler : ICommandHandler<Command>
+    public class CommandHandler : CommandHandlerBase<Command>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandHandler"/> class.
@@ -31,7 +31,7 @@ public static class TakeMedication
         public CommandHandler(IReminders reminders) => _reminders = reminders;
 
         /// <inheritdoc />
-        public Task<Unit> Handle(Command command, CancellationToken cancellationToken = default) =>
+        protected override Task<Unit> Handle(Command command, CancellationToken cancellationToken = default)  =>
 
             // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
