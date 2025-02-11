@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <AirframeVersion>0.11.1</AirframeVersion>
-        <MauiVersion>8.0.92</MauiVersion>
+        <MauiVersion>8.0.100</MauiVersion>
         <MicrosoftVersion>9.0.0</MicrosoftVersion>
         <PrismVersion>9.0.537</PrismVersion>
         <ReactiveUIVersion>20.1.63</ReactiveUIVersion>
@@ -120,6 +120,7 @@
         <PackageVersion Include="MediatR" Version="12.4.1"/>
         <PackageVersion Include="Nanoid" Version="3.1.0"/>
         <PackageVersion Include="NodaTime" Version="3.1.0"/>
+        <PackageVersion Include="Plugin.Maui.Calendar" Version="1.2.5"/>
         <PackageVersion Include="Plugin.Maui.CalendarStore" Version="2.0.1"/>
         <PackageVersion Include="Refit" Version="8.0.0"/>
         <PackageVersion Include="Riok.Mapperly" Version="4.1.1" ExcludeAssets="runtime" PrivateAssets="all"/>

@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NodaTime;
@@ -38,6 +39,7 @@ public static class LoadSchedule
         protected override async Task<Result> Handle(Query query, CancellationToken cancellationToken = default)
         {
             var medicationSchedule = await _apiClient.Get(query);
+            await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
             return new Result(medicationSchedule);
         }
 

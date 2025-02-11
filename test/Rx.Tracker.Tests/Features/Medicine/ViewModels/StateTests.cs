@@ -108,7 +108,7 @@ public partial class AddMedicineViewModelTests
     }
 
     [Fact]
-    public async Task GivenInValidState_WhenSave_ThenShouldBeInitialState()
+    public async Task GivenValidState_WhenAdd_ThenShouldBeValidState()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
@@ -127,7 +127,7 @@ public partial class AddMedicineViewModelTests
         sut
            .CurrentState
            .Should()
-           .Be(AddMedicineState.Busy);
+           .Be(AddMedicineState.Valid);
     }
 
     [Fact(Skip = "This is the next task to make this pass, and fix the command handler.")]

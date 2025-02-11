@@ -42,6 +42,7 @@ receive reminders, and explicitly acknowledge the time it was taken.
 - [Nanoid](https://github.com/codeyu/nanoid-net)
 - [Noda Time](https://github.com/nodatime/nodatime)
 - [NSubstitute](https://github.com/nsubstitute/NSubstitute)
+- [Plugin.Maui.Calendar](https://github.com/yurkinh/Plugin.Maui.Calendar)
 - [Plugin.Maui.CalendarStore](https://github.com/jfversluis/Plugin.Maui.CalendarStore)
 - [Prism](https://github.com/PrismLibrary/Prism)
 - [Stateless](https://github.com/dotnet-state-machine/stateless)
