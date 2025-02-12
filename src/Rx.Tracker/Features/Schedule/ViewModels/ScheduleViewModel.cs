@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
+using DynamicData.Binding;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
@@ -49,6 +50,12 @@ public class ScheduleViewModel : ViewModelBase
            .Publish()
            .RefCount();
 
+        // medicationScheduleChanged
+        //    .Group(group => group.ScheduledTime)
+        //    .Transform(x => new DaySchedule(x))
+        //    .Bind(out _schedule, resetThreshold: 1)
+        //    .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
+        //    .DisposeWith(Garbage);
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
            .Transform(x => new DaySchedule(x))
@@ -63,6 +70,10 @@ public class ScheduleViewModel : ViewModelBase
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
+        // NavigatedTo
+        //    .Skip(1)
+        //    .Select(_ => Initialize(Mediator))
+        //    .Subscribe();
         ConfigureMachine(_stateMachine);
     }
 
@@ -145,7 +156,7 @@ public class ScheduleViewModel : ViewModelBase
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private readonly IValueBinder<ScheduleStateMachine.ScheduleState> _currentState;
 
-    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
+    private readonly ReadOnlyObservableCollection<DaySchedule> _schedule = new ReadOnlyObservableCollection<DaySchedule>([]);
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _daySchedule;
 
