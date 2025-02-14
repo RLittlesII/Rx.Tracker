@@ -170,8 +170,6 @@ public class ScheduleViewModel : ViewModelBase
 
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _scheduledMedications;
 
-    private readonly BindingOptions _eagerBinding = new(1);
-
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
 }

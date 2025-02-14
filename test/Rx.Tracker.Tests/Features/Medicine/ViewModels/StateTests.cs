@@ -108,8 +108,7 @@ public partial class AddMedicineViewModelTests
     }
 
     [Fact]
-    public async Task GivenValidState_WhenAdd_ThenShouldBeValidState()
-    public async Task GivenInValidState_WhenSave_ThenShouldBeCompletedState()
+    public async Task GivenValidState_WhenAdd_ThenShouldBeCompletedState()
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
