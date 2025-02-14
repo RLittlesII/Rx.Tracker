@@ -251,6 +251,7 @@ public class AddMedicineViewModel : ViewModelBase
         _stateMachine
            .Configure(AddMedicineState.Failed)
            .PermitReentry(AddMedicineTrigger.Failure)
+           .OnEntry(LogEntry)
            .OnEntry(
                 transition =>
                 {
@@ -258,6 +259,7 @@ public class AddMedicineViewModel : ViewModelBase
                 });
 
         _stateMachine.Configure(AddMedicineState.Completed)
+           .OnEntry(LogEntry)
            .OnEntryAsync(
                 async _ =>
                 {

@@ -9,26 +9,22 @@ namespace Rx.Tracker.Tests.Features.Schedule.ViewModels;
 public class ScheduleStateMachineTests
 {
     [Fact]
-    public void Given_When_Then()
-    {
-        // Given
-        var container = new ContainerFixture().AsInterface();
-
-        // When
-        container.Register<ScheduleStateMachine>();
-
-        // Then
-        container.Resolve<Func<ScheduleStateMachine.ScheduleState, ScheduleStateMachine>>().Should().NotBeNull();
-    }
+    public void GivenStateMachine_WhenResolve_ThenShouldBeScheduleStateMachineFactory() =>
+        // Given, When, Then
+        new ContainerFixture()
+           .WithRegistration(registrar => registrar.Register<ScheduleStateMachine>())
+           .AsInterface()
+           .Resolve<Func<ScheduleStateMachine.ScheduleState, ScheduleStateMachine>>()
+           .Should()
+           .NotBeNull();
 
     [Fact]
-    public void Given_WhenInvoke_Then()
-    {
-        // Given
-        var container = new ContainerFixture().WithRegistration(registrar => registrar.Register<ScheduleStateMachine>()).AsInterface();
-        var factory = container.Resolve<Func<ScheduleStateMachine.ScheduleState, ScheduleStateMachine>>();
-
-        // When, Then
-        factory.Invoke(ScheduleStateMachine.ScheduleState.Initial).Should().BeOfType<ScheduleStateMachine>();
-    }
+    public void GivenStateMachineFactory_WhenInvoke_ThenShouldBeScheduleStateMachine() =>
+        // Given, When, Then
+        new ContainerFixture().WithRegistration(registrar => registrar.Register<ScheduleStateMachine>())
+           .AsInterface()
+           .Resolve<Func<ScheduleStateMachine.ScheduleState, ScheduleStateMachine>>()
+           .Invoke(ScheduleStateMachine.ScheduleState.Initial)
+           .Should()
+           .BeOfType<ScheduleStateMachine>();
 }
