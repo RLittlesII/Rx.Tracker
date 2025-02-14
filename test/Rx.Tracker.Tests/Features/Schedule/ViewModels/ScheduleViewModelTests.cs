@@ -132,7 +132,7 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.TodaySchedule.Should().NotBeNullOrEmpty();
+        sut.ScheduledMedications.Should().NotBeNullOrEmpty();
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.TodaySchedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
+        sut.ScheduledMedications.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.TodaySchedule
+        sut.ScheduledMedications
            .Should()
            .HaveCount(6)
            .And

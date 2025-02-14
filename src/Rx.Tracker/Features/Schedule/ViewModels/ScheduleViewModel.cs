@@ -5,7 +5,6 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using DynamicData;
-using DynamicData.Binding;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
@@ -18,6 +17,7 @@ using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using Stateless;
+using static Rx.Tracker.Extensions.DynamicDataExtensions;
 
 namespace Rx.Tracker.Features.Schedule.ViewModels;
 
@@ -47,19 +47,20 @@ public class ScheduleViewModel : ViewModelBase
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
-               .Filter(x => x.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
-               .LogTrace(Logger, "Preparing to Filter");
+               .LogTrace(Logger, "Preparing to Filter")
+               .Filter(medication => medication.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate());
 
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
            .Transform(x => new DaySchedule(x))
-           .Bind(out _schedule, options: _eagerBinding)
+           .Bind(out _schedule, options: EagerBindingOptions)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
         medicationScheduleChanged
+           .Filter(medication => medication.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
            .LogTrace(Logger, "Filtered")
-           .Bind(out _todaySchedule, options: _eagerBinding)
+           .Bind(out _scheduledMedications, options: EagerBindingOptions)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
@@ -91,7 +92,7 @@ public class ScheduleViewModel : ViewModelBase
     /// <summary>
     /// Gets today's schedule.
     /// </summary>
-    public ReadOnlyObservableCollection<ScheduledMedication> Today => _daySchedule;
+    public ReadOnlyObservableCollection<ScheduledMedication> ScheduledMedications => _scheduledMedications;
 
     /// <summary>
     /// Gets the medication schedule.
@@ -152,9 +153,7 @@ public class ScheduleViewModel : ViewModelBase
 
     private readonly ReadOnlyObservableCollection<DaySchedule> _schedule;
 
-    private readonly ReadOnlyObservableCollection<ScheduledMedication> _daySchedule;
-
-    private readonly BindingOptions _eagerBinding = new(1);
+    private readonly ReadOnlyObservableCollection<ScheduledMedication> _scheduledMedications;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
     private MedicationSchedule? _medicationSchedule;
