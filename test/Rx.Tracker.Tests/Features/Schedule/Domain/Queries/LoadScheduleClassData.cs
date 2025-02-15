@@ -8,6 +8,14 @@ using System.Collections.Generic;
 
 namespace Rx.Tracker.Tests.Features.Schedule.Domain.Queries;
 
+/// <remarks>
+/// GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldHaveMedications
+/// GivenScheduleModule_WhenResolve_ThenShouldBeScheduleViewModel
+/// GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldBeForDate
+/// GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldHaveMedications
+/// GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldNotBeNull
+/// GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldNotBeNull
+/// </remarks>
 public class LoadScheduleClassData : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()
