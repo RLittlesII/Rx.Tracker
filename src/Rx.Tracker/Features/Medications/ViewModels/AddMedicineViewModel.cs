@@ -55,7 +55,6 @@ public class AddMedicineViewModel : ViewModelBase
         CompletedInteraction = new Interaction<ToastMessage, Unit>();
 
         AddCommand
-           .Do(_ => { })
            .Select(trigger => _stateMachine.FireAsync(trigger).ConfigureAwait(true))
            .Subscribe();
 
