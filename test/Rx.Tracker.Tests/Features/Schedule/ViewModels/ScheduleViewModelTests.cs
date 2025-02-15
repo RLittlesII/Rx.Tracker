@@ -2,6 +2,7 @@ using FluentAssertions;
 using NodaTime;
 using NodaTime.Extensions;
 using NSubstitute;
+using Rx.Tracker.Features;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.Mediation;
@@ -48,6 +49,9 @@ public partial class ScheduleViewModelTests
         // Given
         var now = DateTimeOffset.UnixEpoch.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
+        var iClock = Substitute.For<IClock>();
+        iClock.GetCurrentInstant().Returns(Instant.FromDateTimeOffset(DateTimeOffset.UnixEpoch));
+        CoreServices coreServices = new CoreServicesFixture().WithClock(iClock);
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
                 new LoadSchedule.Result(
@@ -62,7 +66,7 @@ public partial class ScheduleViewModelTests
                 )
             )
         );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs).WithServices(coreServices);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -84,8 +88,10 @@ public partial class ScheduleViewModelTests
                     new MedicationScheduleFixture().WithEnumerable(
                         [
                             new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(4))),
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen))
+                               .WithScheduledTime(now.Plus(Duration.FromHours(2))),
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen))
+                               .WithScheduledTime(now.Plus(Duration.FromHours(4))),
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
@@ -109,6 +115,7 @@ public partial class ScheduleViewModelTests
            .Should()
            .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
     }
+
     [Fact]
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldNotBeNull()
     {
@@ -161,7 +168,8 @@ public partial class ScheduleViewModelTests
         await sut.InitializeCommand.Execute(Unit.Default);
 
         // Then
-        sut.ScheduledMedications.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
+        sut.ScheduledMedications.Should().HaveCount(3).And.Subject.Should()
+           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
     }
 
     [Fact]
@@ -177,8 +185,10 @@ public partial class ScheduleViewModelTests
                     new MedicationScheduleFixture().WithEnumerable(
                         [
                             new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(4))),
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen))
+                               .WithScheduledTime(now.Plus(Duration.FromHours(2))),
+                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen))
+                               .WithScheduledTime(now.Plus(Duration.FromHours(4))),
                             new ScheduledMedicationFixture().WithScheduledTime(now),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
                             new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
@@ -203,13 +213,15 @@ public partial class ScheduleViewModelTests
     }
 }
 
-public partial class  ScheduleViewModelTests
+public partial class ScheduleViewModelTests
 {
     [Fact]
     public async Task Given_WhenAddMedication_ThenShouldReturnUnit()
     {
         // Given
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(() => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule));
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(
+            () => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule)
+        );
 
         // When
         var result = await sut.AddMedicineCommand.Execute(Unit.Default);
@@ -217,11 +229,14 @@ public partial class  ScheduleViewModelTests
         // Then
         result.Should().Be(Unit.Default);
     }
+
     [Fact]
     public async Task Given_WhenAddMedication_ThenShouldBeInDayScheduleState()
     {
         // Given
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(() => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule));
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(
+            () => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule)
+        );
 
         // When
         await sut.AddMedicineCommand.Execute(Unit.Default);
@@ -230,4 +245,3 @@ public partial class  ScheduleViewModelTests
         sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.DaySchedule);
     }
 }
-
