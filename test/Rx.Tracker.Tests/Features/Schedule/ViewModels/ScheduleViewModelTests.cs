@@ -46,7 +46,7 @@ public partial class ScheduleViewModelTests
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate()
     {
         // Given
-        var now = DateTimeOffset.Now.ToOffsetDateTime();
+        var now = DateTimeOffset.UnixEpoch.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
