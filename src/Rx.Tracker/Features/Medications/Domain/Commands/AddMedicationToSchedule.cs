@@ -26,13 +26,8 @@ public static class AddMedicationToSchedule
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandHandler"/> class.
         /// </summary>
-        /// <param name="reminders">The reminders.</param>
         /// <param name="client">The client.</param>
-        public CommandHandler(IReminders reminders, IMedicationScheduleApiClient client)
-        {
-            _reminders = reminders;
-            _client = client;
-        }
+        public CommandHandler(IMedicationScheduleApiClient client) => _client = client;
 
         /// <inheritdoc />
         protected override async Task<Unit> Handle(Command command, CancellationToken cancellationToken = default) =>
@@ -41,7 +36,6 @@ public static class AddMedicationToSchedule
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!
             await _client.Add(command).ContinueWith(_ => Unit.Default, cancellationToken);
 
-        private readonly IReminders _reminders;
         private readonly IMedicationScheduleApiClient _client;
     }
 

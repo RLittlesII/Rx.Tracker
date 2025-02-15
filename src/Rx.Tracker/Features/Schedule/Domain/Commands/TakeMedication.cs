@@ -31,7 +31,7 @@ public static class TakeMedication
         public CommandHandler(IReminders reminders) => _reminders = reminders;
 
         /// <inheritdoc />
-        protected override Task<Unit> Handle(Command command, CancellationToken cancellationToken = default)  =>
+        protected override Task<Unit> Handle(Command command, CancellationToken cancellationToken = default) =>
 
             // TODO: [rlittlesii: November 29, 2024] Save to persisted storage
             // TODO: [rlittlesii: November 29, 2024] Save to calendars, or are calendars behind the persisted storage?!

@@ -83,7 +83,7 @@ public class AddMedicineViewModel : ViewModelBase
            .Where(ArePropertiesValid)
 
             // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
-           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.MinValue.ToOffsetDateTime()))
+           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.Now.ToOffsetDateTime()))
            .WhereIsNotNull()
            .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
            .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))

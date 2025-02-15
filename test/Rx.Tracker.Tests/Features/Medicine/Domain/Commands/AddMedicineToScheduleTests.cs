@@ -45,5 +45,5 @@ public class AddMedicationToScheduleTests
     [Fact]
     public async Task GivenContainer_WhenCqrsQuery_ThenReturnsResultType() =>
         // Given, When, Then
-        await new ContainerFixture().WithMocks().AsInterface().Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()));
+        await new ContainerFixture().AsInterface().Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()));
 }
