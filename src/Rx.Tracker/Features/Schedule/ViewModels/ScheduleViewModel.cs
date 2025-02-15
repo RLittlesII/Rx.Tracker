@@ -56,7 +56,8 @@ public class ScheduleViewModel : ViewModelBase
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
                .LogTrace(Logger, "Preparing to Filter")
-               .Filter(medication => medication.ScheduledTime.Date == today);
+               .Filter(medication => medication.ScheduledTime.Date == today)
+               .RefCount();
 
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
@@ -66,7 +67,6 @@ public class ScheduleViewModel : ViewModelBase
            .DisposeWith(Garbage);
 
         medicationScheduleChanged
-           .Filter(medication => medication.ScheduledTime.Date == today)
            .LogTrace(Logger, "Filtered")
            .Bind(out _scheduledMedications, options: EagerBindingOptions)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))

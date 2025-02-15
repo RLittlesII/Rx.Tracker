@@ -6,5 +6,9 @@ namespace Rx.Tracker.Tests.Features.Schedule.ViewModels;
 [AutoFixture(typeof(ScheduleViewModel))]
 internal partial class ScheduleViewModelFixture
 {
-    internal ScheduleViewModelFixture() => _stateMachineFactory = () => new ScheduleStateMachineFixture();
+    internal ScheduleViewModelFixture()
+    {
+        _coreServices = CoreServicesStub.Instance();
+        _stateMachineFactory = () => new ScheduleStateMachineFixture();
+    }
 }

@@ -20,11 +20,11 @@ public class LoadScheduleClassData : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()
     {
-        yield return DefaultScenario();
+        yield return DefaultScheduledTimeScenario();
         yield return DefaultMedicationScenario();
     }
 
-    private static object[] DefaultScenario()
+    private static object[] DefaultScheduledTimeScenario()
     {
         var now = DateTimeOffset.UnixEpoch.AddDays(5);
         var scheduledTime = now.ToOffsetDateTime();

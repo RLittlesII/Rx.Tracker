@@ -1,6 +1,5 @@
 using DryIoc;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Rx.Tracker.Container;
 using Rx.Tracker.Features.Schedule.Container;
@@ -19,7 +18,6 @@ public partial class ScheduleViewModelTests
            .WithRegistration(bootstrap =>
                 {
                     bootstrap.Register<ScheduleViewModel>();
-                    bootstrap.RegisterInstance(Substitute.For<ILoggerFactory>());
                     bootstrap.RegisterInstance(Substitute.For<INavigator>());
                     bootstrap.RegisterModule<ScheduleModule>();
                 }

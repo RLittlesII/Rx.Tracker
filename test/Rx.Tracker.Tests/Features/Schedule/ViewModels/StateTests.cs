@@ -49,4 +49,36 @@ public partial class ScheduleViewModelTests
         // Then
         sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.DaySchedule);
     }
+
+    [Fact]
+    public async Task GivenDayScheduleState_WhenAddMedication_ThenShouldReturnUnit()
+    {
+        // Given
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(
+            () => new ScheduleStateMachineFixture().WithInitialState(
+                ScheduleStateMachine.ScheduleState.DaySchedule
+            )
+        );
+
+        // When
+        var result = await sut.AddMedicineCommand.Execute(Unit.Default);
+
+        // Then
+        result.Should().Be(Unit.Default);
+    }
+
+    [Fact]
+    public async Task GivenDayScheduleState_WhenAddMedication_ThenShouldBeInDayScheduleState()
+    {
+        // Given
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(
+            () => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule)
+        );
+
+        // When
+        await sut.AddMedicineCommand.Execute(Unit.Default);
+
+        // Then
+        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.DaySchedule);
+    }
 }
