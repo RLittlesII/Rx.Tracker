@@ -47,10 +47,11 @@ public partial class ScheduleViewModelTests
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate()
     {
         // Given
-        var now = DateTimeOffset.UnixEpoch.ToOffsetDateTime();
+        var epoch = DateTimeOffset.UnixEpoch.AddDays(5);
+        var now = epoch.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
         var iClock = Substitute.For<IClock>();
-        iClock.GetCurrentInstant().Returns(Instant.FromDateTimeOffset(DateTimeOffset.UnixEpoch));
+        iClock.GetCurrentInstant().Returns(Instant.FromDateTimeOffset(epoch));
         CoreServices coreServices = new CoreServicesFixture().WithClock(iClock);
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
