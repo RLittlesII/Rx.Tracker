@@ -54,7 +54,7 @@ public class MedicationSchedule : DisposableObject, ISourceCache<ScheduledMedica
     public void Edit(Action<ISourceUpdater<ScheduledMedication, Id>> updateAction) => _cache.Edit(updateAction);
 
     /// <inheritdoc/>
-    public int Count => _cache.Count;
+    public int Count => _cache.Items.Count;
 
     /// <inheritdoc/>
     public IReadOnlyList<ScheduledMedication> Items => _cache.Items;

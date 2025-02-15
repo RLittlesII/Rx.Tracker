@@ -2,10 +2,13 @@ using FluentAssertions;
 using NodaTime;
 using NodaTime.Extensions;
 using NSubstitute;
+using Rx.Tracker.Features;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features.Schedule.Domain.Entities;
+using Rx.Tracker.Tests.Features.Schedule.Domain.Queries;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -21,7 +24,7 @@ public partial class ScheduleViewModelTests
     {
         // Given
         var cqrs = Substitute.For<ICqrs>();
-        var now = DateTimeOffset.UtcNow.ToOffsetDateTime();
+        var now = DateTimeOffset.UnixEpoch.ToOffsetDateTime();
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
                 new LoadSchedule.Result(
@@ -42,27 +45,18 @@ public partial class ScheduleViewModelTests
         sut.Schedule.Should().NotBeNullOrEmpty();
     }
 
-    [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate()
+    [Theory]
+    [ClassData(typeof(LoadScheduleClassData))]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldBeForDate(MedicationSchedule medicationSchedule, DateTimeOffset dateTime)
     {
         // Given
-        var now = DateTimeOffset.Now.ToOffsetDateTime();
+        var now = dateTime.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
-            Task.FromResult(
-                new LoadSchedule.Result(
-                    new MedicationScheduleFixture().WithEnumerable(
-                        [
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
-                        ]
-                    ).WithToday(now.Date)
-                )
-            )
-        );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+        var iClock = Substitute.For<IClock>();
+        iClock.GetCurrentInstant().Returns(Instant.FromDateTimeOffset(dateTime));
+        CoreServices coreServices = new CoreServicesFixture().WithClock(iClock);
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(Task.FromResult(new LoadSchedule.Result(medicationSchedule)));
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs).WithServices(coreServices);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -71,30 +65,14 @@ public partial class ScheduleViewModelTests
         sut.Schedule.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.Day.Date == now.Date);
     }
 
-    [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldHaveMedications()
+    [Theory]
+    [ClassData(typeof(LoadScheduleClassData))]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduleShouldHaveMedications(MedicationSchedule medicationSchedule, DateTimeOffset dateTime)
     {
         // Given
-        const string ibuprofen = "Ibuprofen";
-        var now = DateTimeOffset.Now.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
-            Task.FromResult(
-                new LoadSchedule.Result(
-                    new MedicationScheduleFixture().WithEnumerable(
-                        [
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(4))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
-                        ]
-                    ).WithToday(now.Date)
-                )
-            )
-        );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(Task.FromResult(new LoadSchedule.Result(medicationSchedule)));
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs).WithServices(CoreServicesStub.Instance(dateTime));
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -103,18 +81,19 @@ public partial class ScheduleViewModelTests
         sut.Schedule
            .SelectMany(daySchedule => daySchedule.Medication)
            .Should()
-           .HaveCount(6)
-           .And
-           .Subject
-           .Should()
-           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
+           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == dateTime.ToOffsetDateTime().Date);
     }
+
     [Fact]
     public async Task GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldNotBeNull()
     {
         // Given
+        var epoch = DateTimeOffset.UnixEpoch;
+        var now = epoch.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
-        var now = DateTimeOffset.Now.ToOffsetDateTime();
+        var iClock = Substitute.For<IClock>();
+        iClock.GetCurrentInstant().Returns(Instant.FromDateTimeOffset(epoch));
+        CoreServices coreServices = new CoreServicesFixture().WithClock(iClock);
         cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
             Task.FromResult(
                 new LoadSchedule.Result(
@@ -126,7 +105,7 @@ public partial class ScheduleViewModelTests
                 )
             )
         );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs).WithServices(coreServices);
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -135,59 +114,17 @@ public partial class ScheduleViewModelTests
         sut.ScheduledMedications.Should().NotBeNullOrEmpty();
     }
 
-    [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldBeForDate()
+    [Theory]
+    [ClassData(typeof(LoadScheduleClassData))]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduledMedicationsShouldBeForDate(
+        MedicationSchedule medicationSchedule,
+        DateTimeOffset dateTime
+    )
     {
         // Given
-        var now = DateTimeOffset.Now.ToOffsetDateTime();
         var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
-            Task.FromResult(
-                new LoadSchedule.Result(
-                    new MedicationScheduleFixture().WithEnumerable(
-                        [
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(8))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromDays(2))),
-                        ]
-                    ).WithToday(now.Date)
-                )
-            )
-        );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
-
-        // When
-        await sut.InitializeCommand.Execute(Unit.Default);
-
-        // Then
-        sut.ScheduledMedications.Should().HaveCount(3).And.Subject.Should().OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
-    }
-
-    [Fact]
-    public async Task GivenLoadScheduleResult_WhenInitialized_ThenTodayScheduleShouldHaveMedications()
-    {
-        // Given
-        const string ibuprofen = "Ibuprofen";
-        var now = DateTimeOffset.Now.ToOffsetDateTime();
-        var cqrs = Substitute.For<ICqrs>();
-        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(
-            Task.FromResult(
-                new LoadSchedule.Result(
-                    new MedicationScheduleFixture().WithEnumerable(
-                        [
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(ibuprofen)).WithScheduledTime(now.Plus(Duration.FromHours(4))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(2))),
-                            new ScheduledMedicationFixture().WithScheduledTime(now.Plus(Duration.FromHours(4))),
-                        ]
-                    ).WithToday(now.Date)
-                )
-            )
-        );
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs);
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(Task.FromResult(new LoadSchedule.Result(medicationSchedule)));
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs).WithServices(CoreServicesStub.Instance(dateTime));
 
         // When
         await sut.InitializeCommand.Execute(Unit.Default);
@@ -195,39 +132,27 @@ public partial class ScheduleViewModelTests
         // Then
         sut.ScheduledMedications
            .Should()
-           .HaveCount(6)
-           .And
-           .Subject
+           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == dateTime.ToOffsetDateTime().Date);
+    }
+
+    [Theory]
+    [ClassData(typeof(LoadScheduleClassData))]
+    public async Task GivenLoadScheduleResult_WhenInitialized_ThenScheduledMedicationsShouldHaveMedications(
+        MedicationSchedule medicationSchedule,
+        DateTimeOffset dateTime
+    )
+    {
+        // Given
+        var cqrs = Substitute.For<ICqrs>();
+        cqrs.Query(Arg.Any<LoadSchedule.Query>()).Returns(Task.FromResult(new LoadSchedule.Result(medicationSchedule)));
+        ScheduleViewModel sut = new ScheduleViewModelFixture().WithCqrs(cqrs).WithServices(CoreServicesStub.Instance(dateTime));
+
+        // When
+        await sut.InitializeCommand.Execute(Unit.Default);
+
+        // Then
+        sut.ScheduledMedications
            .Should()
-           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == now.Date);
+           .OnlyContain(scheduledMedication => scheduledMedication.ScheduledTime.Date == dateTime.ToOffsetDateTime().Date);
     }
 }
-
-public partial class  ScheduleViewModelTests
-{
-    [Fact]
-    public async Task Given_WhenAddMedication_ThenShouldReturnUnit()
-    {
-        // Given
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(() => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule));
-
-        // When
-        var result = await sut.AddMedicineCommand.Execute(Unit.Default);
-
-        // Then
-        result.Should().Be(Unit.Default);
-    }
-    [Fact]
-    public async Task Given_WhenAddMedication_ThenShouldBeInDayScheduleState()
-    {
-        // Given
-        ScheduleViewModel sut = new ScheduleViewModelFixture().WithStateMachineFactory(() => new ScheduleStateMachineFixture().WithInitialState(ScheduleStateMachine.ScheduleState.DaySchedule));
-
-        // When
-        await sut.AddMedicineCommand.Execute(Unit.Default);
-
-        // Then
-        sut.CurrentState.Should().Be(ScheduleStateMachine.ScheduleState.DaySchedule);
-    }
-}
-

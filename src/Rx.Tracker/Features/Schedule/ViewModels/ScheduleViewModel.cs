@@ -29,9 +29,15 @@ public class ScheduleViewModel : ViewModelBase
     /// </summary>
     /// <param name="navigator">The navigator.</param>
     /// <param name="cqrs">The cqrs mediator.</param>
+    /// <param name="coreServices">The core services.</param>
     /// <param name="loggerFactory">The logger factory.</param>
     /// <param name="stateMachineFactory">The state machine factory.</param>
-    public ScheduleViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<ScheduleStateMachine> stateMachineFactory)
+    public ScheduleViewModel(
+        INavigator navigator,
+        ICqrs cqrs,
+        ICoreServices coreServices,
+        ILoggerFactory loggerFactory,
+        Func<ScheduleStateMachine> stateMachineFactory)
         : base(navigator, cqrs, loggerFactory)
     {
         AddMedicineCommand = RxCommand.Create(ExecuteAddMedicine);
@@ -42,13 +48,16 @@ public class ScheduleViewModel : ViewModelBase
                .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => ScheduleStateMachine.ScheduleState.Initial)
                .DisposeWith(Garbage);
 
+        var today = coreServices.Clock.GetCurrentInstant().ToDateTimeOffset().ToLocalDate();
+
         var medicationScheduleChanged =
             this.WhenChanged(viewModel => viewModel.MedicationSchedule)
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
                .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
                .LogTrace(Logger, "Preparing to Filter")
-               .Filter(medication => medication.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate());
+               .Filter(medication => medication.ScheduledTime.Date == today)
+               .RefCount();
 
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
@@ -58,7 +67,6 @@ public class ScheduleViewModel : ViewModelBase
            .DisposeWith(Garbage);
 
         medicationScheduleChanged
-           .Filter(medication => medication.ScheduledTime.Date == DateTimeOffset.Now.ToLocalDate())
            .LogTrace(Logger, "Filtered")
            .Bind(out _scheduledMedications, options: EagerBindingOptions)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
