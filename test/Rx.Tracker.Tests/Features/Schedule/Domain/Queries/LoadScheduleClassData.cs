@@ -13,6 +13,7 @@ public class LoadScheduleClassData : IEnumerable<object[]>
     public IEnumerator<object[]> GetEnumerator()
     {
         yield return DefaultScenario();
+        yield return DefaultMedicationScenario();
     }
 
     private static object[] DefaultScenario()
@@ -32,7 +33,29 @@ public class LoadScheduleClassData : IEnumerable<object[]>
         );
     }
 
+    private static object[] DefaultMedicationScenario()
+    {
+        var now = DateTimeOffset.UnixEpoch.AddDays(5);
+        var scheduledTime = now.ToOffsetDateTime();
+        return CreateScenario(
+            new MedicationScheduleFixture().WithEnumerable(
+                [
+                    new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(Ibuprofen)).WithScheduledTime(scheduledTime),
+                    new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(Ibuprofen))
+                       .WithScheduledTime(scheduledTime.Plus(Duration.FromHours(2))),
+                    new ScheduledMedicationFixture().WithMedication(medication => medication.WithId(Ibuprofen))
+                       .WithScheduledTime(scheduledTime.Plus(Duration.FromHours(4))),
+                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime),
+                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(2))),
+                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(4))),
+                ]
+            ).WithToday(scheduledTime.Date),
+            now
+        );
+    }
+
     private static object[] CreateScenario(MedicationSchedule medicationSchedule, DateTimeOffset now) => [medicationSchedule, now];
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    private const string Ibuprofen = "Ibuprofen";
 }
