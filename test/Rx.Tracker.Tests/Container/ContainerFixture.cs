@@ -8,7 +8,6 @@ using ReactiveMarbles.Mvvm;
 using Rocket.Surgery.Extensions.Testing;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Rx.Tracker.Container;
-using Rx.Tracker.Features;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Tests.Features;
 using System;

@@ -6,6 +6,9 @@ using Rx.Tracker.Features.Schedule.Domain.Entities;
 
 namespace Rx.Tracker.Features.Schedule.Data.Store;
 
+/// <summary>
+/// Interface representing event storage.
+/// </summary>
 public interface ICalendarEventStorage
 {
     /// <summary>
