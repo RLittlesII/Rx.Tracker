@@ -2,7 +2,10 @@ using DynamicData.Binding;
 
 namespace Rx.Tracker.Extensions;
 
-public class DynamicDataExtensions
+/// <summary>
+/// Extensions for <see cref="DynamicData"/>.
+/// </summary>
+public static class DynamicDataExtensions
 {
     /// <summary>
     /// Gets the eager binding options.

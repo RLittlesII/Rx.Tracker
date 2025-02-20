@@ -1,4 +1,5 @@
 using NSubstitute;
+using Rocket.Surgery.Extensions.Testing.AutoFixtures;
 using Rocket.Surgery.Extensions.Testing.Fixtures;
 using Rx.Tracker.Features.Schedule.ViewModels;
 
@@ -16,4 +17,9 @@ internal class ScheduleStateMachineFixture : ITestFixtureBuilder
     private ScheduleStateMachine Build() => new(_initialState, _loggerFactory);
     private ScheduleStateMachine.ScheduleState _initialState = ScheduleStateMachine.ScheduleState.Initial;
     private Microsoft.Extensions.Logging.ILoggerFactory _loggerFactory = Substitute.For<Microsoft.Extensions.Logging.ILoggerFactory>();
+}
+
+[AutoFixture(typeof(ScheduleStateMachine))]
+internal class ScheduleStateMachineFixture2
+{
 }

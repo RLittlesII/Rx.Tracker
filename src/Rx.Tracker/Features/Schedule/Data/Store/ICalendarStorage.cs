@@ -4,6 +4,9 @@ using Rx.Tracker.Features.Schedule.Domain.Entities;
 
 namespace Rx.Tracker.Features.Schedule.Data.Store;
 
+/// <summary>
+/// Interface representing calendar storage.
+/// </summary>
 public interface ICalendarStorage
 {
     /// <summary>
@@ -18,7 +21,7 @@ public interface ICalendarStorage
     /// Retrieves a specific calendar from the device.
     /// </summary>
     /// <param name="calendarId">The unique identifier of the calendar to retrieve.</param>
-    /// <returns>A <see cref="MedicationCalendar"/> object that represents the requested calendar from the user's device.</returns>
+    /// <returns>A <see cref="CalendarDto"/> object that represents the requested calendar from the user's device.</returns>
     Task<CalendarDto> Read(CalendarId calendarId);
 
     /// <summary>

@@ -9,6 +9,7 @@ using Rx.Tracker.Features.Schedule.Mapping;
 
 namespace Rx.Tracker.Features.Schedule.Data.Store;
 
+/// <inheritdoc />
 public class LocalMedicationScheduleStore : IMedicationScheduleApiContract
 {
     /// <inheritdoc/>
@@ -19,11 +20,7 @@ public class LocalMedicationScheduleStore : IMedicationScheduleApiContract
     }
 
     /// <inheritdoc/>
-    public Task<IEnumerable<ScheduledMedicineDto>> Read(UserId userId, LoadSchedule.Query query)
-    {
-        var scheduledMedicineDtos = _schedules.AsEnumerable();
-        return Task.FromResult(scheduledMedicineDtos);
-    }
+    public Task<IEnumerable<ScheduledMedicineDto>> Read(UserId userId, LoadSchedule.Query query) => Task.FromResult(_schedules.AsEnumerable());
 
-    private readonly List<ScheduledMedicineDto> _schedules = new();
+    private readonly List<ScheduledMedicineDto> _schedules = [];
 }

@@ -4,6 +4,9 @@ using ReactiveMarbles.Mvvm;
 
 namespace Rx.Tracker.Features;
 
+/// <summary>
+/// Interface representing core services needed by the application.
+/// </summary>
 public interface ICoreServices
 {
     /// <summary>
@@ -17,6 +20,7 @@ public interface ICoreServices
     IClock Clock { get; }
 }
 
+/// <inheritdoc />
 [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Implementation by interface")]
 public class CoreServices : ICoreServices
 {
