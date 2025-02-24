@@ -8,14 +8,19 @@ namespace Rx.Tracker.Exceptions;
 public class InitializationException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="InitializationException"/> class.
+    /// Gets the message template for this exception.
+    /// </summary>
+    public const string MessageTemplate = "An exception occured when attempting to intialize the View Model.";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InitializationException" /> class.
     /// </summary>
     public InitializationException()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InitializationException"/> class.
+    /// Initializes a new instance of the <see cref="InitializationException" /> class.
     /// </summary>
     /// <param name="message">The message.</param>
     public InitializationException(string? message)
@@ -24,7 +29,7 @@ public class InitializationException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InitializationException"/> class.
+    /// Initializes a new instance of the <see cref="InitializationException" /> class.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="innerException">The inner exception.</param>
@@ -32,9 +37,4 @@ public class InitializationException : Exception
         : base(message, innerException)
     {
     }
-
-    /// <summary>
-    /// Gets the message template for this exception.
-    /// </summary>
-    public const string MessageTemplate = "An exception occured when attempting to intialize the View Model.";
 }

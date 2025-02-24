@@ -55,13 +55,13 @@ public interface INavigator
     /// <summary>
     /// Dismiss the modal.
     /// </summary>
-    /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task{TResult}" /> representing the result of the asynchronous operation.</returns>
     Task<NavigationState> Dismiss();
 
     /// <summary>
     /// Dismiss the modal.
     /// </summary>
     /// <param name="arguments">The arguments.</param>
-    /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task{TResult}" /> representing the result of the asynchronous operation.</returns>
     Task<NavigationState> Dismiss(Action<IArguments> arguments);
 }

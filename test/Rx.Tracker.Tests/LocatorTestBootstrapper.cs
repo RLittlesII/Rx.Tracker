@@ -10,11 +10,13 @@ namespace Rx.Tracker.Tests;
 public class LocatorTestBootstrapper
 {
     [ModuleInitializer]
-    public static void Initialize() =>
-        ServiceLocator.Current()
-                      .AddService(() => CoreRegistrationBuilder.Create()
-                                                               .WithMainThreadScheduler(new TestScheduler())
-                                                               .WithTaskPoolScheduler(new TestScheduler())
-                                                               .WithExceptionHandler(
-                                                                   Substitute.For<IObserver<Exception>>()).Build());
+    public static void Initialize() => ServiceLocator.Current()
+       .AddService(
+            () => CoreRegistrationBuilder.Create()
+               .WithMainThreadScheduler(new TestScheduler())
+               .WithTaskPoolScheduler(new TestScheduler())
+               .WithExceptionHandler(
+                    Substitute.For<IObserver<Exception>>()
+                ).Build()
+        );
 }

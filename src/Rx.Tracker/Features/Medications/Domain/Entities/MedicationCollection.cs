@@ -9,8 +9,19 @@ namespace Rx.Tracker.Features.Medications.Domain.Entities;
 /// </summary>
 public class MedicationCollection : IReadOnlyCollection<Medication>
 {
+    /// <inheritdoc />
+    public IEnumerator<Medication> GetEnumerator() => _medications.GetEnumerator();
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="MedicationCollection"/> class.
+    /// Gets the dosages.
+    /// </summary>
+    public IReadOnlyCollection<Dosage> Dosages { get; }
+
+    /// <inheritdoc />
+    public int Count => _medications.Count;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MedicationCollection" /> class.
     /// </summary>
     /// <param name="medications">The medications.</param>
     public MedicationCollection(IEnumerable<Medication> medications)
@@ -23,19 +34,8 @@ public class MedicationCollection : IReadOnlyCollection<Medication>
            .ToArray();
     }
 
-    /// <summary>
-    /// Gets the dosages.
-    /// </summary>
-    public IReadOnlyCollection<Dosage> Dosages { get; }
-
-    /// <inheritdoc/>
-    public IEnumerator<Medication> GetEnumerator() => _medications.GetEnumerator();
-
-    /// <inheritdoc/>
+    /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    /// <inheritdoc/>
-    public int Count => _medications.Count;
 
     private readonly List<Medication> _medications;
 }

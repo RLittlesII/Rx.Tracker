@@ -3,7 +3,7 @@ using DynamicData.Binding;
 namespace Rx.Tracker.Extensions;
 
 /// <summary>
-/// Extensions for <see cref="DynamicData"/>.
+/// Extensions for <see cref="DynamicData" />.
 /// </summary>
 public static class DynamicDataExtensions
 {

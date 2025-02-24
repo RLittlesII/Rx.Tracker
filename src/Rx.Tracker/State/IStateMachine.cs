@@ -8,6 +8,7 @@ namespace Rx.Tracker.State;
 /// </summary>
 /// <typeparam name="TState">The state type.</typeparam>
 /// <typeparam name="TTrigger">The trigger type.</typeparam>
+
 // NOTE: [rlittlesii: December 05, 2024] This is the abstraction that I don't need.  I have knowingly taken a dependency on Stateless.
 public interface IStateMachine<TState, TTrigger>
 {
@@ -18,9 +19,11 @@ public interface IStateMachine<TState, TTrigger>
     /// will be invoked.
     /// </summary>
     /// <param name="trigger">The trigger to fire.</param>
-    /// <exception cref="T:System.InvalidOperationException">The current state does
-    /// not allow the trigger to be fired.</exception>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <exception cref="T:System.InvalidOperationException">
+    /// The current state does
+    /// not allow the trigger to be fired.
+    /// </exception>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     Task Fire(TTrigger trigger);
 
     /// <summary>
@@ -32,9 +35,11 @@ public interface IStateMachine<TState, TTrigger>
     /// <param name="trigger">The trigger to fire.</param>
     /// <param name="parameter">The parameter.</param>
     /// <typeparam name="T">The parameter type.</typeparam>
-    /// <exception cref="T:System.InvalidOperationException">The current state does
-    /// not allow the trigger to be fired.</exception>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <exception cref="T:System.InvalidOperationException">
+    /// The current state does
+    /// not allow the trigger to be fired.
+    /// </exception>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     Task Fire<T>(TTrigger trigger, T parameter);
 
     /// <summary>
@@ -45,7 +50,7 @@ public interface IStateMachine<TState, TTrigger>
     IObservable<bool> CanFire(TTrigger trigger);
 
     /// <summary>
-    /// Gets an observable of the <see cref="TState"/> changes.
+    /// Gets an observable of the <see cref="TState" /> changes.
     /// </summary>
     IObservable<TState> StateChanged { get; }
 }

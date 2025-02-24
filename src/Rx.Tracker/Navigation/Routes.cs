@@ -52,17 +52,6 @@ public class Routes
     /// </summary>
     public record Route
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Route"/> class.
-        /// </summary>
-        /// <param name="name">The route name.</param>
-        /// <param name="path">The route path.</param>
-        public Route(string name, Uri path)
-        {
-            Name = name;
-            Path = path;
-        }
-
         public static implicit operator Uri(Route route) => route.Path;
 
         /// <summary>
@@ -74,5 +63,16 @@ public class Routes
         /// Gets the path.
         /// </summary>
         public Uri Path { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Route" /> class.
+        /// </summary>
+        /// <param name="name">The route name.</param>
+        /// <param name="path">The route path.</param>
+        public Route(string name, Uri path)
+        {
+            Name = name;
+            Path = path;
+        }
     }
 }

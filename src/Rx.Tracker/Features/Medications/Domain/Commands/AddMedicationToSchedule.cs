@@ -1,9 +1,9 @@
-using System.Reactive;
-using System.Threading;
-using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Domain;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
+using System.Reactive;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.Features.Medications.Domain.Commands;
 
@@ -13,10 +13,12 @@ namespace Rx.Tracker.Features.Medications.Domain.Commands;
 public static class AddMedicationToSchedule
 {
     /// <summary>
-    /// Add medicine command.
+    /// Creates a <see cref="Command" />.
     /// </summary>
-    /// <param name="ScheduledMedication">The scheduled medication.</param>
-    public record Command(UserId User, ScheduledMedication ScheduledMedication) : ICommand;
+    /// <param name="userId">The user id.</param>
+    /// <param name="medication">The medication.</param>
+    /// <returns>The command.</returns>
+    public static Command Create(UserId userId, ScheduledMedication medication) => new(userId, medication);
 
     /// <summary>
     /// The add medicine command handler.
@@ -24,7 +26,7 @@ public static class AddMedicationToSchedule
     public class CommandHandler : CommandHandlerBase<Command>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandHandler"/> class.
+        /// Initializes a new instance of the <see cref="CommandHandler" /> class.
         /// </summary>
         /// <param name="client">The client.</param>
         public CommandHandler(IMedicationScheduleApiClient client) => _client = client;
@@ -40,10 +42,8 @@ public static class AddMedicationToSchedule
     }
 
     /// <summary>
-    /// Creates a <see cref="Command"/>.
+    /// Add medicine command.
     /// </summary>
-    /// <param name="userId">The user id.</param>
-    /// <param name="medication">The medication.</param>
-    /// <returns>The command.</returns>
-    public static Command Create(UserId userId, ScheduledMedication medication) => new(userId, medication);
+    /// <param name="ScheduledMedication">The scheduled medication.</param>
+    public record Command(UserId User, ScheduledMedication ScheduledMedication) : ICommand;
 }

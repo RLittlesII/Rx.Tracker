@@ -1,13 +1,13 @@
-using System;
 using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Serilog;
 using Stateless;
+using System;
 
 namespace Rx.Tracker.Extensions;
 
 /// <summary>
-/// <see cref="Serilog"/> extensions.
+/// <see cref="Serilog" /> extensions.
 /// </summary>
 public static class SerilogLoggingExtensions
 {
@@ -33,7 +33,7 @@ public static class SerilogLoggingExtensions
             });
 
     /// <summary>
-    /// Transforms the structure of the provided instance of <see cref="T"/>.
+    /// Transforms the structure of the provided instance of <see cref="T" />.
     /// </summary>
     /// <param name="configuration">The configuration.</param>
     /// <param name="destructure">The destructure action.</param>

@@ -1,9 +1,3 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
@@ -17,6 +11,12 @@ using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using Stateless;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using static Rx.Tracker.Extensions.DynamicDataExtensions;
 
 namespace Rx.Tracker.Features.Schedule.ViewModels;
@@ -25,7 +25,36 @@ namespace Rx.Tracker.Features.Schedule.ViewModels;
 public class ScheduleViewModel : ViewModelBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ScheduleViewModel"/> class.
+    /// Gets the add medicine command.
+    /// </summary>
+    public RxCommand<Unit, Unit> AddMedicineCommand { get; }
+
+    /// <summary>
+    /// Gets the current state of the machine.
+    /// </summary>
+    public ScheduleStateMachine.ScheduleState CurrentState => _currentState.Value;
+
+    /// <summary>
+    /// Gets scheduled medications.
+    /// </summary>
+    public ReadOnlyObservableCollection<DaySchedule> Schedule => _schedule;
+
+    /// <summary>
+    /// Gets today's schedule.
+    /// </summary>
+    public ReadOnlyObservableCollection<ScheduledMedication> ScheduledMedications => _scheduledMedications;
+
+    /// <summary>
+    /// Gets the medication schedule.
+    /// </summary>
+    public MedicationSchedule? MedicationSchedule
+    {
+        get => _medicationSchedule;
+        private set => RaiseAndSetIfChanged(ref _medicationSchedule, value);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ScheduleViewModel" /> class.
     /// </summary>
     /// <param name="navigator">The navigator.</param>
     /// <param name="cqrs">The cqrs mediator.</param>
@@ -62,13 +91,13 @@ public class ScheduleViewModel : ViewModelBase
         medicationScheduleChanged
            .Group(group => group.ScheduledTime)
            .Transform(x => new DaySchedule(x))
-           .Bind(out _schedule, options: EagerBindingOptions)
+           .Bind(out _schedule, EagerBindingOptions)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
         medicationScheduleChanged
            .LogTrace(Logger, "Filtered")
-           .Bind(out _scheduledMedications, options: EagerBindingOptions)
+           .Bind(out _scheduledMedications, EagerBindingOptions)
            .Subscribe(_ => { }, exception => Logger.LogError(exception, string.Empty))
            .DisposeWith(Garbage);
 
@@ -80,38 +109,7 @@ public class ScheduleViewModel : ViewModelBase
         ConfigureMachine(_stateMachine);
     }
 
-    private Task ExecuteAddMedicine() => _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Add);
-
-    /// <summary>
-    /// Gets the add medicine command.
-    /// </summary>
-    public RxCommand<Unit, Unit> AddMedicineCommand { get; }
-
-    /// <summary>
-    /// Gets the current state of the machine.
-    /// </summary>
-    public ScheduleStateMachine.ScheduleState CurrentState => _currentState.Value;
-
-    /// <summary>
-    /// Gets scheduled medications.
-    /// </summary>
-    public ReadOnlyObservableCollection<DaySchedule> Schedule => _schedule;
-
-    /// <summary>
-    /// Gets today's schedule.
-    /// </summary>
-    public ReadOnlyObservableCollection<ScheduledMedication> ScheduledMedications => _scheduledMedications;
-
-    /// <summary>
-    /// Gets the medication schedule.
-    /// </summary>
-    public MedicationSchedule? MedicationSchedule
-    {
-        get => _medicationSchedule;
-        private set => RaiseAndSetIfChanged(ref _medicationSchedule, value);
-    }
-
-    /// <inheritdoc/>
+    /// <inheritdoc />
     protected override async Task Initialize(ICqrs cqrs)
     {
         try
@@ -128,6 +126,8 @@ public class ScheduleViewModel : ViewModelBase
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Failure);
         }
     }
+
+    private Task ExecuteAddMedicine() => _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Add);
 
     private void ConfigureMachine(ScheduleStateMachine stateMachine)
     {

@@ -1,13 +1,13 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace Rx.Tracker.Extensions;
 
 /// <summary>
-/// Logging extensions for <see cref="IObservable{T}"/> notifications.
+/// Logging extensions for <see cref="IObservable{T}" /> notifications.
 /// </summary>
 public static class ReactiveLoggingExtensions
 {
@@ -237,7 +237,7 @@ public static class ReactiveLoggingExtensions
             {
                 Thread = Environment.CurrentManagedThreadId,
                 Message = message,
-                CorrelationId = correlationId,
+                CorrelationId = correlationId
             });
 
         return Observable.Create<TSource>(
@@ -251,7 +251,7 @@ public static class ReactiveLoggingExtensions
                     {
                         Thread = Environment.CurrentManagedThreadId,
                         Message = message,
-                        CorrelationId = correlationId,
+                        CorrelationId = correlationId
                     });
 
                 try
@@ -265,7 +265,7 @@ public static class ReactiveLoggingExtensions
                                     Count = onNextInvocationCount++,
                                     Thread = Environment.CurrentManagedThreadId,
                                     Message = message,
-                                    CorrelationId = correlationId,
+                                    CorrelationId = correlationId
                                 }),
                             ex => logger.LogTrace(
                                 ex,
@@ -274,7 +274,7 @@ public static class ReactiveLoggingExtensions
                                 {
                                     Thread = Environment.CurrentManagedThreadId,
                                     Message = message,
-                                    CorrelationId = correlationId,
+                                    CorrelationId = correlationId
                                 }),
                             () => logger.LogTrace(
                                 "[SPY:OnCompleted] {@SpyDetails}",
@@ -282,7 +282,7 @@ public static class ReactiveLoggingExtensions
                                 {
                                     Thread = Environment.CurrentManagedThreadId,
                                     Message = message,
-                                    CorrelationId = correlationId,
+                                    CorrelationId = correlationId
                                 }))
                        .Subscribe(obs);
 
@@ -295,7 +295,7 @@ public static class ReactiveLoggingExtensions
                                 {
                                     Thread = Environment.CurrentManagedThreadId,
                                     Message = message,
-                                    CorrelationId = correlationId,
+                                    CorrelationId = correlationId
                                 })));
                 }
                 catch (Exception ex)
@@ -307,7 +307,7 @@ public static class ReactiveLoggingExtensions
                         {
                             Thread = Environment.CurrentManagedThreadId,
                             Message = message,
-                            CorrelationId = correlationId,
+                            CorrelationId = correlationId
                         });
 
                     return Disposable.Empty;

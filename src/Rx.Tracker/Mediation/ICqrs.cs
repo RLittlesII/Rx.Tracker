@@ -1,7 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using Rx.Tracker.Mediation.Commands;
 using Rx.Tracker.Mediation.Notifications;
 using Rx.Tracker.Mediation.Queries;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Rx.Tracker.Mediation;
 

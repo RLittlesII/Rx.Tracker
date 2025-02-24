@@ -9,23 +9,13 @@ namespace Rx.Tracker.Features.Medications.Domain.Entities;
 public class Medication
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Medication"/> class.
+    /// Gets the distinct available dosages for the medication.
     /// </summary>
-    public Medication()
-        : this(new MedicationId(), [])
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Medication"/> class.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <param name="dosages">The dosages.</param>
-    public Medication(MedicationId id, IEnumerable<Dosage> dosages)
-    {
-        Id = id;
-        Dosages = dosages.ToArray();
-    }
+    /// <returns>The distinct dosages.</returns>
+    public IReadOnlyCollection<Dosage> AvailableDosage() => Dosages
+       .GroupBy(dosage => dosage.Weight, dosage => dosage)
+       .SelectMany(grouping => grouping.DistinctBy(dosage => (Quantity: dosage.Amount, dosage.Weight)))
+       .ToArray();
 
     /// <summary>
     /// Gets the medicine identifier.
@@ -38,11 +28,21 @@ public class Medication
     public IReadOnlyCollection<Dosage> Dosages { get; }
 
     /// <summary>
-    /// Gets the distinct available dosages for the medication.
+    /// Initializes a new instance of the <see cref="Medication" /> class.
     /// </summary>
-    /// <returns>The distinct dosages.</returns>
-    public IReadOnlyCollection<Dosage> AvailableDosage() => Dosages
-       .GroupBy(dosage => dosage.Weight, dosage => dosage)
-       .SelectMany(grouping => grouping.DistinctBy(dosage => (Quantity: dosage.Amount, dosage.Weight)))
-       .ToArray();
+    public Medication()
+        : this(new MedicationId(), [])
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Medication" /> class.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="dosages">The dosages.</param>
+    public Medication(MedicationId id, IEnumerable<Dosage> dosages)
+    {
+        Id = id;
+        Dosages = dosages.ToArray();
+    }
 }

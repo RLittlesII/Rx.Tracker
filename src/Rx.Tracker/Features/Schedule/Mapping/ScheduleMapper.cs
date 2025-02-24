@@ -5,7 +5,7 @@ using Rx.Tracker.Features.Schedule.Domain.Entities;
 namespace Rx.Tracker.Features.Schedule.Mapping;
 
 /// <summary>
-/// Represents a mapper for <see cref="ScheduledMedication"/>.
+/// Represents a mapper for <see cref="ScheduledMedication" />.
 /// </summary>
 [Mapper]
 public static partial class ScheduleMapper

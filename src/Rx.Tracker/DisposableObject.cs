@@ -9,7 +9,7 @@ namespace Rx.Tracker;
 /// </summary>
 public abstract class DisposableObject : IDisposable
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "IDispose")]
     void IDisposable.Dispose()
     {
@@ -25,6 +25,11 @@ public abstract class DisposableObject : IDisposable
     {
     }
 
+    /// <summary>
+    /// Gets the garbage.
+    /// </summary>
+    protected CompositeDisposable Garbage { get; } = new();
+
     private void DisposeManaged(bool disposing)
     {
         if (disposing)
@@ -33,9 +38,4 @@ public abstract class DisposableObject : IDisposable
             Garbage.Dispose();
         }
     }
-
-    /// <summary>
-    /// Gets the garbage.
-    /// </summary>
-    protected CompositeDisposable Garbage { get; } = new();
 }

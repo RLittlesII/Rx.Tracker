@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
@@ -7,6 +5,8 @@ using Plugin.Maui.Calendar.Controls;
 using Plugin.Maui.Calendar.Enums;
 using Rx.Tracker.Features.Schedule.ViewModels;
 using Rx.Tracker.UI.Features.Components;
+using System;
+using System.Linq;
 
 namespace Rx.Tracker.UI.Features.Schedule;
 
@@ -28,7 +28,7 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                     {
                         CalendarLayout = WeekLayout.Week,
                         FirstDayOfWeek = DayOfWeek.Sunday,
-                        ShowYearPicker = false,
+                        ShowYearPicker = false
                     }
                    .Bind(IsVisibleProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsNotInBusyState),
                 new ListView
@@ -50,7 +50,7 @@ public class ScheduleScreen : ScreenBase<ScheduleViewModel>
                         ActivityIndicator.ColorProperty,
                         static (ScheduleViewModel viewModel) => viewModel.CurrentState,
                         convert: ScheduleStateColorConvert)
-                   .Bind(ActivityIndicator.IsRunningProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsInBusyState),
+                   .Bind(ActivityIndicator.IsRunningProperty, static (ScheduleViewModel viewModel) => viewModel.CurrentState, convert: IsInBusyState)
             }
         };
 

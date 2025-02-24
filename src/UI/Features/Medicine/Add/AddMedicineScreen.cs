@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Markup;
@@ -11,6 +9,8 @@ using ReactiveMarbles.Extensions;
 using ReactiveUI;
 using Rx.Tracker.Features.Medications.ViewModels;
 using Rx.Tracker.UI.Features.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.UI.Features.Medicine.Add;
 
@@ -108,7 +108,7 @@ public class AddMedicineScreen : ScreenBase<AddMedicineViewModel>
                        .Bind(ActivityIndicator.IsRunningProperty, static (AddMedicineViewModel viewModel) => viewModel.CurrentState, convert: IsInBusyState)
                        .Row(Row.CurrentState)
                        .RowSpan(Enum.GetValues<Row>().Length + 1)
-                       .Column(Column.Spacer),
+                       .Column(Column.Spacer)
                 }
             }
            .Center();
@@ -127,21 +127,6 @@ public class AddMedicineScreen : ScreenBase<AddMedicineViewModel>
         };
     }
 
-    protected override Task Initialize(INavigationParameters parameters)
-    {
-        this.WhenActivated(
-            disposable =>
-            {
-                this.BindInteraction(ViewModel, model => model.CompletedInteraction, async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
-                   .DisposeWith(disposable);
-
-                this.BindInteraction(ViewModel, model => model.FailedInteraction, async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
-                   .DisposeWith(disposable);
-            });
-
-        return Task.CompletedTask;
-    }
-
     private enum Row
     {
         CurrentState,
@@ -158,6 +143,27 @@ public class AddMedicineScreen : ScreenBase<AddMedicineViewModel>
         Cancel,
         Spacer,
         Save
+    }
+
+    protected override Task Initialize(INavigationParameters parameters)
+    {
+        this.WhenActivated(
+            disposable =>
+            {
+                this.BindInteraction(
+                        ViewModel,
+                        model => model.CompletedInteraction,
+                        async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
+                   .DisposeWith(disposable);
+
+                this.BindInteraction(
+                        ViewModel,
+                        model => model.FailedInteraction,
+                        async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
+                   .DisposeWith(disposable);
+            });
+
+        return Task.CompletedTask;
     }
 
     private const int ColumnSpan = 3;

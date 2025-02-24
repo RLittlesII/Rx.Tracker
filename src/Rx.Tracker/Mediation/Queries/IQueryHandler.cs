@@ -3,7 +3,7 @@ using MediatR;
 namespace Rx.Tracker.Mediation.Queries;
 
 /// <summary>
-/// Handles a <see cref="IRequest{TResult}"/>.
+/// Handles a <see cref="IRequest{TResult}" />.
 /// </summary>
 /// <typeparam name="TQuery">The request type.</typeparam>
 /// <typeparam name="TResult">The result type.</typeparam>

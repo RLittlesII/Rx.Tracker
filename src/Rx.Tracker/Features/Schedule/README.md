@@ -11,4 +11,4 @@
     - [ ] Tap Cards to Edit
     - [X] Tap to add medicine
     - [ ] Medication Cards
-      - [ ] Long Press Take
+        - [ ] Long Press Take

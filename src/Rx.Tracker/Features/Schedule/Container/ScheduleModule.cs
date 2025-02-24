@@ -11,7 +11,7 @@ namespace Rx.Tracker.Features.Schedule.Container;
 /// <inheritdoc />
 public class ScheduleModule : ContainerModule
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     protected override IContainer Register(IContainer registrar)
     {
         registrar.RegisterDelegate<ScheduleStateMachine>(

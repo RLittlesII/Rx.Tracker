@@ -20,7 +20,12 @@ public class AddMedicationToScheduleTests
         AddMedicationToSchedule.CommandHandler sut = new AddMedicationToScheduleCommandHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(() => sut.As<ICommandHandler<AddMedicationToSchedule.Command>>().Handle(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()), CancellationToken.None));
+        var result = await Record.ExceptionAsync(
+            () => sut.As<ICommandHandler<AddMedicationToSchedule.Command>>().Handle(
+                AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()),
+                CancellationToken.None
+            )
+        );
 
         // Then
         result
@@ -35,13 +40,16 @@ public class AddMedicationToScheduleTests
         var container = new ContainerFixture().WithMocks().AsInterface();
 
         // When
-        var result = await Record.ExceptionAsync(() => container.Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture())));
+        var result = await Record.ExceptionAsync(
+            () => container.Resolve<ICqrs>().Execute(AddMedicationToSchedule.Create(new UserId(), new ScheduledMedicationFixture()))
+        );
 
         // Then
         result
            .Should()
            .BeNull();
     }
+
     [Fact]
     public async Task GivenContainer_WhenCqrsQuery_ThenReturnsResultType() =>
         // Given, When, Then

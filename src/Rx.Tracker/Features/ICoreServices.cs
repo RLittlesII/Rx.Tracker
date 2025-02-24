@@ -1,6 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
 using NodaTime;
 using ReactiveMarbles.Mvvm;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Rx.Tracker.Features;
 
@@ -24,8 +24,14 @@ public interface ICoreServices
 [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "Implementation by interface")]
 public class CoreServices : ICoreServices
 {
+    /// <inheritdoc />
+    public ICoreRegistration CoreRegistration { get; }
+
+    /// <inheritdoc />
+    public IClock Clock { get; }
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="CoreServices"/> class.
+    /// Initializes a new instance of the <see cref="CoreServices" /> class.
     /// </summary>
     /// <param name="coreRegistration">The core registrations.</param>
     /// <param name="clock">The clock.</param>
@@ -34,10 +40,4 @@ public class CoreServices : ICoreServices
         CoreRegistration = coreRegistration;
         Clock = clock;
     }
-
-    /// <inheritdoc/>
-    public ICoreRegistration CoreRegistration { get; }
-
-    /// <inheritdoc/>
-    public IClock Clock { get; }
 }

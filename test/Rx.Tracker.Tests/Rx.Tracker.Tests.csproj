@@ -5,46 +5,46 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Rx.Tracker\Rx.Tracker.csproj" />
+        <ProjectReference Include="..\..\src\Rx.Tracker\Rx.Tracker.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Features\Medicine\Domain\Commands\AddMedicationToScheduleCommandHandlerFixture.cs">
-        <DependentUpon>AddMedicineToScheduleTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Medicine\Domain\Queries\LoadMedicationQueryHandlerFixture.cs">
-        <DependentUpon>LoadMedicationTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\Domain\Queries\LoadScheduleQueryHandlerFixture.cs">
-        <DependentUpon>LoadScheduleTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\Domain\Commands\TakeMedicationCommandHandlerFixture.cs">
-        <DependentUpon>TakeMedicationTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\Domain\Entities\MedicationScheduleFixture.cs">
-        <DependentUpon>MedicationScheduleTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\ViewModels\ScheduleViewModelFixture.cs">
-        <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\Domain\Entities\ScheduledMedicationFixture.cs">
-        <DependentUpon>ScheduledMedicationTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\ViewModels\ContainerTests.cs">
-        <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Medicine\ViewModels\AddMedicineViewModelFixture.cs">
-        <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Medicine\ViewModels\ContainerTests.cs">
-        <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Medicine\ViewModels\StateTests.cs">
-        <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Features\Schedule\ViewModels\StateTests.cs">
-        <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
-      </Compile>
+        <Compile Update="Features\Medicine\Domain\Commands\AddMedicationToScheduleCommandHandlerFixture.cs">
+            <DependentUpon>AddMedicineToScheduleTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Medicine\Domain\Queries\LoadMedicationQueryHandlerFixture.cs">
+            <DependentUpon>LoadMedicationTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\Domain\Queries\LoadScheduleQueryHandlerFixture.cs">
+            <DependentUpon>LoadScheduleTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\Domain\Commands\TakeMedicationCommandHandlerFixture.cs">
+            <DependentUpon>TakeMedicationTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\Domain\Entities\MedicationScheduleFixture.cs">
+            <DependentUpon>MedicationScheduleTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\ViewModels\ScheduleViewModelFixture.cs">
+            <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\Domain\Entities\ScheduledMedicationFixture.cs">
+            <DependentUpon>ScheduledMedicationTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\ViewModels\ContainerTests.cs">
+            <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Medicine\ViewModels\AddMedicineViewModelFixture.cs">
+            <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Medicine\ViewModels\ContainerTests.cs">
+            <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Medicine\ViewModels\StateTests.cs">
+            <DependentUpon>AddMedicineViewModelTests.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\Schedule\ViewModels\StateTests.cs">
+            <DependentUpon>ScheduleViewModelTests.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

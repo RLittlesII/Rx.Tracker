@@ -7,7 +7,7 @@ namespace Rx.Tracker.Features;
 public record Id : Identity<string>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Id"/> class.
+    /// Initializes a new instance of the <see cref="Id" /> class.
     /// </summary>
     public Id()
         : base(Generate())
@@ -15,7 +15,7 @@ public record Id : Identity<string>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Id"/> class.
+    /// Initializes a new instance of the <see cref="Id" /> class.
     /// </summary>
     /// <param name="value">The value.</param>
     public Id(string value)

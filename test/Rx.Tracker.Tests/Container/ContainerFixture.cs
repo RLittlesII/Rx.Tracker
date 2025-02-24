@@ -16,11 +16,10 @@ namespace Rx.Tracker.Tests.Container;
 
 public sealed class ContainerFixture : ITestFixtureBuilder
 {
-    public static implicit operator DryIoc.Container(ContainerFixture fixture) => fixture.Build();
-
     public ContainerFixture WithRegistration(Action<IContainer> bootstrap) => this.With(ref _bootstrap, bootstrap);
     public ContainerFixture WithMocks() => this.With(ref _useContainerMocks, true);
     public IContainer AsInterface() => Build();
+    public static implicit operator DryIoc.Container(ContainerFixture fixture) => fixture.Build();
 
     private DryIoc.Container Build()
     {

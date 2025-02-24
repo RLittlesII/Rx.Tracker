@@ -4,10 +4,10 @@ using Nuke.Common.Tools.DotNet;
 partial class Tracker : NukeBuild
 {
     /// Support plugins are available for:
-    ///   - JetBrains ReSharper        https://nuke.build/resharper
-    ///   - JetBrains Rider            https://nuke.build/rider
-    ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
-    ///   - Microsoft VSCode           https://nuke.build/vscode
+    /// - JetBrains ReSharper        https://nuke.build/resharper
+    /// - JetBrains Rider            https://nuke.build/rider
+    /// - Microsoft VisualStudio     https://nuke.build/visualstudio
+    /// - Microsoft VSCode           https://nuke.build/vscode
     public static int Main() => Execute<Tracker>(finder => finder.Build);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]

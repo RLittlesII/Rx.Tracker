@@ -13,5 +13,5 @@ public enum DosageWeight
     /// <summary>
     /// Grams.
     /// </summary>
-    Grams,
+    Grams
 }

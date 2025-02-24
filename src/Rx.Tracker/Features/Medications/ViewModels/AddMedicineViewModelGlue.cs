@@ -10,7 +10,7 @@ namespace Rx.Tracker.Features.Medications.ViewModels;
 public class AddMedicineViewModelGlue
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AddMedicineViewModelGlue"/> class.
+    /// Initializes a new instance of the <see cref="AddMedicineViewModelGlue" /> class.
     /// </summary>
     /// <param name="navigator">The navigator.</param>
     /// <param name="client">The medicine api client.</param>

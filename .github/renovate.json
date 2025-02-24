@@ -19,21 +19,33 @@
   "automergeType": "pr",
   "automergeStrategy": "rebase",
   "rebaseWhen": "auto",
-  "labels": [":package: dependencies"],
+  "labels": [
+    ":package: dependencies"
+  ],
   "rebaseLabel": ":trident: rebase",
   "stopUpdatingLabel": ":vertical_traffic_light: stop updating",
-  "assignees": ["rlittlesii"],
+  "assignees": [
+    "rlittlesii"
+  ],
   "packageRules": [
     {
       "automerge": true,
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "automergeStrategy": "squash"
     },
     {
       "description": "dotnet monorepo [minor/patch]",
       "groupName": "dotnet monorepo [minor/patch]",
       "enabled": true,
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "matchSourceUrls": [
         "https://github.com/dotnet/aspnetcore",
         "https://github.com/dotnet/efcore",
@@ -42,21 +54,33 @@
       ]
     },
     {
-      "matchPackagePatterns": ["^DryIoc"],
+      "matchPackagePatterns": [
+        "^DryIoc"
+      ],
       "groupName": "dryioc",
-      "labels": [":package: dependencies"],
+      "labels": [
+        ":package: dependencies"
+      ],
       "automerge": false
     },
     {
-      "matchManagers": ["nuget"],
+      "matchManagers": [
+        "nuget"
+      ],
       "groupName": "nuke",
       "matchPackagePatterns": [
         "^nuke.globaltool",
         "^Nuke.Common",
         "^Rocket\\.Surgery\\.Nuke"
       ],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "labels": [":truck: private-dependencies"],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "labels": [
+        ":truck: private-dependencies"
+      ],
       "automerge": true
     },
     {
@@ -71,22 +95,34 @@
     {
       "description": "ReactiveUI",
       "groupName": "ReactiveUI",
-      "matchPackagePatterns": ["^ReactiveUI"]
+      "matchPackagePatterns": [
+        "^ReactiveUI"
+      ]
     },
     {
       "description": "ReactiveMarbles",
       "groupName": "ReactiveMarbles",
-      "matchPackagePatterns": ["^ReactiveMarbles"]
+      "matchPackagePatterns": [
+        "^ReactiveMarbles"
+      ]
     },
     {
-      "matchPackagePatterns": ["^Serilog"],
+      "matchPackagePatterns": [
+        "^Serilog"
+      ],
       "groupName": "serilog",
-      "labels": [":package: dependencies"]
+      "labels": [
+        ":package: dependencies"
+      ]
     },
     {
-      "matchPackagePatterns": ["^xunit"],
+      "matchPackagePatterns": [
+        "^xunit"
+      ],
       "groupName": "xunit",
-      "labels": [":truck: private-dependencies"],
+      "labels": [
+        ":truck: private-dependencies"
+      ],
       "automerge": true
     }
   ]

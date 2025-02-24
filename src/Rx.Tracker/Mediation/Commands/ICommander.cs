@@ -8,7 +8,7 @@ namespace Rx.Tracker.Mediation.Commands;
 public interface ICommander
 {
     /// <summary>
-    /// Executes with the provided <see cref="ICommand"/>.
+    /// Executes with the provided <see cref="ICommand" />.
     /// </summary>
     /// <param name="command">The command.</param>
     /// <typeparam name="TCommand">The command type.</typeparam>

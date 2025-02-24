@@ -1,15 +1,15 @@
-using System;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Mvvm;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
+using System;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.Features;
 
@@ -19,7 +19,58 @@ namespace Rx.Tracker.Features;
 public abstract class ViewModelBase : RxDisposableObject, INavigated
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ViewModelBase"/> class.
+    /// Gets the initialize command.
+    /// </summary>
+    public RxCommand<Unit, Unit> InitializeCommand { get; }
+
+    /// <summary>
+    /// Initialize the View Model.
+    /// </summary>
+    /// <param name="cqrs">The mediator.</param>
+    /// <returns>A completion notification.</returns>
+    protected virtual Task Initialize(ICqrs cqrs) => Task.CompletedTask;
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Garbage.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="INavigator" />.
+    /// </summary>
+    protected INavigator Navigator { get; }
+
+    /// <summary>
+    /// Gets the <see cref="ICqrs" />.
+    /// </summary>
+    protected ICqrs Mediator { get; }
+
+    /// <summary>
+    /// Gets a notification of <see cref="IArguments" /> when the view model is navigated to.
+    /// </summary>
+    protected IObservable<IArguments> NavigatedTo { get; }
+
+    /// <summary>
+    /// Gets a notification of <see cref="IArguments" /> when the view model is navigated from.
+    /// </summary>
+    protected IObservable<IArguments> NavigatedFrom { get; }
+
+    /// <summary>
+    /// Gets the garbage.
+    /// </summary>
+    protected CompositeDisposable Garbage { get; } = new();
+
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
+    protected ILogger Logger { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ViewModelBase" /> class.
     /// </summary>
     /// <param name="navigator">The navigator.</param>
     /// <param name="cqrs">The cqrs mediator.</param>
@@ -36,64 +87,13 @@ public abstract class ViewModelBase : RxDisposableObject, INavigated
         InitializeCommand = RxCommand.Create(() => ExecuteInitialize(cqrs)).DisposeWith(Garbage);
     }
 
-    /// <summary>
-    /// Gets the initialize command.
-    /// </summary>
-    public RxCommand<Unit, Unit> InitializeCommand { get; }
+    private Task ExecuteInitialize(ICqrs cqrs) => Initialize(cqrs);
 
-    /// <summary>
-    /// Gets the <see cref="INavigator"/>.
-    /// </summary>
-    protected INavigator Navigator { get; }
-
-    /// <summary>
-    /// Gets the <see cref="ICqrs"/>.
-    /// </summary>
-    protected ICqrs Mediator { get; }
-
-    /// <summary>
-    /// Gets a notification of <see cref="IArguments"/> when the view model is navigated to.
-    /// </summary>
-    protected IObservable<IArguments> NavigatedTo { get; }
-
-    /// <summary>
-    /// Gets a notification of <see cref="IArguments"/> when the view model is navigated from.
-    /// </summary>
-    protected IObservable<IArguments> NavigatedFrom { get; }
-
-    /// <summary>
-    /// Initialize the View Model.
-    /// </summary>
-    /// <param name="cqrs">The mediator.</param>
-    /// <returns>A completion notification.</returns>
-    protected virtual Task Initialize(ICqrs cqrs) => Task.CompletedTask;
-
-    /// <inheritdoc/>
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            Garbage.Dispose();
-        }
-    }
-
-    /// <summary>
-    /// Gets the garbage.
-    /// </summary>
-    protected CompositeDisposable Garbage { get; } = new();
-
-    /// <summary>
-    /// Gets the logger.
-    /// </summary>
-    protected ILogger Logger { get; }
-
-    /// <inheritdoc/>
+    /// <inheritdoc />
     void INavigated.OnNavigatedTo(IArguments arguments) => _onNavigatedTo.OnNext(arguments);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     void INavigated.OnNavigatedFrom(IArguments arguments) => _onNavigatedFrom.OnNext(arguments);
-
-    private Task ExecuteInitialize(ICqrs cqrs) => Initialize(cqrs);
 
     // void IDestructible.Destroy() => Dispose(true);
 #pragma warning disable CA2213

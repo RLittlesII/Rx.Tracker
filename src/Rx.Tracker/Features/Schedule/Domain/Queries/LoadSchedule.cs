@@ -1,8 +1,8 @@
-using System.Threading;
-using System.Threading.Tasks;
 using NodaTime;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Queries;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Queries;
 
@@ -12,16 +12,12 @@ namespace Rx.Tracker.Features.Schedule.Domain.Queries;
 public static class LoadSchedule
 {
     /// <summary>
-    /// Load schedule query.
+    /// Creates a <see cref="Query" />.
     /// </summary>
-    /// <param name="User">The user id.</param>
-    /// <param name="Date">The date for the schedule.</param>
-    public record Query(UserId User, LocalDate Date) : IQuery<Result>;
-
-    /// <summary>
-    /// Load schedule query.
-    /// </summary>
-    public record Result(MedicationSchedule Schedule);
+    /// <param name="userId">The user id.</param>
+    /// <param name="date">The date.</param>
+    /// <returns>A query.</returns>
+    public static Query Create(UserId userId, LocalDate date) => new(userId, date);
 
     /// <summary>
     /// The load schedule query handler.
@@ -29,7 +25,7 @@ public static class LoadSchedule
     public class QueryHandler : QueryHandlerBase<Query, Result>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="QueryHandler"/> class.
+        /// Initializes a new instance of the <see cref="QueryHandler" /> class.
         /// </summary>
         /// <param name="apiClient">The api client.</param>
         public QueryHandler(IMedicationScheduleApiClient apiClient) => _apiClient = apiClient;
@@ -45,10 +41,14 @@ public static class LoadSchedule
     }
 
     /// <summary>
-    /// Creates a <see cref="Query"/>.
+    /// Load schedule query.
     /// </summary>
-    /// <param name="userId">The user id.</param>
-    /// <param name="date">The date.</param>
-    /// <returns>A query.</returns>
-    public static Query Create(UserId userId, LocalDate date) => new(userId, date);
+    /// <param name="User">The user id.</param>
+    /// <param name="Date">The date for the schedule.</param>
+    public record Query(UserId User, LocalDate Date) : IQuery<Result>;
+
+    /// <summary>
+    /// Load schedule query.
+    /// </summary>
+    public record Result(MedicationSchedule Schedule);
 }

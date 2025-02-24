@@ -11,7 +11,7 @@ public class ScheduleItem : ContentView
         Children =
         {
             new Label()
-            .Bind(Label.TextProperty, (ScheduledMedication medication) => medication.Medication.Id)
+               .Bind(Label.TextProperty, (ScheduledMedication medication) => medication.Medication.Id)
         }
     };
 }

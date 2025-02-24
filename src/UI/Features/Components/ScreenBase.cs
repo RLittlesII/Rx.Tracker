@@ -1,12 +1,12 @@
-using System;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using Prism.Navigation;
 using ReactiveUI.Maui;
 using Rx.Tracker.Features;
 using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Navigation;
+using System;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.UI.Features.Components;
 
@@ -17,33 +17,21 @@ namespace Rx.Tracker.UI.Features.Components;
 public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync, INavigatedAware, IDestructible
     where T : ViewModelBase
 {
-    /// <inheritdoc/>
-    Task IInitializeAsync.InitializeAsync(INavigationParameters parameters) => InitializeAsync(parameters);
-
-    /// <inheritdoc />
-    void INavigatedAware.OnNavigatedFrom(INavigationParameters parameters) => OnNavigatedFrom(parameters);
-
-    /// <inheritdoc />
-    void INavigatedAware.OnNavigatedTo(INavigationParameters parameters) => OnNavigatedTo(parameters);
-
-    /// <inheritdoc />
-    void IDestructible.Destroy() => TearDown();
-
     /// <summary>
     /// Initialize the instance.
     /// </summary>
     /// <param name="parameters">The navigation parameters.</param>
-    /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> representing the result of the asynchronous operation.</returns>
     protected virtual Task Initialize(INavigationParameters parameters) => Task.CompletedTask;
+
+    protected virtual void Destroy()
+    {
+    }
 
     /// <summary>
     /// Gets the garbage for disposal.
     /// </summary>
     protected CompositeDisposable Garbage { get; } = new();
-
-    protected virtual void Destroy()
-    {
-    }
 
     private async Task InitializeAsync(INavigationParameters parameters)
     {
@@ -72,4 +60,16 @@ public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync, 
         ViewModel?.Dispose();
         Destroy();
     }
+
+    /// <inheritdoc />
+    void IDestructible.Destroy() => TearDown();
+
+    /// <inheritdoc />
+    Task IInitializeAsync.InitializeAsync(INavigationParameters parameters) => InitializeAsync(parameters);
+
+    /// <inheritdoc />
+    void INavigatedAware.OnNavigatedFrom(INavigationParameters parameters) => OnNavigatedFrom(parameters);
+
+    /// <inheritdoc />
+    void INavigatedAware.OnNavigatedTo(INavigationParameters parameters) => OnNavigatedTo(parameters);
 }

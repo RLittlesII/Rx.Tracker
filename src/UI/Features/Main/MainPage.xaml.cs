@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.Maui.Accessibility;
+﻿using Microsoft.Maui.Accessibility;
+using System;
 
 namespace Rx.Tracker.UI.Features.Main;
 

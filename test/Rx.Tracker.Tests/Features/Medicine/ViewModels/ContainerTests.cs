@@ -16,7 +16,8 @@ public partial class AddMedicineViewModelTests
     public void GivenAddMedicineModule_WhenResolve_ThenShouldBeAddMedicineViewModel() =>
         // Given, When, Then
         new ContainerFixture()
-           .WithRegistration(bootstrap =>
+           .WithRegistration(
+                bootstrap =>
                 {
                     bootstrap.Register<AddMedicineViewModel>();
                     bootstrap.RegisterInstance(Substitute.For<ILoggerFactory>());

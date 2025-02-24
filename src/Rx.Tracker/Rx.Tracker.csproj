@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DryIoc.dll" PrivateAssets="true" />
+        <PackageReference Include="DryIoc.dll" PrivateAssets="true"/>
         <PackageReference Include="DynamicData"/>
         <PackageReference Include="LanguageExt.Core"/>
         <PackageReference Include="MediatR"/>
@@ -16,10 +16,10 @@
         <PackageReference Include="ReactiveUI"/>
         <PackageReference Include="Refit"/>
         <PackageReference Include="Riok.Mapperly"/>
-        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog"/>
         <PackageReference Include="Stateless"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Calendar\" />
+        <Folder Include="Calendar\"/>
     </ItemGroup>
 </Project>
