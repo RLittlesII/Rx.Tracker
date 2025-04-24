@@ -37,7 +37,7 @@ public abstract class ScreenBase<T> : ReactiveContentPage<T>, IInitializeAsync, 
     {
         await Initialize(parameters);
 
-        using var disposable = ViewModel?.DisposeWith(Garbage).InitializeCommand.Execute(Unit.Default).Subscribe();
+        using var disposable = ViewModel.DisposeWith(Garbage).InitializeCommand.Execute(Unit.Default).Subscribe();
     }
 
     private void OnNavigatedFrom(INavigationParameters parameters)

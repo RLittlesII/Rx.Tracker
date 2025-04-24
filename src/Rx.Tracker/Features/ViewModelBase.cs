@@ -1,15 +1,15 @@
-using Microsoft.Extensions.Logging;
-using ReactiveMarbles.Command;
-using ReactiveMarbles.Mvvm;
-using Rx.Tracker.Extensions;
-using Rx.Tracker.Mediation;
-using Rx.Tracker.Navigation;
 using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ReactiveMarbles.Command;
+using ReactiveMarbles.Mvvm;
+using Rx.Tracker.Extensions;
+using Rx.Tracker.Mediation;
+using Rx.Tracker.Navigation;
 
 namespace Rx.Tracker.Features;
 

@@ -1,6 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using NodaTime;
 using ReactiveMarbles.Mvvm;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Rx.Tracker.Features;
 

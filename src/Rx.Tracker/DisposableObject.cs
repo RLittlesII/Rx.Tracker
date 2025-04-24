@@ -9,14 +9,6 @@ namespace Rx.Tracker;
 /// </summary>
 public abstract class DisposableObject : IDisposable
 {
-    /// <inheritdoc />
-    [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "IDispose")]
-    void IDisposable.Dispose()
-    {
-        DisposeManaged(true);
-        GC.SuppressFinalize(this);
-    }
-
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
@@ -37,5 +29,13 @@ public abstract class DisposableObject : IDisposable
             Dispose(disposing);
             Garbage.Dispose();
         }
+    }
+
+    /// <inheritdoc />
+    [SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "IDispose")]
+    void IDisposable.Dispose()
+    {
+        DisposeManaged(true);
+        GC.SuppressFinalize(this);
     }
 }

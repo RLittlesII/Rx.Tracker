@@ -1,3 +1,9 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
@@ -11,12 +17,6 @@ using Rx.Tracker.Features.Schedule.Domain.Queries;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using Stateless;
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using static Rx.Tracker.Extensions.DynamicDataExtensions;
 
 namespace Rx.Tracker.Features.Schedule.ViewModels;
