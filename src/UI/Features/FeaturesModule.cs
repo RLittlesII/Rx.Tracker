@@ -1,6 +1,7 @@
 using System.Net.Http;
 using DryIoc;
 using MediatR;
+using NodaTime;
 using Rx.Tracker.Container;
 using Rx.Tracker.Features;
 using Rx.Tracker.Mediation;
@@ -15,6 +16,7 @@ public class FeaturesModule : ContainerModule
     {
         registrar.Register<HttpClient>(reuse: Reuse.Singleton);
         registrar.Register<INavigator, Navigator>();
+        registrar.RegisterInstance<IClock>(SystemClock.Instance);
         registrar.Register<ICoreServices, CoreServices>();
         registrar.RegisterMany(
             [
