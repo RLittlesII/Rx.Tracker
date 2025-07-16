@@ -34,7 +34,7 @@ public class LoadScheduleClassData : IEnumerable<object[]>
                     new ScheduledMedicationFixture().WithScheduledTime(scheduledTime),
                     new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(2))),
                     new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(4))),
-                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromDays(2))),
+                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromDays(2)))
                 ]
             ).WithToday(scheduledTime.Date),
             now
@@ -55,7 +55,7 @@ public class LoadScheduleClassData : IEnumerable<object[]>
                        .WithScheduledTime(scheduledTime.Plus(Duration.FromHours(4))),
                     new ScheduledMedicationFixture().WithScheduledTime(scheduledTime),
                     new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(2))),
-                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(4))),
+                    new ScheduledMedicationFixture().WithScheduledTime(scheduledTime.Plus(Duration.FromHours(4)))
                 ]
             ).WithToday(scheduledTime.Date),
             now

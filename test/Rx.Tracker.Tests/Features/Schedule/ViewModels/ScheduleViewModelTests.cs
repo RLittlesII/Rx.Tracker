@@ -30,7 +30,7 @@ public partial class ScheduleViewModelTests
                 new LoadSchedule.Result(
                     new MedicationScheduleFixture().WithEnumerable(
                         [
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
+                            new ScheduledMedicationFixture().WithScheduledTime(now)
                         ]
                     ).WithToday(now.Date)
                 )
@@ -99,7 +99,7 @@ public partial class ScheduleViewModelTests
                 new LoadSchedule.Result(
                     new MedicationScheduleFixture().WithEnumerable(
                         [
-                            new ScheduledMedicationFixture().WithScheduledTime(now),
+                            new ScheduledMedicationFixture().WithScheduledTime(now)
                         ]
                     ).WithToday(now.Date)
                 )

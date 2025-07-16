@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Rx.Tracker.Features.Medications.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Rx.Tracker.Features.Medications.Data.Dto;
 

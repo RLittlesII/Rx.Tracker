@@ -1,7 +1,7 @@
-using System.Threading;
 using Serilog.Core;
 using Serilog.Enrichers;
 using Serilog.Events;
+using System.Threading;
 
 namespace Rx.Tracker.UI.Logging;
 
@@ -16,9 +16,9 @@ public sealed class NamedThreadEnrichment : ILogEventEnricher
 
         name = name switch
         {
-            null                                    => ThreadPoolName,
+            null                   => ThreadPoolName,
             PlatformThreadPoolName => ThreadPoolName,
-            var _                                   => name
+            var _                  => name
         };
 
         logEvent.AddPropertyIfAbsent(new LogEventProperty(ThreadNameEnricher.ThreadNamePropertyName, new ScalarValue(name)));

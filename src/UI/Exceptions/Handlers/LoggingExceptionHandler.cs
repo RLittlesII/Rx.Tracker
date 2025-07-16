@@ -1,6 +1,6 @@
-using System;
 using Microsoft.Extensions.Logging;
 using Rocket.Surgery.Airframe.Exceptions;
+using System;
 
 namespace Rx.Tracker.UI.Exceptions.Handlers;
 

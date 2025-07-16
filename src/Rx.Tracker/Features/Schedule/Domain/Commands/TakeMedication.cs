@@ -1,10 +1,10 @@
-using System.Reactive;
-using System.Threading;
-using System.Threading.Tasks;
 using Rx.Tracker.Features.Medications.Domain;
 using Rx.Tracker.Features.Medications.Domain.Entities;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
 using Rx.Tracker.Mediation.Commands;
+using System.Reactive;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Commands;
 
@@ -14,10 +14,11 @@ namespace Rx.Tracker.Features.Schedule.Domain.Commands;
 public static class TakeMedication
 {
     /// <summary>
-    /// Take medicine command.
+    /// Creates a <see cref="Command" />.
     /// </summary>
-    /// <param name="Medication">The medication.</param>
-    public record Command(Medication Medication) : ICommand;
+    /// <param name="medication">The medication.</param>
+    /// <returns>The command.</returns>
+    public static Command Create(ScheduledMedication medication) => new(medication.Medication);
 
     /// <summary>
     /// The take medicine command handler.
@@ -25,7 +26,7 @@ public static class TakeMedication
     public class CommandHandler : CommandHandlerBase<Command>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandHandler"/> class.
+        /// Initializes a new instance of the <see cref="CommandHandler" /> class.
         /// </summary>
         /// <param name="reminders">The reminders.</param>
         public CommandHandler(IReminders reminders) => _reminders = reminders;
@@ -41,9 +42,8 @@ public static class TakeMedication
     }
 
     /// <summary>
-    /// Creates a <see cref="Command"/>.
+    /// Take medicine command.
     /// </summary>
-    /// <param name="medication">The medication.</param>
-    /// <returns>The command.</returns>
-    public static Command Create(ScheduledMedication medication) => new(medication.Medication);
+    /// <param name="Medication">The medication.</param>
+    public record Command(Medication Medication) : ICommand;
 }

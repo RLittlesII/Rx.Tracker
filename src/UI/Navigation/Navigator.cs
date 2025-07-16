@@ -1,19 +1,13 @@
-using System;
-using System.Threading.Tasks;
 using Prism.Navigation;
 using ReactiveMarbles.Mvvm;
 using Rx.Tracker.Navigation;
+using System;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.UI.Navigation;
 
 public class Navigator : INavigator
 {
-    public Navigator(INavigationService navigationService, ICoreRegistration coreRegistration)
-    {
-        _navigationService = navigationService;
-        _globalExceptionHandler = coreRegistration.ExceptionHandler;
-    }
-
     /// <inheritdoc />
     public Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new()
@@ -51,8 +45,7 @@ public class Navigator : INavigator
         where TRoute : new() => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public Task<NavigationState> Dismiss()
-        => _navigationService.GoBackAsync().ContinueWith(HandleFailedNavigationResult);
+    public Task<NavigationState> Dismiss() => _navigationService.GoBackAsync().ContinueWith(HandleFailedNavigationResult);
 
     /// <inheritdoc />
     public Task<NavigationState> Dismiss(Action<IArguments> arguments)
@@ -60,6 +53,12 @@ public class Navigator : INavigator
         var args = new NavigatorArguments();
         arguments.Invoke(args);
         return _navigationService.GoBackAsync(ToParameters(args)).ContinueWith(HandleFailedNavigationResult);
+    }
+
+    public Navigator(INavigationService navigationService, ICoreRegistration coreRegistration)
+    {
+        _navigationService = navigationService;
+        _globalExceptionHandler = coreRegistration.ExceptionHandler;
     }
 
     private static NavigationParameters ToParameters(IArguments arguments)

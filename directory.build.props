@@ -4,5 +4,6 @@
         <Nullable>enable</Nullable>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <LangVersion>latestmajor</LangVersion>
+        <WarningsAsErrors>CS8602,CS8631</WarningsAsErrors>
     </PropertyGroup>
 </Project>

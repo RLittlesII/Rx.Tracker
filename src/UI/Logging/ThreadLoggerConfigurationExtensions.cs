@@ -1,8 +1,8 @@
-using System;
-using System.Threading;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Enrichers;
+using System;
+using System.Threading;
 
 namespace Rx.Tracker.UI.Logging;
 
@@ -19,8 +19,10 @@ public static class ThreadLoggerConfigurationExtensions
         : throw new ArgumentNullException(nameof(enrichmentConfiguration));
 
     /// <summary>
-    /// Enrich log events with a ThreadName property containing the <see cref="P:System.Threading.Thread.CurrentThread" /> <see cref="P:System.Threading.Thread.Name" />.
-    /// </summary>¬
+    /// Enrich log events with a ThreadName property containing the <see cref="P:System.Threading.Thread.CurrentThread" />
+    /// <see cref="P:System.Threading.Thread.Name" />.
+    /// </summary>
+    /// ¬
     /// <param name="enrichmentConfiguration">Logger enrichment configuration.</param>
     /// <exception cref="T:System.ArgumentNullException"> Thrown when enrichment configuration is null.</exception>
     /// <returns>Configuration object allowing method chaining.</returns>

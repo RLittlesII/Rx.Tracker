@@ -6,13 +6,12 @@ namespace Rx.Tracker.Tests.Features.Medicine.Domain.Entities;
 
 internal class MedicationFixture : ITestFixtureBuilder
 {
-    public static implicit operator Medication(MedicationFixture fixture) => fixture.Build();
-
     public MedicationFixture WithId(MedicationId id) => this.With(ref _id, id);
 
     public MedicationFixture WithDosage(Dosage dosage) => this.With(ref _dosages!, dosage);
+    public static implicit operator Medication(MedicationFixture fixture) => fixture.Build();
 
-    private Medication Build() => new(this._id, _dosages);
+    private Medication Build() => new(_id, _dosages);
 
     private MedicationId _id = new();
     private List<Dosage> _dosages = [new DosageFixture()];

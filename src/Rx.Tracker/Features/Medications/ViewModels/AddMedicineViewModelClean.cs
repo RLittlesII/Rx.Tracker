@@ -11,7 +11,7 @@ namespace Rx.Tracker.Features.Medications.ViewModels;
 public class AddMedicineViewModelClean
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AddMedicineViewModelClean"/> class.
+    /// Initializes a new instance of the <see cref="AddMedicineViewModelClean" /> class.
     /// </summary>
     /// <param name="navigator">The navigator.</param>
     /// <param name="loadMedication">The load medication handler.</param>

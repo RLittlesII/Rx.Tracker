@@ -1,5 +1,5 @@
-using System;
 using Serilog;
+using System;
 
 namespace Rx.Tracker.UI.Logging;
 

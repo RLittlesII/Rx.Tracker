@@ -5,12 +5,12 @@ using static Rx.Tracker.Features.Schedule.ViewModels.ScheduleStateMachine;
 namespace Rx.Tracker.Features.Schedule.ViewModels;
 
 /// <summary>
-/// Defines an <see cref="ObservableStateMachine{TState,TTrigger}"/> for the schedule.
+/// Defines an <see cref="ObservableStateMachine{TState,TTrigger}" /> for the schedule.
 /// </summary>
 public class ScheduleStateMachine : ObservableStateMachine<ScheduleState, ScheduleTrigger>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ScheduleStateMachine"/> class.
+    /// Initializes a new instance of the <see cref="ScheduleStateMachine" /> class.
     /// </summary>
     /// <param name="initialState">The initial state.</param>
     /// <param name="loggerFactory">The logger factory.</param>

@@ -15,7 +15,8 @@ public partial class ScheduleViewModelTests
     public void GivenScheduleModule_WhenResolve_ThenShouldBeScheduleViewModel() =>
         // Given, When, Then
         new ContainerFixture()
-           .WithRegistration(bootstrap =>
+           .WithRegistration(
+                bootstrap =>
                 {
                     bootstrap.Register<ScheduleViewModel>();
                     bootstrap.RegisterInstance(Substitute.For<INavigator>());

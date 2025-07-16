@@ -1,8 +1,8 @@
+using Rx.Tracker.Features.Schedule.Data.Dto;
+using Rx.Tracker.Features.Schedule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Rx.Tracker.Features.Schedule.Data.Dto;
-using Rx.Tracker.Features.Schedule.Domain.Entities;
 
 namespace Rx.Tracker.Features.Schedule.Data.Store;
 
@@ -34,7 +34,7 @@ public interface ICalendarEventStorage
         ReminderDto[]? reminders = null);
 
     /// <summary>
-    /// Creates a new event based on the provided <paramref name="calendarEvent"/> object.
+    /// Creates a new event based on the provided <paramref name="calendarEvent" /> object.
     /// </summary>
     /// <param name="calendarEvent">The event object with the details to save to the calendar specified in this object.</param>
     /// <returns>The unique identifier of the newly created event.</returns>
@@ -60,7 +60,7 @@ public interface ICalendarEventStorage
     /// <param name="reminders">
     /// <para>Reminders for this event.</para>
     /// </param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     Task Update(
         CalendarEventId id,
         string title,
@@ -72,23 +72,23 @@ public interface ICalendarEventStorage
         ReminderDto[]? reminders = null);
 
     /// <summary>
-    /// Updates an event based on the provided <paramref name="event"/> object.
+    /// Updates an event based on the provided <paramref name="event" /> object.
     /// </summary>
     /// <param name="event">The event object with the details to update the existing event with.</param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     Task Update(CalendarEventDto @event);
 
     /// <summary>
     /// Deletes an event, specified by its unique ID, from the device calendar.
     /// </summary>
     /// <param name="id">The unique identifier of the event to be deleted.</param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     Task Delete(CalendarEventId id);
 
     /// <summary>
     /// Deletes the given event from the device calendar.
     /// </summary>
     /// <param name="event">The event object that is to be deleted.</param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     Task Delete(CalendarEventDto @event);
 }

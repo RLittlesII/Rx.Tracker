@@ -19,7 +19,9 @@ public class TakeMedicationTests
         TakeMedication.CommandHandler sut = new TakeMedicationCommandHandlerFixture();
 
         // When
-        var result = await Record.ExceptionAsync(() => sut.As<ICommandHandler<TakeMedication.Command>>().Handle(TakeMedication.Create(new ScheduledMedicationFixture()), CancellationToken.None));
+        var result = await Record.ExceptionAsync(
+            () => sut.As<ICommandHandler<TakeMedication.Command>>().Handle(TakeMedication.Create(new ScheduledMedicationFixture()), CancellationToken.None)
+        );
 
         // Then
         result

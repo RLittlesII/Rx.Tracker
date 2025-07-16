@@ -8,7 +8,7 @@ namespace Rx.Tracker.Container;
 public static class RegistrationModuleExtensions
 {
     /// <summary>
-    /// Registers a <see cref="IRegistrationModule{TRegistrar}"/> to the container.
+    /// Registers a <see cref="IRegistrationModule{TRegistrar}" /> to the container.
     /// </summary>
     /// <param name="container">The container.</param>
     /// <typeparam name="TModule">The module type.</typeparam>

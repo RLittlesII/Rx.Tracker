@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using Rx.Tracker.Features.Schedule.Data.Dto;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.Features.Schedule.Data.Store;
 
@@ -21,7 +21,7 @@ public interface ICalendarStorage
     /// Retrieves a specific calendar from the device.
     /// </summary>
     /// <param name="calendarId">The unique identifier of the calendar to retrieve.</param>
-    /// <returns>A <see cref="CalendarDto"/> object that represents the requested calendar from the user's device.</returns>
+    /// <returns>A <see cref="CalendarDto" /> object that represents the requested calendar from the user's device.</returns>
     Task<CalendarDto> Read(CalendarId calendarId);
 
     /// <summary>
@@ -30,14 +30,14 @@ public interface ICalendarStorage
     /// <param name="id">The unique identifier of the existing calendar.</param>
     /// <param name="name">The name.</param>
     /// <param name="color">The color .</param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     Task Update(CalendarId id, string name, int color);
 
     /// <summary>
     /// Deletes a calendar, specified by its unique ID, from the device.
     /// </summary>
     /// <param name="calendarId">The unique identifier of the calendar to be deleted.</param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     /// <remarks>If the calendar is part of a cloud service, the calendar might also be deleted from all other devices where the calendar is used.</remarks>
     Task Delete(CalendarId calendarId);
 
@@ -45,7 +45,7 @@ public interface ICalendarStorage
     /// Deletes the given calendar from the device.
     /// </summary>
     /// <param name="delete">The calendar object that is to be deleted.</param>
-    /// <returns>A <see cref="Task"/> object with the current status of the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task" /> object with the current status of the asynchronous operation.</returns>
     /// <remarks>If the calendar is part of a cloud service, the calendar might also be deleted from all other devices where the calendar is used.</remarks>
     Task Delete(CalendarDto delete);
 }

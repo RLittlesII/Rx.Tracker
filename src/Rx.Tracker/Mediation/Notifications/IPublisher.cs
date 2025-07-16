@@ -8,7 +8,7 @@ namespace Rx.Tracker.Mediation.Notifications;
 public interface IPublisher
 {
     /// <summary>
-    /// Publish the provided <see cref="TNotification"/>.
+    /// Publish the provided <see cref="TNotification" />.
     /// </summary>
     /// <param name="notification">The notification.</param>
     /// <typeparam name="TNotification">The notification type.</typeparam>

@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NodaTime.Extensions;
 using ReactiveMarbles.Command;
@@ -23,6 +15,14 @@ using Rx.Tracker.Interactions;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using Stateless;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.Features.Medications.ViewModels;
@@ -32,85 +32,6 @@ namespace Rx.Tracker.Features.Medications.ViewModels;
 /// </summary>
 public class AddMedicineViewModel : ViewModelBase
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AddMedicineViewModel"/> class.
-    /// </summary>
-    /// <param name="navigator">The navigator.</param>
-    /// <param name="cqrs">The cqrs mediator.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    /// <param name="stateMachineFactory">The state machine factory.</param>
-    public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<AddMedicineStateMachine> stateMachineFactory)
-        : base(navigator, cqrs, loggerFactory)
-    {
-        _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
-        AddCommand = RxCommand.Create<ScheduledMedication?, AddMedicineTrigger>(
-            ExecuteAdd,
-            _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
-
-        // NOTE: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
-        // BackCommand = RxCommand.Create(() => navigator.Back(1));
-        BackCommand = RxCommand.Create(ExecuteBack);
-
-        FailedInteraction = new Interaction<ToastMessage, Unit>();
-        CompletedInteraction = new Interaction<ToastMessage, Unit>();
-
-        AddCommand
-           .Select(trigger => _stateMachine.FireAsync(trigger).ConfigureAwait(true))
-           .Subscribe();
-
-        // NOTE: [rlittlesii: January 25, 2025] If this approach catches on, abstract it to the base
-        BackCommand
-           .Where(state => state != NavigationState.Succeeded)
-           .LogTrace(Logger, state => state, "Navigation State: {State}")
-           .Select(_ => _stateMachine.FireAsync(AddMedicineTrigger.Failure).ConfigureAwait(true))
-           .Subscribe();
-
-        _currentState =
-            _stateMachine
-               .Current
-               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
-               .DisposeWith(Garbage);
-
-        // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
-        _medication = this.WhenChanged(
-                static viewModel => viewModel.SelectedName,
-                static viewModel => viewModel.SelectedDosage,
-                static viewModel => viewModel.SelectedRecurrence,
-                static viewModel => viewModel.SelectedTime,
-                static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
-           .LogTrace(Logger, state => state, "State: {State}")
-           .Where(ArePropertiesValid)
-
-            // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
-           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.Now.ToOffsetDateTime()))
-           .WhereIsNotNull()
-           .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
-           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
-           .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(Medication)), () => null!)
-           .DisposeWith(Garbage);
-
-        ConfigureMachine();
-
-        // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
-        static bool ArePropertiesValid((MedicationId? Name, Dosage? Dosage, Recurrence? Recurrence, TimeSpan? Time) tuple) => tuple is
-        {
-            Name: not null,
-            Dosage: not null,
-            Recurrence: not null,
-            Time: not null
-        };
-
-        async Task<AddMedicineTrigger> ExecuteAdd(ScheduledMedication? scheduledMedication)
-        {
-            ArgumentNullException.ThrowIfNull(scheduledMedication);
-
-            await _stateMachine.FireAsync(AddMedicineTrigger.Save);
-            await cqrs.Execute(AddMedicationToSchedule.Create(new UserId(), scheduledMedication)); // TODO: [rlittlesii: January 25, 2025] Timeout?
-
-            return AddMedicineTrigger.Complete;
-        }
-    }
-
     /// <summary>
     /// Gets the completed interaction.
     /// </summary>
@@ -200,7 +121,86 @@ public class AddMedicineViewModel : ViewModelBase
     /// </summary>
     public ScheduledMedication Medication => _medication.Value;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddMedicineViewModel" /> class.
+    /// </summary>
+    /// <param name="navigator">The navigator.</param>
+    /// <param name="cqrs">The cqrs mediator.</param>
+    /// <param name="loggerFactory">The logger factory.</param>
+    /// <param name="stateMachineFactory">The state machine factory.</param>
+    public AddMedicineViewModel(INavigator navigator, ICqrs cqrs, ILoggerFactory loggerFactory, Func<AddMedicineStateMachine> stateMachineFactory)
+        : base(navigator, cqrs, loggerFactory)
+    {
+        _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
+        AddCommand = RxCommand.Create<ScheduledMedication?, AddMedicineTrigger>(
+            ExecuteAdd,
+            _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
+
+        // NOTE: [rlittlesii: January 13, 2025] Uncomment to demonstrate the exception handler.
+        // BackCommand = RxCommand.Create(() => navigator.Back(1));
+        BackCommand = RxCommand.Create(ExecuteBack);
+
+        FailedInteraction = new Interaction<ToastMessage, Unit>();
+        CompletedInteraction = new Interaction<ToastMessage, Unit>();
+
+        AddCommand
+           .Select(trigger => _stateMachine.FireAsync(trigger).ConfigureAwait(true))
+           .Subscribe();
+
+        // NOTE: [rlittlesii: January 25, 2025] If this approach catches on, abstract it to the base
+        BackCommand
+           .Where(state => state != NavigationState.Succeeded)
+           .LogTrace(Logger, state => state, "Navigation State: {State}")
+           .Select(_ => _stateMachine.FireAsync(AddMedicineTrigger.Failure).ConfigureAwait(true))
+           .Subscribe();
+
+        _currentState =
+            _stateMachine
+               .Current
+               .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(CurrentState)), () => AddMedicineState.Initial)
+               .DisposeWith(Garbage);
+
+        // NOTE: [rlittlesii: December 06, 2024] I would use Fluent Validation here, but my usecases dont warrant my normal approach.
+        _medication = this.WhenChanged(
+                static viewModel => viewModel.SelectedName,
+                static viewModel => viewModel.SelectedDosage,
+                static viewModel => viewModel.SelectedRecurrence,
+                static viewModel => viewModel.SelectedTime,
+                static (name, dosage, recurrence, time) => (name, dosage, recurrence, time))
+           .LogTrace(Logger, state => state, "State: {State}")
+           .Where(ArePropertiesValid)
+
+            // QUESTION: [rlittlesii: December 07, 2024] What were you thinking?!
+           .Select(static _ => new ScheduledMedication(MealRequirements.None, new Medication(), Recurrence.Daily, DateTimeOffset.Now.ToOffsetDateTime()))
+           .WhereIsNotNull()
+           .LogTrace(Logger, static medication => medication, "{ScheduledMedication}")
+           .SelectMany(medication => _stateMachine.FireAsync(AddMedicineTrigger.Validated).ContinueWith(_ => medication))
+           .AsValue(_ => { }, _ => RaisePropertyChanged(nameof(Medication)), () => null!)
+           .DisposeWith(Garbage);
+
+        ConfigureMachine();
+
+        // TODO: [rlittlesii: December 03, 2024] Should this be somewhere else?!
+        static bool ArePropertiesValid((MedicationId? Name, Dosage? Dosage, Recurrence? Recurrence, TimeSpan? Time) tuple) => tuple is
+        {
+            Name: not null,
+            Dosage: not null,
+            Recurrence: not null,
+            Time: not null
+        };
+
+        async Task<AddMedicineTrigger> ExecuteAdd(ScheduledMedication? scheduledMedication)
+        {
+            ArgumentNullException.ThrowIfNull(scheduledMedication);
+
+            await _stateMachine.FireAsync(AddMedicineTrigger.Save);
+            await cqrs.Execute(AddMedicationToSchedule.Create(new UserId(), scheduledMedication)); // TODO: [rlittlesii: January 25, 2025] Timeout?
+
+            return AddMedicineTrigger.Complete;
+        }
+    }
+
+    /// <inheritdoc />
     protected override async Task Initialize(ICqrs cqrs)
     {
         try

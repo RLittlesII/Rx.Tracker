@@ -1,7 +1,7 @@
+using Microsoft.Maui.Controls;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Microsoft.Maui.Controls;
 using static Rx.Tracker.Features.Medications.ViewModels.AddMedicineStateMachine;
 
 namespace Rx.Tracker.UI.Features.Medicine.Add;
@@ -20,8 +20,8 @@ public class AddMedicineStateConverter : IValueConverter
         return value switch
         {
             AddMedicineState.Initial => true,
-            AddMedicineState.Busy => true,
-            AddMedicineState.Loaded => true,
+            AddMedicineState.Busy    => true,
+            AddMedicineState.Loaded  => true,
             AddMedicineState.Failed  => false,
             var _                    => null
         };

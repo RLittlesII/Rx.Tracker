@@ -1,4 +1,3 @@
-using System.Net.Http;
 using DryIoc;
 using MediatR;
 using NodaTime;
@@ -7,6 +6,7 @@ using Rx.Tracker.Features;
 using Rx.Tracker.Mediation;
 using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Navigation;
+using System.Net.Http;
 
 namespace Rx.Tracker.UI.Features;
 

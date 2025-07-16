@@ -1,48 +1,25 @@
-using System;
-using System.Threading.Tasks;
 using NodaTime;
 using NodaTime.Extensions;
 using ReactiveMarbles.Mvvm;
 using Rx.Tracker.Features.Medications.Domain.Entities;
+using System;
+using System.Threading.Tasks;
 
 namespace Rx.Tracker.Features.Schedule.Domain.Entities;
 
 /// <summary>
-/// Represents a <see cref="Medication"/> schedule to be taken at a certain time.
+/// Represents a <see cref="Medication" /> schedule to be taken at a certain time.
 /// </summary>
 public class ScheduledMedication : RxObject
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ScheduledMedication"/> class.
+    /// Take the <see cref="Medication" />.
     /// </summary>
-    /// <param name="mealRequirement">The meal requirements.</param>
-    /// <param name="medication">The medication.</param>
-    /// <param name="recurrence">The recurrence.</param>
-    /// <param name="scheduledTime">The scheduled time.</param>
-    public ScheduledMedication(
-        MealRequirements mealRequirement,
-        Medication medication,
-        Recurrence recurrence,
-        OffsetDateTime scheduledTime)
-        : this(new Id(), mealRequirement, medication, recurrence, scheduledTime)
+    /// <returns>A completion notification.</returns>
+    public Task Take()
     {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ScheduledMedication"/> class.
-    /// </summary>
-    /// <param name="id">The id.</param>
-    /// <param name="mealRequirement">The meal requirements.</param>
-    /// <param name="medication">The medication.</param>
-    /// <param name="recurrence">The recurrence.</param>
-    /// <param name="scheduledTime">The scheduled time.</param>
-    public ScheduledMedication(Id id, MealRequirements mealRequirement, Medication medication, Recurrence recurrence, OffsetDateTime scheduledTime)
-    {
-        Id = id;
-        MealRequirement = mealRequirement;
-        Medication = medication;
-        Recurrence = recurrence;
-        ScheduledTime = scheduledTime;
+        TakenTime = DateTimeOffset.UtcNow.ToOffsetDateTime();
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -80,13 +57,36 @@ public class ScheduledMedication : RxObject
     }
 
     /// <summary>
-    /// Take the <see cref="Medication"/>.
+    /// Initializes a new instance of the <see cref="ScheduledMedication" /> class.
     /// </summary>
-    /// <returns>A completion notification.</returns>
-    public Task Take()
+    /// <param name="mealRequirement">The meal requirements.</param>
+    /// <param name="medication">The medication.</param>
+    /// <param name="recurrence">The recurrence.</param>
+    /// <param name="scheduledTime">The scheduled time.</param>
+    public ScheduledMedication(
+        MealRequirements mealRequirement,
+        Medication medication,
+        Recurrence recurrence,
+        OffsetDateTime scheduledTime)
+        : this(new Id(), mealRequirement, medication, recurrence, scheduledTime)
     {
-        TakenTime = DateTimeOffset.UtcNow.ToOffsetDateTime();
-        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ScheduledMedication" /> class.
+    /// </summary>
+    /// <param name="id">The id.</param>
+    /// <param name="mealRequirement">The meal requirements.</param>
+    /// <param name="medication">The medication.</param>
+    /// <param name="recurrence">The recurrence.</param>
+    /// <param name="scheduledTime">The scheduled time.</param>
+    public ScheduledMedication(Id id, MealRequirements mealRequirement, Medication medication, Recurrence recurrence, OffsetDateTime scheduledTime)
+    {
+        Id = id;
+        MealRequirement = mealRequirement;
+        Medication = medication;
+        Recurrence = recurrence;
+        ScheduledTime = scheduledTime;
     }
 
     private OffsetDateTime? _takenTime;

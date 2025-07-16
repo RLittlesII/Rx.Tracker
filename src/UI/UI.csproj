@@ -47,25 +47,25 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Maui" />
-        <PackageReference Include="CommunityToolkit.Maui.Markup" />
-        <PackageReference Include="DryIoc.dll" />
-        <PackageReference Include="Microsoft.Maui.Controls" />
-        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" />
-        <PackageReference Include="Microsoft.Maui.Essentials" />
-        <PackageReference Include="Microsoft.Extensions.Logging" />
-        <PackageReference Include="Plugin.Maui.Calendar" />
-        <PackageReference Include="Plugin.Maui.CalendarStore" />
-        <PackageReference Include="Prism.Maui" />
-        <PackageReference Include="Prism.Maui.Rx" />
-        <PackageReference Include="Prism.DryIoc.Maui" />
-        <PackageReference Include="ReactiveMarbles.Mvvm" />
-        <PackageReference Include="ReactiveUI" />
-        <PackageReference Include="ReactiveUI.Maui" />
-        <PackageReference Include="Rocket.Surgery.Airframe.Core" />
-        <PackageReference Include="Serilog" />
-        <PackageReference Include="Serilog.Enrichers.Thread" />
-        <PackageReference Include="Serilog.Exceptions" />
+        <PackageReference Include="CommunityToolkit.Maui"/>
+        <PackageReference Include="CommunityToolkit.Maui.Markup"/>
+        <PackageReference Include="DryIoc.dll"/>
+        <PackageReference Include="Microsoft.Maui.Controls"/>
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility"/>
+        <PackageReference Include="Microsoft.Maui.Essentials"/>
+        <PackageReference Include="Microsoft.Extensions.Logging"/>
+        <PackageReference Include="Plugin.Maui.Calendar"/>
+        <PackageReference Include="Plugin.Maui.CalendarStore"/>
+        <PackageReference Include="Prism.Maui"/>
+        <PackageReference Include="Prism.Maui.Rx"/>
+        <PackageReference Include="Prism.DryIoc.Maui"/>
+        <PackageReference Include="ReactiveMarbles.Mvvm"/>
+        <PackageReference Include="ReactiveUI"/>
+        <PackageReference Include="ReactiveUI.Maui"/>
+        <PackageReference Include="Rocket.Surgery.Airframe.Core"/>
+        <PackageReference Include="Serilog"/>
+        <PackageReference Include="Serilog.Enrichers.Thread"/>
+        <PackageReference Include="Serilog.Exceptions"/>
         <PackageReference Include="Serilog.Extensions.Hosting"/>
         <PackageReference Include="Serilog.Sinks.Console"/>
         <PackageReference Include="Serilog.Sinks.Xamarin"/>

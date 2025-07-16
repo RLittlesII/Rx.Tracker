@@ -15,40 +15,30 @@ public interface IArguments : IEnumerable<KeyValuePair<string, object>>
     void Add(string key, object value);
 
     /// <summary>
-    /// Determines whether the <see cref="IArguments"/> contains the specified <paramref name="key"/>.
+    /// Determines whether the <see cref="IArguments" /> contains the specified <paramref name="key" />.
     /// </summary>
     /// <param name="key">The key to search the parameters for existence.</param>
-    /// <returns>true if the <see cref="IArguments"/> contains a parameter with the specified key; otherwise, false.</returns>
+    /// <returns>true if the <see cref="IArguments" /> contains a parameter with the specified key; otherwise, false.</returns>
     bool ContainsKey(string key);
 
     /// <summary>
-    /// Gets the number of parameters contained in the <see cref="IArguments"/>.
-    /// </summary>
-    int Count { get; }
-
-    /// <summary>
-    /// Gets a collection containing the keys in the <see cref="IArguments"/>.
-    /// </summary>
-    IEnumerable<string> Keys { get; }
-
-    /// <summary>
-    /// Gets the parameter associated with the specified <paramref name="key"/>.
+    /// Gets the parameter associated with the specified <paramref name="key" />.
     /// </summary>
     /// <typeparam name="T">The type of the parameter to get.</typeparam>
     /// <param name="key">The key of the parameter to find.</param>
-    /// <returns>A matching value of <typeparamref name="T"/> if it exists.</returns>
+    /// <returns>A matching value of <typeparamref name="T" /> if it exists.</returns>
     T GetValue<T>(string key);
 
     /// <summary>
-    /// Gets the parameter associated with the specified <paramref name="key"/>.
+    /// Gets the parameter associated with the specified <paramref name="key" />.
     /// </summary>
     /// <typeparam name="T">The type of the parameter to get.</typeparam>
     /// <param name="key">The key of the parameter to find.</param>
-    /// <returns>An <see cref="IEnumerable{T}"/> of all the values referenced by key.</returns>
+    /// <returns>An <see cref="IEnumerable{T}" /> of all the values referenced by key.</returns>
     IEnumerable<T> GetValues<T>(string key);
 
     /// <summary>
-    /// Gets the parameter associated with the specified <paramref name="key"/>.
+    /// Gets the parameter associated with the specified <paramref name="key" />.
     /// </summary>
     /// <typeparam name="T">The type of the parameter to get.</typeparam>
     /// <param name="key">The key of the parameter to get.</param>
@@ -56,7 +46,7 @@ public interface IArguments : IEnumerable<KeyValuePair<string, object>>
     /// When this method returns, contains the parameter associated with the specified key,
     /// if the key is found; otherwise, the default value for the type of the value parameter.
     /// </param>
-    /// <returns>true if the <see cref="IArguments"/> contains a parameter with the specified key; otherwise, false.</returns>
+    /// <returns>true if the <see cref="IArguments" /> contains a parameter with the specified key; otherwise, false.</returns>
     bool TryGetValue<T>(string key, out T? value);
 
     /// <summary>
@@ -65,4 +55,14 @@ public interface IArguments : IEnumerable<KeyValuePair<string, object>>
     /// <param name="key">The key of the parameter to get.</param>
     /// <returns>A matching value if it exists.</returns>
     object this[string key] { get; }
+
+    /// <summary>
+    /// Gets the number of parameters contained in the <see cref="IArguments" />.
+    /// </summary>
+    int Count { get; }
+
+    /// <summary>
+    /// Gets a collection containing the keys in the <see cref="IArguments" />.
+    /// </summary>
+    IEnumerable<string> Keys { get; }
 }

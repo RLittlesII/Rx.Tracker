@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using DryIoc;
@@ -15,13 +12,17 @@ using ReactiveMarbles.Mvvm;
 using ReactiveUI;
 using Rocket.Surgery.Airframe.Exceptions;
 using Rx.Tracker.Container;
+using Rx.Tracker.Features.Medications.Container;
+using Rx.Tracker.Features.Schedule.Container;
 using Rx.Tracker.Navigation;
 using Rx.Tracker.UI.Container;
 using Rx.Tracker.UI.Exceptions.Handlers;
 using Rx.Tracker.UI.Features;
 using Rx.Tracker.UI.Features.Main;
 using Rx.Tracker.UI.Features.Medicine;
-using Rx.Tracker.UI.Features.Schedule;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 [assembly: SuppressMessage(
     "StyleCop.CSharp.DocumentationRules",
@@ -83,12 +84,12 @@ public static class MauiProgram
     private static void RegisterTypes(IContainerRegistry registrar) => registrar
        .RegisterModule<MainModule>()
        .RegisterModule<MedicationModule>()
-       .RegisterModule<ScheduleModule>()
+       .RegisterModule<Features.Schedule.ScheduleModule>()
        .GetContainer()
        .RegisterModule<FeaturesModule>()
        .RegisterModule<MarblesModule>()
-       .RegisterModule<Tracker.Features.Schedule.Container.ScheduleModule>()
-       .RegisterModule<Tracker.Features.Medications.Container.AddMedicineModule>();
+       .RegisterModule<ScheduleModule>()
+       .RegisterModule<AddMedicineModule>();
 
     private static readonly IContainerRegistry ContainerRegistry = new DryIocContainerExtension(TrackerContainer.Rules);
 }
