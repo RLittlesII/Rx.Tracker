@@ -22,6 +22,7 @@ public class Navigator : INavigator
         return _navigationService.NavigateAsync(uri).ContinueWith(HandleFailedNavigationResult);
     }
 
+    /// <inheritdoc />
     public Task<NavigationState> Navigate<TRoute>(Func<TRoute, Uri> routes, Action<IArguments> arguments)
         where TRoute : new()
     {
@@ -39,8 +40,13 @@ public class Navigator : INavigator
         return _navigationService.NavigateAsync(invoke, (KnownNavigationParameters.UseModalNavigation, true)).ContinueWith(HandleFailedNavigationResult);
     }
 
+    /// <inheritdoc />
+    public Task<NavigationState> Back() => Back(1);
+
+    /// <inheritdoc />
     public Task<NavigationState> Back(uint backwards) => _navigationService.GoBackAsync().ContinueWith(HandleFailedNavigationResult);
 
+    /// <inheritdoc />
     public Task<NavigationState> Back<TRoute>(Func<TRoute, Uri> routes)
         where TRoute : new() => throw new NotImplementedException();
 

@@ -39,6 +39,12 @@ public interface INavigator
     /// <summary>
     /// Goes back to a specific uri from the specified route.
     /// </summary>
+    /// <returns>a navigation result.</returns>
+    Task<NavigationState> Back();
+
+    /// <summary>
+    /// Goes back to a specific uri from the specified route.
+    /// </summary>
     /// <param name="backwards">The number of backward navigations.</param>
     /// <returns>a navigation result.</returns>
     Task<NavigationState> Back(uint backwards);
