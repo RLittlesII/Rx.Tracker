@@ -1,11 +1,19 @@
+using System.Threading.Tasks;
 using LanguageExt;
 using Rx.Tracker.Failures;
 using Rx.Tracker.Mediation.Queries;
-using System.Threading.Tasks;
 
 namespace Rx.Tracker.Cqrs;
 
-public interface ISenderz
+/// <summary>
+/// Represents an abstraction that sends a query in a CQRS-based system.
+/// </summary>
+/// <remarks>
+/// This interface provides a contract for executing queries by encapsulating the logic
+/// required to process requests and return results in a consistent format, leveraging
+/// the Either type for handling potential failures.
+/// </remarks>
+public interface ISender
 {
     /// <summary>
     /// Queries with the provided <see cref="IRequest{TResult}"/>.

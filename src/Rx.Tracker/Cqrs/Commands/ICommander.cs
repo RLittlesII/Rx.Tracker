@@ -1,14 +1,14 @@
+using System.Threading.Tasks;
 using LanguageExt;
 using Rx.Tracker.Failures;
 using Rx.Tracker.Mediation.Commands;
-using System.Threading.Tasks;
 
 namespace Rx.Tracker.Cqrs;
 
 /// <summary>
 /// Represents an abstraction that executes a command.
 /// </summary>
-public interface ICommanderz
+public interface ICommander
 {
     /// <summary>
     /// Executes with the provided <see cref="ICommand"/>.
