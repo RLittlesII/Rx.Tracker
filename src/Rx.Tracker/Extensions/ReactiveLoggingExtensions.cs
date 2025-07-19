@@ -240,13 +240,67 @@ public static class ReactiveLoggingExtensions
                 CorrelationId = correlationId,
             });
 
-        return Observable.Create<TSource>(
-            obs =>
-            {
-                var onNextInvocationCount = 0;
+        return Observable.Create<TSource>(obs =>
+        {
+            var onNextInvocationCount = 0;
 
-                logger.LogTrace(
-                    "[SPY:Subscribe] {@SpyDetails}",
+            logger.LogTrace(
+                "[SPY:Subscribe] {@SpyDetails}",
+                new
+                {
+                    Thread = Environment.CurrentManagedThreadId,
+                    Message = message,
+                    CorrelationId = correlationId,
+                });
+
+            try
+            {
+                var subscription = source
+                   .Do(
+                        _ => logger.LogTrace(
+                            "[SPY:OnNext] {@SpyDetails}",
+                            new
+                            {
+                                Count = onNextInvocationCount++,
+                                Thread = Environment.CurrentManagedThreadId,
+                                Message = message,
+                                CorrelationId = correlationId,
+                            }),
+                        ex => logger.LogTrace(
+                            ex,
+                            "[SPY:OnError] {@SpyDetails}",
+                            new
+                            {
+                                Thread = Environment.CurrentManagedThreadId,
+                                Message = message,
+                                CorrelationId = correlationId,
+                            }),
+                        () => logger.LogTrace(
+                            "[SPY:OnCompleted] {@SpyDetails}",
+                            new
+                            {
+                                Thread = Environment.CurrentManagedThreadId,
+                                Message = message,
+                                CorrelationId = correlationId,
+                            }))
+                   .Subscribe(obs);
+
+                return new CompositeDisposable(
+                    subscription,
+                    Disposable.Create(() => logger.LogTrace(
+                        "[SPY:Disposed] {@SpyDetails}",
+                        new
+                        {
+                            Thread = Environment.CurrentManagedThreadId,
+                            Message = message,
+                            CorrelationId = correlationId,
+                        })));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "[SPY:Failed] {@SpyDetails}",
                     new
                     {
                         Thread = Environment.CurrentManagedThreadId,
@@ -254,64 +308,8 @@ public static class ReactiveLoggingExtensions
                         CorrelationId = correlationId,
                     });
 
-                try
-                {
-                    var subscription = source
-                       .Do(
-                            _ => logger.LogTrace(
-                                "[SPY:OnNext] {@SpyDetails}",
-                                new
-                                {
-                                    Count = onNextInvocationCount++,
-                                    Thread = Environment.CurrentManagedThreadId,
-                                    Message = message,
-                                    CorrelationId = correlationId,
-                                }),
-                            ex => logger.LogTrace(
-                                ex,
-                                "[SPY:OnError] {@SpyDetails}",
-                                new
-                                {
-                                    Thread = Environment.CurrentManagedThreadId,
-                                    Message = message,
-                                    CorrelationId = correlationId,
-                                }),
-                            () => logger.LogTrace(
-                                "[SPY:OnCompleted] {@SpyDetails}",
-                                new
-                                {
-                                    Thread = Environment.CurrentManagedThreadId,
-                                    Message = message,
-                                    CorrelationId = correlationId,
-                                }))
-                       .Subscribe(obs);
-
-                    return new CompositeDisposable(
-                        subscription,
-                        Disposable.Create(
-                            () => logger.LogTrace(
-                                "[SPY:Disposed] {@SpyDetails}",
-                                new
-                                {
-                                    Thread = Environment.CurrentManagedThreadId,
-                                    Message = message,
-                                    CorrelationId = correlationId,
-                                })));
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(
-                        ex,
-                        "[SPY:Failed] {@SpyDetails}",
-                        new
-                        {
-                            Thread = Environment.CurrentManagedThreadId,
-                            Message = message,
-                            CorrelationId = correlationId,
-                        });
-
-                    return Disposable.Empty;
-                }
-            });
+                return Disposable.Empty;
+            }
+        });
     }
 }

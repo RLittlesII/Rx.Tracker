@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using LanguageExt;
 using MediatR;
 using Rx.Tracker.Failures;
-using Rx.Tracker.Mediation.Queries;
 
 namespace Rx.Tracker.Cqrs;
 

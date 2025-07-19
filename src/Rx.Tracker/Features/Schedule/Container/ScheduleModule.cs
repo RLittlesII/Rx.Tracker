@@ -14,10 +14,9 @@ public class ScheduleModule : ContainerModule
     /// <inheritdoc/>
     protected override IContainer Register(IContainer registrar)
     {
-        registrar.RegisterDelegate<ScheduleStateMachine>(
-            resolver => new ScheduleStateMachine(
-                ScheduleStateMachine.ScheduleState.Initial,
-                resolver.Resolve<ILoggerFactory>()));
+        registrar.RegisterDelegate<ScheduleStateMachine>(resolver => new ScheduleStateMachine(
+            ScheduleStateMachine.ScheduleState.Initial,
+            resolver.Resolve<ILoggerFactory>()));
 
         registrar.Register<IMedicationScheduleApiClient, MedicationScheduleClient>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
         registrar.Register<IMedicationScheduleApiContract, LocalMedicationScheduleStore>(Reuse.Singleton, ifAlreadyRegistered: IfAlreadyRegistered.Replace);

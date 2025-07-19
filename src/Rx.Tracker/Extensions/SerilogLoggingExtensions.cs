@@ -17,20 +17,18 @@ public static class SerilogLoggingExtensions
     /// <param name="configuration">The logger configuration.</param>
     /// <returns>The log configuration.</returns>
     public static LoggerConfiguration Restructure(this LoggerConfiguration configuration) => configuration
-       .TransformStructure<StateMachine<ScheduleStateMachine.ScheduleState, ScheduleStateMachine.ScheduleTrigger>.Transition>(
-            transition => new
-            {
-                CurrentState = transition.Source,
-                Event = transition.Trigger,
-                NextState = transition.Destination
-            })
-       .TransformStructure<StateMachine<AddMedicineStateMachine.AddMedicineState, AddMedicineStateMachine.AddMedicineTrigger>.Transition>(
-            transition => new
-            {
-                CurrentState = transition.Source,
-                Event = transition.Trigger,
-                NextState = transition.Destination
-            });
+       .TransformStructure<StateMachine<ScheduleStateMachine.ScheduleState, ScheduleStateMachine.ScheduleTrigger>.Transition>(transition => new
+        {
+            CurrentState = transition.Source,
+            Event = transition.Trigger,
+            NextState = transition.Destination
+        })
+       .TransformStructure<StateMachine<AddMedicineStateMachine.AddMedicineState, AddMedicineStateMachine.AddMedicineTrigger>.Transition>(transition => new
+        {
+            CurrentState = transition.Source,
+            Event = transition.Trigger,
+            NextState = transition.Destination
+        });
 
     /// <summary>
     /// Transforms the structure of the provided instance of <see cref="T"/>.
