@@ -3,13 +3,13 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using DynamicData;
 using Microsoft.Extensions.Logging;
 using ReactiveMarbles.Command;
 using ReactiveMarbles.Extensions;
 using ReactiveMarbles.Mvvm;
-using ReactiveMarbles.PropertyChanged;
 using Rx.Tracker.Exceptions;
 using Rx.Tracker.Extensions;
 using Rx.Tracker.Features.Schedule.Domain.Entities;
@@ -41,6 +41,7 @@ public class ScheduleViewModel : ViewModelBase
         : base(navigator, cqrs, loggerFactory)
     {
         AddMedicineCommand = RxCommand.Create(ExecuteAddMedicine);
+        _medicationSchedule = new Subject<MedicationSchedule>().DisposeWith(Garbage);
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
         _currentState =
             _stateMachine
@@ -51,10 +52,10 @@ public class ScheduleViewModel : ViewModelBase
         var today = coreServices.Clock.GetCurrentInstant().ToDateTimeOffset().ToLocalDate();
 
         var medicationScheduleChanged =
-            this.WhenChanged(viewModel => viewModel.MedicationSchedule)
+            _medicationSchedule
                .WhereIsNotNull()
                .LogTrace(Logger, schedule => schedule!.ScheduleId, "Medication Schedule: {ScheduleId}")
-               .SelectMany(schedule => schedule!.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
+               .SelectMany(schedule => schedule.DisposeWith(Garbage).Connect().LogTrace(Logger, "Ref"))
                .LogTrace(Logger, "Preparing to Filter")
                .Filter(medication => medication.ScheduledTime.Date == today)
                .RefCount();
@@ -102,15 +103,6 @@ public class ScheduleViewModel : ViewModelBase
     /// </summary>
     public ReadOnlyObservableCollection<ScheduledMedication> ScheduledMedications => _scheduledMedications;
 
-    /// <summary>
-    /// Gets the medication schedule.
-    /// </summary>
-    public MedicationSchedule? MedicationSchedule
-    {
-        get => _medicationSchedule;
-        private set => RaiseAndSetIfChanged(ref _medicationSchedule, value);
-    }
-
     /// <inheritdoc/>
     protected override async Task Initialize(ICqrs cqrs)
     {
@@ -119,7 +111,7 @@ public class ScheduleViewModel : ViewModelBase
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
 
             var result = await cqrs.Query(LoadSchedule.Create(new UserId("Id"), default));
-            MedicationSchedule = result.Schedule;
+            _medicationSchedule.OnNext(result.Schedule);
             await _stateMachine.FireAsync(ScheduleStateMachine.ScheduleTrigger.Load);
         }
         catch (Exception exception)
@@ -164,5 +156,5 @@ public class ScheduleViewModel : ViewModelBase
     private readonly ReadOnlyObservableCollection<ScheduledMedication> _scheduledMedications;
 
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "DisposeWith")]
-    private MedicationSchedule? _medicationSchedule;
+    private readonly Subject<MedicationSchedule> _medicationSchedule;
 }

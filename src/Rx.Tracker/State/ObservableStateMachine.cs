@@ -50,7 +50,7 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
         UnhandledTriggers =
             unhandledExceptions
                .AsObservable()
-               .LogTrace(Logger, x => x, "Unhandled Trigger: {Trigger}")
+               .LogWarning(Logger, x => x, "Unhandled Trigger: {Trigger}")
                .Publish()
                .RefCount();
     }
