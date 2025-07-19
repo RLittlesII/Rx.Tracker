@@ -129,15 +129,20 @@ public class AddMedicineScreen : ScreenBase<AddMedicineViewModel>
 
     protected override Task Initialize(INavigationParameters parameters)
     {
-        this.WhenActivated(
-            disposable =>
-            {
-                this.BindInteraction(ViewModel, model => model.CompletedInteraction, async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
-                   .DisposeWith(disposable);
+        this.WhenActivated(disposable =>
+        {
+            this.BindInteraction(
+                    ViewModel,
+                    model => model.CompletedInteraction,
+                    async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
+               .DisposeWith(disposable);
 
-                this.BindInteraction(ViewModel, model => model.FailedInteraction, async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
-                   .DisposeWith(disposable);
-            });
+            this.BindInteraction(
+                    ViewModel,
+                    model => model.FailedInteraction,
+                    async context => await Toast.Make(context.Input.Message, ToastDuration.Long).Show())
+               .DisposeWith(disposable);
+        });
 
         return Task.CompletedTask;
     }

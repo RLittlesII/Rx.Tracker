@@ -251,20 +251,18 @@ public class AddMedicineViewModel : ViewModelBase
            .Configure(AddMedicineState.Failed)
            .PermitReentry(AddMedicineTrigger.Failure)
            .OnEntry(LogEntry)
-           .OnEntry(
-                transition =>
-                {
-                    using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
-                });
+           .OnEntry(transition =>
+            {
+                using var failed = FailedInteraction.Handle(new ToastMessage($"Trigger Failure: {transition}")).Subscribe();
+            });
 
         _stateMachine.Configure(AddMedicineState.Completed)
            .OnEntry(LogEntry)
-           .OnEntryAsync(
-                async _ =>
-                {
-                    // using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe();
-                    await ExecuteBack();
-                })
+           .OnEntryAsync(async _ =>
+            {
+                // using var completed = CompletedInteraction.Handle(new ToastMessage("The medication has been saved")).Subscribe();
+                await ExecuteBack();
+            })
            .OnEntry(LogEntry);
 
         void LogEntry(StateMachine<AddMedicineState, AddMedicineTrigger>.Transition transition)

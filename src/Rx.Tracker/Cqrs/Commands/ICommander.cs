@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using LanguageExt;
 using Rx.Tracker.Failures;
-using Rx.Tracker.Mediation.Commands;
 
 namespace Rx.Tracker.Cqrs;
 

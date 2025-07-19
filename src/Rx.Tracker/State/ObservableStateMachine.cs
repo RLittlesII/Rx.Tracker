@@ -29,16 +29,14 @@ public abstract class ObservableStateMachine<TState, TTrigger> : StateMachine<TS
         var stateChange = new BehaviorSubject<TState>(initialState).DisposeWith(Garbage);
         var unhandledExceptions = new Subject<string>().DisposeWith(Garbage);
 
-        OnUnhandledTrigger(
-            (state, trigger) =>
-                unhandledExceptions.OnNext($"{trigger} is not configured for {state}"));
+        OnUnhandledTrigger((state, trigger) =>
+            unhandledExceptions.OnNext($"{trigger} is not configured for {state}"));
 
-        OnTransitionedAsync(
-            transition =>
-            {
-                stateChange.OnNext(transition.Destination);
-                return Task.CompletedTask;
-            });
+        OnTransitionedAsync(transition =>
+        {
+            stateChange.OnNext(transition.Destination);
+            return Task.CompletedTask;
+        });
 
         Current =
             stateChange

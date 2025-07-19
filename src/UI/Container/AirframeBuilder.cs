@@ -36,10 +36,9 @@ public class AirframeBuilder
         public ExceptionHandlerRegistrar(IContainer container) => _container = container;
 
         public ExceptionHandlerRegistrar AddHandler<THandler>()
-            where THandler : IUnhandledExceptionHandler => AddHandler<THandler>(
-            registrar => registrar.Register<IUnhandledExceptionHandler, THandler>(
-                Reuse.Transient,
-                ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation));
+            where THandler : IUnhandledExceptionHandler => AddHandler<THandler>(registrar => registrar.Register<IUnhandledExceptionHandler, THandler>(
+            Reuse.Transient,
+            ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation));
 
         private ExceptionHandlerRegistrar AddHandler<THandler>(Action<IRegistrator> register)
             where THandler : IUnhandledExceptionHandler
