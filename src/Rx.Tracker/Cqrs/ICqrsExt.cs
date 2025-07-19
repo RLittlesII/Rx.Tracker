@@ -1,3 +1,3 @@
 namespace Rx.Tracker.Cqrs;
 
-public interface ICqrsz : ICommander, ISender;
+public interface ICqrsExt : ICommander, ISender;

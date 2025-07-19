@@ -19,7 +19,4 @@
         <PackageReference Include="Serilog" />
         <PackageReference Include="Stateless"/>
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Calendar\" />
-    </ItemGroup>
 </Project>
