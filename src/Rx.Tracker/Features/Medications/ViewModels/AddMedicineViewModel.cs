@@ -43,7 +43,7 @@ public class AddMedicineViewModel : ViewModelBase
         : base(navigator, cqrs, loggerFactory)
     {
         _stateMachine = stateMachineFactory.Invoke().DisposeWith(Garbage);
-        AddCommand = RxCommand.Create<ScheduledMedication?, AddMedicineTrigger>(
+        AddCommand = RxCommand.Create<ScheduledMedication?>(
             ExecuteAdd,
             _stateMachine.Current.Select(state => state == AddMedicineState.Valid));
 
@@ -53,10 +53,6 @@ public class AddMedicineViewModel : ViewModelBase
 
         FailedInteraction = new Interaction<ToastMessage, Unit>();
         CompletedInteraction = new Interaction<ToastMessage, Unit>();
-
-        AddCommand
-           .Select(trigger => _stateMachine.FireAsync(trigger).ConfigureAwait(true))
-           .Subscribe();
 
         // NOTE: [rlittlesii: January 25, 2025] If this approach catches on, abstract it to the base
         BackCommand
@@ -100,14 +96,15 @@ public class AddMedicineViewModel : ViewModelBase
             Time: not null
         };
 
-        async Task<AddMedicineTrigger> ExecuteAdd(ScheduledMedication? scheduledMedication)
+        async Task ExecuteAdd(ScheduledMedication? scheduledMedication)
         {
             ArgumentNullException.ThrowIfNull(scheduledMedication);
 
             await _stateMachine.FireAsync(AddMedicineTrigger.Save);
+
             await cqrs.Execute(AddMedicationToSchedule.Create(new UserId(), scheduledMedication)); // TODO: [rlittlesii: January 25, 2025] Timeout?
 
-            return AddMedicineTrigger.Complete;
+            await _stateMachine.FireAsync(AddMedicineTrigger.Complete);
         }
     }
 
@@ -124,7 +121,7 @@ public class AddMedicineViewModel : ViewModelBase
     /// <summary>
     /// Gets the add command.
     /// </summary>
-    public RxCommand<ScheduledMedication?, AddMedicineTrigger> AddCommand { get; }
+    public RxCommand<ScheduledMedication?, Unit> AddCommand { get; }
 
     /// <summary>
     /// Gets or sets the selected name.
@@ -245,6 +242,7 @@ public class AddMedicineViewModel : ViewModelBase
 
         _stateMachine
            .Configure(AddMedicineState.Valid)
+           .Permit(AddMedicineTrigger.Complete, AddMedicineState.Completed)
            .OnEntry(LogEntry);
 
         _stateMachine

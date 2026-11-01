@@ -130,7 +130,7 @@ public partial class AddMedicineViewModelTests
            .Be(AddMedicineState.Valid);
     }
 
-    [Fact(Skip = "This is the next task to make this pass, and fix the command handler.")]
+    [Fact]
     public async Task GivenScheduledMedication_WhenAdd_ThenShouldBeInCompletedState()
     {
         // Given
